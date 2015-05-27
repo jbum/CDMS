@@ -19,8 +19,8 @@ int[] gTeeth = { // currently unused
   30, 32, 34, 36, 40, 48, 50, 58, 60, 66, 72, 74, 80, 90, 94, 98, 100, 120, 144, 150, 151
  };
 
-int setupMode = 2; // 0 = simple, 1 = moving pivot, 2 = orbiting gear, 3 = orbit gear + moving pivot
-boolean invertPen = true;
+int setupMode = 0; // 0 = simple, 1 = moving pivot, 2 = orbiting gear, 3 = orbit gear + moving pivot
+boolean invertPen = false;
 
 ArrayList<Gear> activeGears;
 ArrayList<Channel> rails;
