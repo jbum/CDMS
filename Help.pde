@@ -12,10 +12,13 @@ void helpDraw()
       drawHelp = false;
     }
     fill(200, alpha*alpha*255);
-    float hx = width-200;
-    float hy = height-25;
+    float hx = width-250;
+    float hy = height-40;
     
+    textFont(hFont);
+    textAlign(LEFT);
     text("Press 0-9 to set speed.", hx, hy);
+    text("Press a-d to change setups.", hx, hy+22);
   }
   else if (startupAlert) {
     long elapsed = millis() - helpStartMS;
@@ -23,6 +26,8 @@ void helpDraw()
     if (alpha <= 0.0001) {
       startupAlert = false;
     }
+    textFont(hFont);
+    textAlign(LEFT);
     fill(200, alpha*alpha*255);
     text("Press ? for Help", width-150, height-25);
   }

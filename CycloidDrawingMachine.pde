@@ -41,6 +41,10 @@ int passesPerFrame = 1;
 boolean isStarted = false;
 boolean isMoving = false;
 
+float lastPX = -1, lastPY = -1;
+int myFrameCount = 0;
+
+
 
 void setup() {
   size(int(bWidth*inchesToPoints)+100, int(bHeight*inchesToPoints));
@@ -81,8 +85,19 @@ void setup() {
       rails.add(new LineRail(x1, y1, x2, y2));
   }
 
-  // Drawing Setup
-  switch (setupMode) {
+  drawingSetup(setupMode);
+}
+
+void drawingSetup(int setupIdx)
+{
+  println("Drawing Setup: " + setupIdx);
+  myFrameCount = 0;
+  isStarted = false;
+
+  activeGears = new ArrayList<Gear>();
+ 
+   // Drawing Setup
+  switch (setupIdx) {
   case 0: // simple set up with one gear for pen arm
     turnTable = addGear(120); 
     crank = addGear(98);
@@ -240,17 +255,16 @@ void setup() {
 
   }
   turnTable.showMount = false;
+  
 }
 
-float lastPX = -1, lastPY = -1;
-int myFrameCount = 0;
+
 
 void draw() 
 {
 
     background(255);
     helpDraw(); // draw help if needed
-
 
   // Crank the machine a few times, based on current passesPerFrame - this generates new gear positions and drawing output
   for (int p = 0; p < passesPerFrame; ++p) {
@@ -341,6 +355,18 @@ void keyPressed() {
       passesPerFrame = ((key-'0')-1)*10;
       isMoving = true;
       break;
+   case 'a':
+   case 'b':
+   case 'c':
+   case 'd':
+     drawingSetup(key - 'a');
+     break;
+   case 'A':
+   case 'B':
+   case 'C':
+   case 'D':
+     drawingSetup(key - 'A');
+     break;
   }
 }
 
