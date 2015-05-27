@@ -21,6 +21,7 @@ int[] gTeeth = { // currently unused
 
 int setupMode = 0; // 0 = simple, 1 = moving pivot, 2 = orbiting gear, 3 = orbit gear + moving pivot
 boolean invertPen = false;
+boolean penRaised = true;
 
 ArrayList<Gear> activeGears;
 ArrayList<Channel> rails;
@@ -59,6 +60,9 @@ void setup() {
   // Board Setup
 
   paper = createGraphics(int(paperWidth), int(paperWidth));
+  paper.beginDraw();
+  paper.clear();
+  paper.endDraw();
 
   discPoint = new MountPoint("DP", pCenterX, pCenterY);
   rails.add(new LineRail(2.22, 10.21, .51, .6));
@@ -85,22 +89,42 @@ void setup() {
       rails.add(new LineRail(x1, y1, x2, y2));
   }
 
-  drawingSetup(setupMode);
+  drawingSetup(setupMode, true);
 }
 
-void drawingSetup(int setupIdx)
+int[][] setupTeeth = {
+    {120,98},
+    {120,100,98,48},
+    {150,50,100,36,40},
+    {150,50,100,36,40,52,42}};
+
+Gear addGear(int setupIdx)
 {
+  Gear g = new Gear(setupTeeth[setupMode][setupIdx], setupIdx);
+  activeGears.add(g);
+  return g;
+}
+
+
+
+void drawingSetup(int setupIdx, boolean resetPaper)
+{
+  setupMode = setupIdx;
+
   println("Drawing Setup: " + setupIdx);
+  if (resetPaper) {
+    isStarted = false;
+  }
+  penRaised = true;
   myFrameCount = 0;
-  isStarted = false;
 
   activeGears = new ArrayList<Gear>();
  
    // Drawing Setup
   switch (setupIdx) {
   case 0: // simple set up with one gear for pen arm
-    turnTable = addGear(120); 
-    crank = addGear(98);
+    turnTable = addGear(0); 
+    crank = addGear(1);
     crankRail = rails.get(10);
     pivotRail = rails.get(1);
     crank.mount(crankRail,0);
@@ -118,10 +142,10 @@ void drawingSetup(int setupIdx)
     break;
 
   case 1: // moving fulcrum & separate crank
-    turnTable = addGear(120); 
-    crank = addGear(100);
-    Gear anchor = addGear(98);
-    Gear fulcrumGear = addGear(48);
+    turnTable = addGear(0); 
+    crank = addGear(1);
+    Gear anchor = addGear(2);
+    Gear fulcrumGear = addGear(3);
     crankRail = rails.get(1);
     anchorRail = rails.get(10);
     pivotRail = rails.get(0);
@@ -154,13 +178,13 @@ void drawingSetup(int setupIdx)
     pivotRail = rails.get(1);
     
     // Always need these...
-    turnTable = addGear(150);
-    crank = addGear(50);                
+    turnTable = addGear(0);
+    crank = addGear(1);                
   
     // These are optional
-    Gear  anchorTable = addGear(100);
-    Gear  anchorHub = addGear(36);
-    Gear  orbit = addGear(40);
+    Gear  anchorTable = addGear(2);
+    Gear  anchorHub = addGear(3);
+    Gear  orbit = addGear(4);
   
     orbit.isMoving = true;
   
@@ -202,16 +226,16 @@ void drawingSetup(int setupIdx)
     Channel fulcrumGearRail = rails.get(0);
     
     // Always need these...
-    turnTable = addGear(150);
-    crank = addGear(50);                
+    turnTable = addGear(0);
+    crank = addGear(1);                
   
     // These are optional
-    anchorTable = addGear(100);
-    anchorHub = addGear(36);
-    orbit = addGear(40);
+    anchorTable = addGear(2);
+    anchorHub = addGear(3);
+    orbit = addGear(4);
   
-    Gear  fulcrumCrank = addGear(52);                
-    fulcrumGear = addGear(42);
+    Gear  fulcrumCrank = addGear(5);                
+    fulcrumGear = addGear(6);
   
     orbit.isMoving = true;
   
@@ -270,34 +294,35 @@ void draw()
     if (isMoving) {
       myFrameCount += 1;
       crank.crank(myFrameCount*crankSpeed); // this recursive gear moves all the gears based on their relationships.
-    }
-  
-    // work out coords on unrotated paper
-    PVector nib = penRig.getPosition();
-    float dx = nib.x - pCenterX*inchesToPoints;
-    float dy = nib.y - pCenterY*inchesToPoints;
-    float a = atan2(dy, dx);
-    float l = sqrt(dx*dx + dy*dy);
-    float px = paperWidth/2 + cos(a-turnTable.rotation)*l;
-    float py = paperWidth/2 + sin(a-turnTable.rotation)*l;
-  
-    paper.beginDraw();
-    if (!isStarted) {
-      paper.clear();
-      paper.smooth(4);
-      paper.noFill();
-      paper.stroke(0);
-      paper.strokeWeight(0.5);
-      // paper.rect(10, 10, paperWidth-20, paperWidth-20);
-      isStarted = true;
-    } else {
-      paper.line(lastPX, lastPY, px, py);
-    }
-    paper.endDraw();
-    lastPX = px;
-    lastPY = py;
 
-
+      // work out coords on unrotated paper
+      PVector nib = penRig.getPosition();
+      float dx = nib.x - pCenterX*inchesToPoints;
+      float dy = nib.y - pCenterY*inchesToPoints;
+      float a = atan2(dy, dx);
+      float l = sqrt(dx*dx + dy*dy);
+      float px = paperWidth/2 + cos(a-turnTable.rotation)*l;
+      float py = paperWidth/2 + sin(a-turnTable.rotation)*l;
+    
+      paper.beginDraw();
+      if (!isStarted) {
+        paper.clear();
+        paper.smooth(4);
+        paper.noFill();
+        paper.stroke(0);
+        paper.strokeJoin(ROUND);
+        paper.strokeCap(ROUND);
+        paper.strokeWeight(0.5);
+        // paper.rect(10, 10, paperWidth-20, paperWidth-20);
+        isStarted = true;
+      } else if (!penRaised) {
+        paper.line(lastPX, lastPY, px, py);
+      }
+      paper.endDraw();
+      lastPX = px;
+      lastPY = py;
+      penRaised = false;
+    }
   }
 
   // Draw the machine onscreen in it's current state
@@ -342,6 +367,7 @@ void keyPressed() {
      break;
    case '0':
      isMoving = false;
+     passesPerFrame = 0;
      break;
    case '1':
      passesPerFrame = 1;
@@ -362,7 +388,7 @@ void keyPressed() {
    case 'b':
    case 'c':
    case 'd':
-     drawingSetup(key - 'a');
+     drawingSetup(key - 'a', false);
      break;
    case 'x':
      paper.beginDraw();
@@ -382,7 +408,18 @@ void keyPressed() {
     tmp.save("untitled.png");
     println("Frame saved as untitled.png");
     break;
+  case '+':
+  case '-':
+    int direction = (key == '+'? 1 : -1);
+    if (selectGear != null) {
+      int gearIdx = selectGear.setupIdx;
+      setupTeeth[setupMode][gearIdx] += direction;
+      drawingSetup(setupMode, false);
+      selectGear = activeGears.get(gearIdx);
+      selectGear.selected = true;
+    }
   }
+  
 }
 
 void mousePressed() 

@@ -243,6 +243,7 @@ class ArcRail implements Channel {
 
 class Gear implements Channel { // !! implement channel
   int teeth;
+  int setupIdx;
   float radius;
   float rotation;
   float phase = 0;
@@ -257,8 +258,9 @@ class Gear implements Channel { // !! implement channel
   ArrayList<Gear> stackGears;
   Channel itsChannel;
   
-  Gear(int teeth) {
+  Gear(int teeth, int setupIdx) {
     this.teeth = teeth;
+    this.setupIdx = setupIdx;
     this.radius = (this.teeth*toothRadius/PI);
     this.x = 0;
     this.y = 0;
@@ -362,6 +364,8 @@ class Gear implements Channel { // !! implement channel
 
   void draw() {
     strokeWeight(1);
+    strokeCap(ROUND);
+    strokeJoin(ROUND);
     noFill();
     stroke(0);
 
@@ -414,13 +418,6 @@ class Gear implements Channel { // !! implement channel
 
     popMatrix();
   }
-}
-
-Gear addGear(int teeth)
-{
-  Gear g = new Gear(teeth);
-  activeGears.add(g);
-  return g;
 }
 
 

@@ -6,6 +6,7 @@ String[] helpLines = {
     "a-d to change setups",
     "s to save the image",
     "x to erase the paper",
+    "+- to change gear teeth",
 };
 
 void helpDraw() 
