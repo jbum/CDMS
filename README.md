@@ -1,12 +1,10 @@
 Simulation of Cycloid Drawing Machine in Processing
 
-Physical machine designed by Joe Freedman  kickstarter.com/projects/1765367532/cycloid-drawing-machine
+Physical machine designed by [Joe Freedman](https://kickstarter.com/projects/1765367532/cycloid-drawing-machine) and available on [Kickstarter](https://kickstarter.com/projects/1765367532/cycloid-drawing-machine).
 
-Processing simulation by Jim Bumgardner    krazydad.com
-
+Processing simulation by [Jim Bumgardner](http://krazydad.com/about.php)
 
 ![Cycloid Drawing Machine](http://i.imgur.com/KNP2aWI.png "Cycloid Drawing Machine")
-
 
 ![Cycloid Drawing Machine](http://i.imgur.com/VXcrre2.png "Cycloid Drawing Machine")
 
