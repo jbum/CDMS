@@ -2,9 +2,10 @@ boolean startupAlert = true;
 boolean drawHelp = false;
 long    helpStartMS = millis();
 String[] helpLines = {
-    "0-9 to set speed.",
-    "a-d to change setups.",
-    "x to erase the paper.",
+    "0-9 to set speed",
+    "a-d to change setups",
+    "s to save the image",
+    "x to erase the paper",
 };
 
 void helpDraw() 

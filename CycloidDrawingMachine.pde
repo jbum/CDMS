@@ -372,6 +372,16 @@ void keyPressed() {
   case 'p':
     // Swap pen mounts - need visual feedback
     break;
+  case 's':
+    PGraphics tmp = createGraphics(paper.width, paper.height);
+    tmp.beginDraw();
+    tmp.smooth();
+    tmp.background(255);
+    tmp.image(paper, 0, 0);
+    tmp.endDraw();
+    tmp.save("untitled.png");
+    println("Frame saved as untitled.png");
+    break;
   }
 }
 
