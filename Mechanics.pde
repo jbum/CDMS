@@ -17,7 +17,7 @@ class MountPoint implements Channel {
     this.itsMountRatio = 0;
     this.x = x*inchesToPoints;
     this.y = y*inchesToPoints;
-    println(this.typeStr + " is at " + this.x/72 + "," + this.y/72);
+    println(this.typeStr + " is at " + this.x/inchesToPoints + "," + this.y/inchesToPoints);
   }
 
   MountPoint(String typeStr, Channel ch, float mr) {
@@ -27,7 +27,7 @@ class MountPoint implements Channel {
     PVector pt = ch.getPosition(mr);
     this.x = pt.x;
     this.y = pt.y;
-    println(this.typeStr + " is at " + this.x/72 + "," + this.y/72);
+    println(this.typeStr + " is at " + this.x/inchesToPoints + "," + this.y/inchesToPoints);
   }
 
   PVector getPosition() {
@@ -85,7 +85,7 @@ class ConnectingRod implements Channel {
     PVector ap = itsAnchor.getPosition();
     PVector sp = itsSlide.getPosition();
     armAngle = atan2(sp.y - ap.y, sp.x - ap.x);
-    // println("Drawing arm " + ap.x/72 +" " + ap.y/72 + " --> " + sp.x/72 + " " + sp.y/72);
+    // println("Drawing arm " + ap.x/inchesToPoints +" " + ap.y/inchesToPoints + " --> " + sp.x/inchesToPoints + " " + sp.y/inchesToPoints);
     float L = 18 * inchesToPoints;
     line(ap.x,ap.y, ap.x+cos(armAngle)*L, ap.y+sin(armAngle)*L);
   }
@@ -104,7 +104,7 @@ class PenRig {
     this.itsMountLength = ml * inchesToPoints;
     PVector ap = itsRod.getPosition(this.itsMountLength);
     PVector ep = this.getPosition();
-    println("Pen Extender " + ap.x/72 +" " + ap.y/72 + " --> " + ep.x/72 + " " + ep.y/72);
+    println("Pen Extender " + ap.x/inchesToPoints +" " + ap.y/inchesToPoints + " --> " + ep.x/inchesToPoints + " " + ep.y/inchesToPoints);
   }
 
   PVector getPosition() {
@@ -174,10 +174,10 @@ class LineRail implements Channel {
       float mx1 = m * my1 + c;
       float my2 = (-bprim - sqrt(delta)) / (2 * aprim); // use this if it's better
       float mx2 = m * my2 + c;
-      println("V x1,y1 " + x1/72 + " " + y1/72 + " x2,y2 " + x2/72 + " " + y2/72 + " fixed " + fixed.x/72 + " " + fixed.y/72);
+      println("V x1,y1 " + x1/inchesToPoints + " " + y1/inchesToPoints + " x2,y2 " + x2/inchesToPoints + " " + y2/inchesToPoints + " fixed " + fixed.x/inchesToPoints + " " + fixed.y/inchesToPoints);
       println(" aprim,bprim,cprim = " + aprim + " " + bprim + " " + cprim);
       // of the two spots which are best, and pick the one that is A) On the line and B) closest to the moveable gear's current position
-      println("  mx1,mx2 " + mx1/72 + " " + my1/72 + " mx2,my2 " + mx2/72 + " " + my2/72);
+      println("  mx1,mx2 " + mx1/inchesToPoints + " " + my1/inchesToPoints + " mx2,my2 " + mx2/inchesToPoints + " " + my2/inchesToPoints);
       if (my1 < min(y1,y2) || my1 > max(y1,y2) || 
           dist(moveable.x,moveable.y,mx2,my2) < dist(moveable.x,moveable.y,mx1,mx2)) {
         println("  swap");
@@ -197,10 +197,10 @@ class LineRail implements Channel {
       float my1 = m * mx1 + c;
       float mx2 = (-bprim - sqrt(delta)) / (2 * aprim); // use this if it's better
       float my2 = m * mx2 + c;
-      println("x1,y1 " + x1/72 + " " + y1/72 + " x2,y2 " + x2/72 + " " + y2/72);
+      println("x1,y1 " + x1/inchesToPoints + " " + y1/inchesToPoints + " x2,y2 " + x2/inchesToPoints + " " + y2/inchesToPoints);
       println(" aprim,bprim,cprim = " + aprim + " " + bprim + " " + cprim);
       // of the two spots which are best, and pick the one that is A) On the line and B) closest to the moveable gear's current position
-      println("  mx1,mx2 " + mx1/72 + " " + my1/72 + " mx2,my2 " + mx2/72 + " " + my2/72);
+      println("  mx1,mx2 " + mx1/inchesToPoints + " " + my1/inchesToPoints + " mx2,my2 " + mx2/inchesToPoints + " " + my2/inchesToPoints);
       if (mx1 < min(x1,x2) || mx1 > max(x1,x2) || my1 < min(y1,y2) || my1 > max(y1,y2) ||
           dist(moveable.x,moveable.y,mx2,my2) < dist(moveable.x,moveable.y,mx1,mx2)) {
         println("  swap");
@@ -336,7 +336,7 @@ class Gear implements Channel { // !! implement channel
     PVector pt = ch.getPosition(r);
     this.x = pt.x;
     this.y = pt.y;
-    println("Gear " + teeth + " is at " + this.x/72 + "," + this.y/72);
+    println("Gear " + teeth + " is at " + this.x/inchesToPoints + "," + this.y/inchesToPoints);
   }
 
   void crank(float pos) {
@@ -403,8 +403,6 @@ class Gear implements Channel { // !! implement channel
       pushMatrix();
         fill(127);
         translate(0, radius-20);
-        // scale(1/72.0);
-        // textFont(gFont, 32/72.0);
         text(""+teeth, 0, 0);
         noFill();
         stroke(64);
