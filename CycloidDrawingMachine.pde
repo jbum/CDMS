@@ -46,7 +46,6 @@ float lastPX = -1, lastPY = -1;
 int myFrameCount = 0;
 
 
-
 void setup() {
   size(int(bWidth*inchesToPoints)+100, int(bHeight*inchesToPoints));
   ellipseMode(RADIUS);
@@ -96,7 +95,7 @@ int[][] setupTeeth = {
     {120,98},
     {120,100,98,48},
     {150,50,100,36,40},
-    {150,50,100,36,40,52,42}};
+    {150,50,100,36,40,50,75}};
 
 Gear addGear(int setupIdx)
 {
@@ -104,8 +103,6 @@ Gear addGear(int setupIdx)
   activeGears.add(g);
   return g;
 }
-
-
 
 void drawingSetup(int setupIdx, boolean resetPaper)
 {
@@ -179,7 +176,7 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     
     // Always need these...
     turnTable = addGear(0);
-    crank = addGear(1);                
+    crank = addGear(1);
   
     // These are optional
     Gear  anchorTable = addGear(2);
