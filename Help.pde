@@ -1,7 +1,11 @@
 boolean startupAlert = true;
 boolean drawHelp = false;
 long    helpStartMS = millis();
-
+String[] helpLines = {
+    "0-9 to set speed.",
+    "a-d to change setups.",
+    "x to erase the paper.",
+};
 
 void helpDraw() 
 {
@@ -11,14 +15,21 @@ void helpDraw()
     if (alpha <= 0.0001) {
       drawHelp = false;
     }
-    fill(200, alpha*alpha*255);
+    noStroke();
+
     float hx = width-250;
-    float hy = height-40;
+    float hy = height-22*helpLines.length;
     
+    fill(255,alpha*alpha*192);
+    rect(hx-1, hy-18, width-hx, height-(hy-18));
+
+    fill(100, alpha*alpha*255);
+
     textFont(hFont);
     textAlign(LEFT);
-    text("Press 0-9 to set speed.", hx, hy);
-    text("Press a-d to change setups.", hx, hy+22);
+    for (int i = 0; i < helpLines.length; ++i) {
+      text(helpLines[i], hx, hy+22*i);
+    }
   }
   else if (startupAlert) {
     long elapsed = millis() - helpStartMS;

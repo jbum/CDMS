@@ -25,7 +25,7 @@ boolean invertPen = false;
 ArrayList<Gear> activeGears;
 ArrayList<Channel> rails;
 
-Gear crank, turnTable;
+Gear crank, turnTable, selectGear = null;
 MountPoint slidePoint, anchorPoint, discPoint;
 Channel crankRail, anchorRail, pivotRail;
 
@@ -264,7 +264,6 @@ void draw()
 {
 
     background(255);
-    helpDraw(); // draw help if needed
 
   // Crank the machine a few times, based on current passesPerFrame - this generates new gear positions and drawing output
   for (int p = 0; p < passesPerFrame; ++p) {
@@ -297,6 +296,8 @@ void draw()
     paper.endDraw();
     lastPX = px;
     lastPY = py;
+
+
   }
 
   // Draw the machine onscreen in it's current state
@@ -325,6 +326,8 @@ void draw()
       rotate(turnTable.rotation);
       image(paper, -paperWidth/2, -paperWidth/2);
     popMatrix();
+
+    helpDraw(); // draw help if needed
 
   popMatrix();
 }
@@ -361,12 +364,34 @@ void keyPressed() {
    case 'd':
      drawingSetup(key - 'a');
      break;
-   case 'A':
-   case 'B':
-   case 'C':
-   case 'D':
-     drawingSetup(key - 'A');
+   case 'x':
+     paper.beginDraw();
+     paper.clear();
+     paper.endDraw();
      break;
+  case 'p':
+    // Swap pen mounts - need visual feedback
+    break;
+  }
+}
+
+void mousePressed() 
+{
+  // Unselect stuff
+  if (selectGear != null) {
+    selectGear.selected = false;
+    selectGear = null;
+  }
+
+  // !!! Check for selected pen mounts, rods, extensions...
+
+  // Nothing selected? Check gears
+
+  for (Gear g : activeGears) {
+      if (dist(mouseX, mouseY, g.x, g.y) <= g.radius) {
+        g.selected = true;
+        selectGear = g;
+      }
   }
 }
 

@@ -252,6 +252,7 @@ class Gear implements Channel { // !! implement channel
   boolean showMount = true;
   boolean isMoving = false; // gear's position is moving
   boolean isFixed = false; // gear does not rotate or move
+  boolean selected = false;
   ArrayList<Gear> meshGears;
   ArrayList<Gear> stackGears;
   Channel itsChannel;
@@ -378,6 +379,13 @@ class Gear implements Channel { // !! implement channel
       } else {
        noFill();
       }
+      if (selected) {
+        strokeWeight(4);
+        stroke(64);
+      } else {
+        strokeWeight(1);
+        stroke(0);
+      }
       beginShape();
       for (int i = 0; i < teeth; ++i) {
         float a1 = i*tAngle;
@@ -390,7 +398,8 @@ class Gear implements Channel { // !! implement channel
         vertex(r2*cos(a1+tAngle), r2*sin(a1+tAngle));
       }
       endShape();
-      
+      strokeWeight(1);
+
       pushMatrix();
         fill(127);
         translate(0, radius-20);
