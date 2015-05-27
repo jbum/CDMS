@@ -1,7 +1,7 @@
 // Simulation of Cycloid Drawing Machine
 //
-// Machine designed by Joe Freedman
-// Processing simulation by Jim Bumgardner
+// Physical machine designed by Joe Freedman  kickstarter.com/projects/1765367532/cycloid-drawing-machine
+// Processing simulation by Jim Bumgardner    krazydad.com
 //
 
 float inchesToPoints = 72;
@@ -12,7 +12,7 @@ float pCenterX = 8.87;
 float pCenterY = 6.61;
 float toothRadius = 0.0956414*inchesToPoints;
 float meshGap = 1.5/25.4*inchesToPoints; // 1 mm gap needed for meshing gears
-PFont  gFont;
+PFont  gFont, hFont;
 PImage titlePic;
 
 int[] gTeeth = { // currently unused
@@ -46,6 +46,7 @@ void setup() {
   size(int(bWidth*inchesToPoints)+100, int(bHeight*inchesToPoints));
   ellipseMode(RADIUS);
   gFont = createFont("EurostileBold", 32);
+  hFont = createFont("EurostileBold", 18);
   titlePic = loadImage("title.png");
   
   activeGears = new ArrayList<Gear>();
@@ -246,13 +247,13 @@ int myFrameCount = 0;
 
 void draw() 
 {
-  background(255);
-  fill(200);
-  noStroke();
+
+    background(255);
+    helpDraw(); // draw help if needed
 
 
+  // Crank the machine a few times, based on current passesPerFrame - this generates new gear positions and drawing output
   for (int p = 0; p < passesPerFrame; ++p) {
-
     if (isMoving) {
       myFrameCount += 1;
       crank.crank(myFrameCount*crankSpeed); // this recursive gear moves all the gears based on their relationships.
@@ -284,7 +285,10 @@ void draw()
     lastPY = py;
   }
 
+  // Draw the machine onscreen in it's current state
   pushMatrix();
+    fill(200);
+    noStroke();
 
     image(titlePic, 0, height-titlePic.height);
   
@@ -316,6 +320,9 @@ void keyPressed() {
    case ' ':
       isMoving = !isMoving;
       break;
+   case '?':
+     toggleHelp();
+     break;
    case '0':
      isMoving = false;
      break;
