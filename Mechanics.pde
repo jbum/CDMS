@@ -84,13 +84,23 @@ class ConnectingRod implements Channel {
   }
   
   void draw() {
+    PVector ap = itsAnchor.getPosition();
+    PVector sp = itsSlide.getPosition();
+
     itsSlide.draw();
     itsAnchor.draw();
+    pushMatrix();
+      translate(sp.x, sp.y);
+      noFill();
+      stroke(100);
+      fill(254,214,179,192);
+      strokeWeight(2);
+      ellipse(0,0,20,20);
+    popMatrix();
+    
     noFill();
     stroke(100,200,100);
     strokeWeight(.23*inchesToPoints);
-    PVector ap = itsAnchor.getPosition();
-    PVector sp = itsSlide.getPosition();
     armAngle = atan2(sp.y - ap.y, sp.x - ap.x);
     // println("Drawing arm " + ap.x/inchesToPoints +" " + ap.y/inchesToPoints + " --> " + sp.x/inchesToPoints + " " + sp.y/inchesToPoints);
     float L = 18 * inchesToPoints;
@@ -126,7 +136,7 @@ class PenRig {
     PVector ep = this.getPosition();
     noFill();
     stroke(200,150,150);
-    strokeWeight(.23*inchesToPoints);
+    strokeWeight(.13*inchesToPoints);
     line(ap.x, ap.y, ep.x, ep.y);
   }
 }
