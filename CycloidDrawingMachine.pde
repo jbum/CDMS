@@ -24,10 +24,11 @@ boolean invertPen = false;
 boolean penRaised = true;
 
 ArrayList<Gear> activeGears;
+ArrayList<MountPoint> activeMountPoints;
 ArrayList<Channel> rails;
 
 Gear crank, turnTable, selectGear = null;
-MountPoint slidePoint, anchorPoint, discPoint;
+MountPoint slidePoint, anchorPoint, discPoint, selectMountPoint = null;
 Channel crankRail, anchorRail, pivotRail;
 
 ConnectingRod cRod;
@@ -55,6 +56,7 @@ void setup() {
   titlePic = loadImage("title.png");
   
   activeGears = new ArrayList<Gear>();
+  activeMountPoints = new ArrayList<MountPoint>();
   rails = new ArrayList<Channel>();
 
   // Board Setup
@@ -65,6 +67,7 @@ void setup() {
   paper.endDraw();
 
   discPoint = new MountPoint("DP", pCenterX, pCenterY);
+  
   rails.add(new LineRail(2.22, 10.21, .51, .6));
   rails.add(new LineRail(3.1, 10.23, 3.1, .5));
   rails.add(new LineRail(8.74, 2.41, 9.87, .47));
@@ -109,6 +112,13 @@ Gear addGear(int setupIdx, String nom)
   return g;
 }
 
+MountPoint addMP(String nom, Channel chan, float attach)
+{
+  MountPoint mp = new MountPoint(nom, chan, attach);
+  activeMountPoints.add(mp);
+  return mp;
+}
+
 void drawingSetup(int setupIdx, boolean resetPaper)
 {
   setupMode = setupIdx;
@@ -121,7 +131,8 @@ void drawingSetup(int setupIdx, boolean resetPaper)
   myFrameCount = 0;
 
   activeGears = new ArrayList<Gear>();
- 
+  activeMountPoints = new ArrayList<MountPoint>();
+  
    // Drawing Setup
   switch (setupIdx) {
   case 0: // simple set up with one gear for pen arm
@@ -134,8 +145,8 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     crank.snugTo(turnTable);
     crank.meshTo(turnTable);
 
-    slidePoint = new MountPoint("SP", pivotRail, 0.1);
-    anchorPoint = new MountPoint("AP", crank, 0.47);
+    slidePoint = addMP("SP", pivotRail, 0.1);
+    anchorPoint = addMP("AP", crank, 0.47);
     if (invertPen)
       cRod = new ConnectingRod(anchorPoint, slidePoint);
     else
@@ -165,8 +176,8 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     anchor.meshTo(turnTable);
     fulcrumGear.meshTo(crank);   
 
-    slidePoint = new MountPoint("SP", fulcrumGear, 0.5);
-    anchorPoint = new MountPoint("AP", anchor, 0.47);
+    slidePoint = addMP("SP", fulcrumGear, 0.5);
+    anchorPoint = addMP("AP", anchor, 0.47);
     if (invertPen)
       cRod = new ConnectingRod(anchorPoint, slidePoint);
     else
@@ -209,8 +220,8 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     orbit.meshTo(anchorHub);
   
     // Setup Pen
-    slidePoint = new MountPoint("SP", pivotRail, 1-0.1027);
-    anchorPoint = new MountPoint("AP", orbit, 0.47);
+    slidePoint = addMP("SP", pivotRail, 1-0.1027);
+    anchorPoint = addMP("AP", orbit, 0.47);
     if (invertPen)
       cRod = new ConnectingRod(anchorPoint, slidePoint);
     else
@@ -235,12 +246,12 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     bGear.snugTo(turnTable);
     bGear.meshTo(turnTable);
 
-    slidePoint = new MountPoint("SP", aGear, 0.7);
-    anchorPoint = new MountPoint("AP", bGear, 0.3);
+    slidePoint = addMP("SP", aGear, 0.7);
+    anchorPoint = addMP("AP", bGear, 0.3);
     cRod = new ConnectingRod(slidePoint, anchorPoint);
 
-    MountPoint slidePoint2 = new MountPoint("SP2", pivotRail, 0.8);
-    MountPoint anchorPoint2 = new MountPoint("AP2", cRod, 2.5*inchesToPoints);
+    MountPoint slidePoint2 = addMP("SP2", pivotRail, 0.8);
+    MountPoint anchorPoint2 = addMP("AP2", cRod, 2.5*inchesToPoints);
     ConnectingRod cRod2;
     if (invertPen) 
       cRod2 = new ConnectingRod(anchorPoint2, slidePoint2);
@@ -268,12 +279,12 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     bGear.snugTo(turnTable);
     bGear.meshTo(turnTable);
 
-    slidePoint = new MountPoint("SP", pivotRail, 0.7);
-    anchorPoint = new MountPoint("AP", bGear, 0.3);
+    slidePoint = addMP("SP", pivotRail, 0.7);
+    anchorPoint = addMP("AP", bGear, 0.3);
     cRod = new ConnectingRod(slidePoint, anchorPoint);
 
-    slidePoint2 = new MountPoint("SP2", aGear, 0.8);
-    anchorPoint2 = new MountPoint("AP2", cRod, 4.5*inchesToPoints);
+    slidePoint2 = addMP("SP2", aGear, 0.8);
+    anchorPoint2 = addMP("AP2", cRod, 4.5*inchesToPoints);
     if (invertPen) 
      cRod2 = new ConnectingRod(slidePoint2, anchorPoint2);
     else
@@ -300,16 +311,16 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     bGear.snugTo(turnTable);
     bGear.meshTo(turnTable);
 
-    slidePoint = new MountPoint("SP", pivotRail, 0.9);
-    anchorPoint = new MountPoint("AP", bGear, 0.4);
+    slidePoint = addMP("SP", pivotRail, 0.9);
+    anchorPoint = addMP("AP", bGear, 0.4);
     cRod = new ConnectingRod(slidePoint, anchorPoint);
 
-    slidePoint2 = new MountPoint("SP2", aGear, 0.9);
-    anchorPoint2 = new MountPoint("AP2", pivotRail, 0.1);
+    slidePoint2 = addMP("SP2", aGear, 0.9);
+    anchorPoint2 = addMP("AP2", pivotRail, 0.1);
     cRod2 = new ConnectingRod(slidePoint2, anchorPoint2);
 
-    MountPoint slidePoint3 = new MountPoint("SP3", cRod2, 9.0*inchesToPoints);
-    MountPoint anchorPoint3 = new MountPoint("SA3", cRod, 3.0*inchesToPoints);
+    MountPoint slidePoint3 = addMP("SP3", cRod2, 9.0*inchesToPoints);
+    MountPoint anchorPoint3 = addMP("SA3", cRod, 3.0*inchesToPoints);
     ConnectingRod cRod3;
     
     if (invertPen) 
@@ -368,8 +379,8 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     fulcrumGear.meshTo(fulcrumCrank);   
 
     // Setup Pen
-    slidePoint = new MountPoint("SP", fulcrumGear, 0.5);
-    anchorPoint = new MountPoint("AP", orbit, 0.47);
+    slidePoint = addMP("SP", fulcrumGear, 0.5);
+    anchorPoint = addMP("AP", orbit, 0.47);
     if (invertPen)
       cRod = new ConnectingRod(anchorPoint, slidePoint);
     else
@@ -507,15 +518,37 @@ void keyPressed() {
   case '+':
   case '-':
     int direction = (key == '+'? 1 : -1);
-    if (selectGear != null) {
-      int gearIdx = selectGear.setupIdx;
-      setupTeeth[setupMode][gearIdx] += direction;
-      drawingSetup(setupMode, false);
-      selectGear = activeGears.get(gearIdx);
-      selectGear.selected = true;
+    nudge(direction);
+    break;
+  case CODED:
+    switch (keyCode) {
+    case UP:
+    case DOWN:
+    case LEFT:
+    case RIGHT:
+      direction = (keyCode == RIGHT || keyCode == DOWN? 1 : -1);
+      nudge(direction);
+      break;
     }
+    break;
+   default:
+     println("Key pressed: " + (0 + key));
+     break;
   }
-  
+}
+
+void nudge(int direction)
+{
+  if (selectMountPoint != null) {
+    selectMountPoint.nudge(direction);
+  }
+  else if (selectGear != null) {
+    int gearIdx = selectGear.setupIdx;
+    setupTeeth[setupMode][gearIdx] += direction;
+    drawingSetup(setupMode, false);
+    selectGear = activeGears.get(gearIdx);
+    selectGear.selected = true;
+  }
 }
 
 void mousePressed() 
@@ -525,18 +558,26 @@ void mousePressed()
     selectGear.selected = false;
     selectGear = null;
   }
+  if (selectMountPoint != null) {
+    selectMountPoint.selected = false;
+    selectMountPoint = null;
+  }
 
   // !!! Check for selected pen mounts, rods, extensions...
 
   // Nothing selected? Check gears
+  for (MountPoint mp : activeMountPoints) {
+    PVector p = mp.getPosition();
+    if (dist(mouseX, mouseY, p.x, p.y) <= mp.radius) {
+      mp.doSelect();
+    }
+  }
+  if (selectMountPoint != null)
+    return;
 
   for (Gear g : activeGears) {
       if (dist(mouseX, mouseY, g.x, g.y) <= g.radius) {
-        if (selectGear != null) {
-          selectGear.selected = false;
-        }
-        g.selected = true;
-        selectGear = g;
+        g.doSelect();
       }
   }
 }

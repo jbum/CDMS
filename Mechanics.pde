@@ -8,13 +8,17 @@ interface Channel {
 class MountPoint implements Channel {
   Channel itsChannel = null;
   float itsMountRatio;
-  float x, y;
+  float x, y, radius;
   String typeStr = "MP";
-
+  boolean isFixed = false;
+  boolean selected = false;
+  
   MountPoint(String typeStr, float x, float y) {
     this.typeStr = typeStr;
     this.itsChannel = null;
     this.itsMountRatio = 0;
+    this.isFixed = true;
+    this.radius = 12;
     this.x = x*inchesToPoints;
     this.y = y*inchesToPoints;
     println(this.typeStr + " is at " + this.x/inchesToPoints + "," + this.y/inchesToPoints);
@@ -27,10 +31,32 @@ class MountPoint implements Channel {
     PVector pt = ch.getPosition(mr);
     this.x = pt.x;
     this.y = pt.y;
+    this.radius = 12;
     println(this.typeStr + " is at " + this.x/inchesToPoints + "," + this.y/inchesToPoints);
     if (ch instanceof Gear) {
       println("  " + this.typeStr + " is mounted on a gear");
     }
+  }
+  
+  void nudge(int direction) {
+    float amt, mn=0, mx=1;
+    if (itsChannel instanceof ConnectingRod) {
+      amt = 0.125 * inchesToPoints;
+      mx = 15 * inchesToPoints;
+    } else {
+      amt = 0.01;
+    }
+    amt *= direction;
+    itsMountRatio += amt;
+    itsMountRatio = constrain(itsMountRatio, mn, mx);
+  }
+  
+  void doSelect() {
+    if (selectMountPoint != null) {
+      selectMountPoint.selected = false;
+    }
+    selected = true;
+    selectMountPoint = this;
   }
 
   PVector getPosition() {
@@ -53,10 +79,15 @@ class MountPoint implements Channel {
     if (itsChannel instanceof ConnectingRod) {
       itsChannel.draw();
     } 
-    fill(100,192);
-    stroke(180);
-    strokeWeight(1);
-    ellipse(p.x, p.y, 12, 12);
+    if (selected) {
+      fill(180,192);
+      stroke(50);
+    } else {
+      fill(180,192);
+      stroke(100);
+    }
+    strokeWeight(selected? 4 : 2);
+    ellipse(p.x, p.y, this.radius, this.radius);
   }
 }
 
@@ -68,6 +99,7 @@ class ConnectingRod implements Channel {
   ConnectingRod(MountPoint itsSlide, MountPoint itsAnchor)
   {
     this.itsSlide = itsSlide;
+    itsSlide.radius = 20;
     this.itsAnchor = itsAnchor;
   }
   
@@ -89,14 +121,15 @@ class ConnectingRod implements Channel {
 
     itsSlide.draw();
     itsAnchor.draw();
-    pushMatrix();
-      translate(sp.x, sp.y);
-      noFill();
-      stroke(100);
-      fill(254,214,179,192);
-      strokeWeight(2);
-      ellipse(0,0,20,20);
-    popMatrix();
+
+//    pushMatrix();
+//      translate(sp.x, sp.y);
+//      noFill();
+//      stroke(100);
+//      fill(254,214,179,192);
+//      strokeWeight(itsSlide.selected? 5 : 2);
+//      ellipse(0,0,20,20);
+//    popMatrix();
     
     noFill();
     stroke(100,200,100,128);
@@ -142,7 +175,7 @@ class PenRig {
     this.itsRod = itsRod;
     this.itsMountLength = ml * inchesToPoints;
 
-    itsMP = new MountPoint("EX", itsRod, this.itsMountLength);
+    itsMP = addMP("EX", itsRod, this.itsMountLength);
 
     PVector ap = itsMP.getPosition();
     PVector ep = this.getPosition();
@@ -343,6 +376,15 @@ class Gear implements Channel { // !! implement channel
     meshGears = new ArrayList<Gear>();
     stackGears = new ArrayList<Gear>();
   }
+
+  void doSelect() {
+    if (selectGear != null) {
+      selectGear.selected = false;
+    }
+    selected = true;
+    selectGear = this;
+  }
+
 
   PVector getPosition(float r) {
     return new PVector(x+cos(this.rotation+this.phase)*radius*r, y+sin(this.rotation+this.phase)*radius*r);
