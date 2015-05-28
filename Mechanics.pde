@@ -53,7 +53,7 @@ class MountPoint implements Channel {
     if (itsChannel instanceof ConnectingRod) {
       itsChannel.draw();
     } 
-    noFill();
+    fill(100,192);
     stroke(180);
     strokeWeight(1);
     ellipse(p.x, p.y, 12, 12);
@@ -99,8 +99,8 @@ class ConnectingRod implements Channel {
     popMatrix();
     
     noFill();
-    stroke(100,200,100);
-    strokeWeight(.23*inchesToPoints);
+    stroke(100,200,100,128);
+    strokeWeight(.33*inchesToPoints);
     armAngle = atan2(sp.y - ap.y, sp.x - ap.x);
     // println("Drawing arm " + ap.x/inchesToPoints +" " + ap.y/inchesToPoints + " --> " + sp.x/inchesToPoints + " " + sp.y/inchesToPoints);
     float L = 18 * inchesToPoints;
@@ -113,29 +113,32 @@ class PenRig {
   float len;
   float angle;
   ConnectingRod itsRod;
-
+  MountPoint itsMP;
+  
   PenRig(float len, float angle, ConnectingRod itsRod, float ml) {
     this.len = len * inchesToPoints;
     this.angle = angle;
     this.itsRod = itsRod;
     this.itsMountLength = ml * inchesToPoints;
-    PVector ap = itsRod.getPosition(this.itsMountLength);
+
+    itsMP = new MountPoint("EX", itsRod, this.itsMountLength);
+
+    PVector ap = itsMP.getPosition();
     PVector ep = this.getPosition();
     println("Pen Extender " + ap.x/inchesToPoints +" " + ap.y/inchesToPoints + " --> " + ep.x/inchesToPoints + " " + ep.y/inchesToPoints);
   }
 
   PVector getPosition() {
-    PVector ap = itsRod.getPosition(this.itsMountLength);
-    
+    PVector ap = itsMP.getPosition();
     return new PVector(ap.x + cos(itsRod.armAngle + this.angle)*this.len, ap.y + sin(itsRod.armAngle + this.angle)*this.len);
   }
   
   void draw() {
-    itsRod.draw();
-    PVector ap = itsRod.getPosition(this.itsMountLength);
+    itsMP.draw();
+    PVector ap = itsMP.getPosition();
     PVector ep = this.getPosition();
     noFill();
-    stroke(200,150,150);
+    stroke(200,150,150,128);
     strokeWeight(.13*inchesToPoints);
     line(ap.x, ap.y, ep.x, ep.y);
   }
