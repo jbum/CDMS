@@ -275,9 +275,11 @@ class Gear implements Channel { // !! implement channel
   ArrayList<Gear> meshGears;
   ArrayList<Gear> stackGears;
   Channel itsChannel;
+  String nom;
   
-  Gear(int teeth, int setupIdx) {
+  Gear(int teeth, int setupIdx, String nom) {
     this.teeth = teeth;
+    this.nom = nom;
     this.setupIdx = setupIdx;
     this.radius = (this.teeth*toothRadius/PI);
     this.x = 0;
@@ -436,10 +438,10 @@ class Gear implements Channel { // !! implement channel
         fill(192,128);
         ellipse(0, 0, 12, 12);
 
-        fill(128,128);
+        fill(192,128);
         float inr = max(radius*.1,16);
-        float outr = radius-max(radius*.2,8);
-        rect(inr, -10, outr-inr, 20,12);
+        float outr = radius-max(radius*.1,8);
+        rect(inr, -8.25, outr-inr, 16.5,12);
       }
         
 

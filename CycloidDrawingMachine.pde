@@ -101,9 +101,9 @@ int[][] setupTeeth = {
     {150,50,100,36,40,50,75},
   };
 
-Gear addGear(int setupIdx)
+Gear addGear(int setupIdx, String nom)
 {
-  Gear g = new Gear(setupTeeth[setupMode][setupIdx], setupIdx);
+  Gear g = new Gear(setupTeeth[setupMode][setupIdx], setupIdx, nom);
   activeGears.add(g);
   return g;
 }
@@ -124,8 +124,8 @@ void drawingSetup(int setupIdx, boolean resetPaper)
    // Drawing Setup
   switch (setupIdx) {
   case 0: // simple set up with one gear for pen arm
-    turnTable = addGear(0); 
-    crank = addGear(1);
+    turnTable = addGear(0,"Turntable"); 
+    crank = addGear(1,"Crank");
     crankRail = rails.get(10);
     pivotRail = rails.get(1);
     crank.mount(crankRail,0);
@@ -144,10 +144,10 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     break;
 
   case 1: // moving fulcrum & separate crank
-    turnTable = addGear(0); 
-    crank = addGear(1);
-    Gear anchor = addGear(2);
-    Gear fulcrumGear = addGear(3);
+    turnTable = addGear(0,"Turntable"); 
+    crank = addGear(1,"Crank");
+    Gear anchor = addGear(2,"Anchor");
+    Gear fulcrumGear = addGear(3,"FulcrumGear");
     crankRail = rails.get(1);
     anchorRail = rails.get(10);
     pivotRail = rails.get(0);
@@ -180,13 +180,13 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     pivotRail = rails.get(1);
     
     // Always need these...
-    turnTable = addGear(0);
-    crank = addGear(1);
+    turnTable = addGear(0,"Turntable");
+    crank = addGear(1,"Crank");
   
     // These are optional
-    Gear  anchorTable = addGear(2);
-    Gear  anchorHub = addGear(3);
-    Gear  orbit = addGear(4);
+    Gear  anchorTable = addGear(2,"AnchorTable");
+    Gear  anchorHub = addGear(3,"AnchorHub");
+    Gear  orbit = addGear(4,"Orbit");
   
     orbit.isMoving = true;
   
@@ -221,9 +221,9 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     pivotRail = rails.get(1);
     Channel aRail = rails.get(10);
     Channel bRail = rails.get(7);
-    turnTable = addGear(0);
-    Gear aGear = addGear(1);
-    Gear bGear = addGear(2);
+    turnTable = addGear(0,"Turntable");
+    Gear aGear = addGear(1,"A");
+    Gear bGear = addGear(2,"B");
 
     turnTable.mount(discPoint, 0);
     aGear.mount(aRail, 0.5);
@@ -254,9 +254,9 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     pivotRail = rails.get(1);
     aRail = rails.get(10);
     bRail = rails.get(7);
-    turnTable = addGear(0);
-    aGear = addGear(1);
-    bGear = addGear(2);
+    turnTable = addGear(0,"TurnTable");
+    aGear = addGear(1,"A");
+    bGear = addGear(2,"B");
 
     turnTable.mount(discPoint, 0);
     aGear.mount(aRail, 0.5);
@@ -286,9 +286,9 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     pivotRail = rails.get(1);
     aRail = rails.get(10);
     bRail = rails.get(7);
-    turnTable = addGear(0);
-    aGear = addGear(1);
-    bGear = addGear(2);
+    turnTable = addGear(0,"Turntable");
+    aGear = addGear(1,"A");
+    bGear = addGear(2,"B");
 
     turnTable.mount(discPoint, 0);
     aGear.mount(aRail, 0.5);
@@ -327,16 +327,16 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     Channel fulcrumGearRail = rails.get(0);
     
     // Always need these...
-    turnTable = addGear(0);
-    crank = addGear(1);                
+    turnTable = addGear(0,"Turntable");
+    crank = addGear(1,"Crank");                
   
     // These are optional
-    anchorTable = addGear(2);
-    anchorHub = addGear(3);
-    orbit = addGear(4);
+    anchorTable = addGear(2,"AnchorTable");
+    anchorHub = addGear(3,"AnchorHub");
+    orbit = addGear(4,"Orbit");
   
-    Gear  fulcrumCrank = addGear(5);                
-    fulcrumGear = addGear(6);
+    Gear  fulcrumCrank = addGear(5,"FulcrumCrank");                
+    fulcrumGear = addGear(6,"FulcrumOrbit");
   
     orbit.isMoving = true;
   
@@ -501,15 +501,7 @@ void keyPressed() {
     // Swap pen mounts - need visual feedback
     break;
   case 's':
-    PGraphics tmp = createGraphics(paper.width, paper.height);
-    String sf = saveFilename();
-    tmp.beginDraw();
-    tmp.smooth();
-    tmp.background(255);
-    tmp.image(paper, 0, 0);
-    tmp.endDraw();
-    tmp.save(sf);
-    println("Frame saved as " + sf);
+    saveSnapshot();
     break;
   case '+':
   case '-':
