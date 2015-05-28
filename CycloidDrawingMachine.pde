@@ -34,7 +34,7 @@ boolean animateMode = false;
 PGraphics paper;
 float paperScale = 2;
 float paperWidth = 9*inchesToPoints*paperScale;
-float crankSpeed = 0.01;  // rotation per frame  - 0.2 is nice.
+float crankSpeed = TWO_PI/720;  // rotation per frame  - 0.2 is nice.
 int passesPerFrame = 1;
 
 boolean isStarted = false;
@@ -42,7 +42,7 @@ boolean isMoving = false;
 
 float lastPX = -1, lastPY = -1;
 int myFrameCount = 0;
-
+int myLastFrame = -1;
 
 void setup() {
   size(int(bWidth*inchesToPoints)+100, int(bHeight*inchesToPoints));
@@ -154,7 +154,7 @@ void drawingSetup(int setupIdx, boolean resetPaper)
 
   case 1: // moving fulcrum & separate crank
     turnTable = addGear(0,"Turntable"); 
-    crank = addGear(1,"Crank");
+    crank = addGear(1,"Crank");    crank.contributesToCycle = false;
     Gear anchor = addGear(2,"Anchor");
     Gear fulcrumGear = addGear(3,"FulcrumGear");
     crankRail = rails.get(1);
@@ -190,7 +190,7 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     
     // Always need these...
     turnTable = addGear(0,"Turntable");
-    crank = addGear(1,"Crank");
+    crank = addGear(1,"Crank");    crank.contributesToCycle = false;
   
     // These are optional
     Gear  anchorTable = addGear(2,"AnchorTable");
@@ -337,14 +337,14 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     
     // Always need these...
     turnTable = addGear(0,"Turntable");
-    crank = addGear(1,"Crank");                
+    crank = addGear(1,"Crank");                            crank.contributesToCycle = false;
   
     // These are optional
     anchorTable = addGear(2,"AnchorTable");
     anchorHub = addGear(3,"AnchorHub");
     orbit = addGear(4,"Orbit");
   
-    Gear  fulcrumCrank = addGear(5,"FulcrumCrank");                
+    Gear  fulcrumCrank = addGear(5,"FulcrumCrank");        fulcrumCrank.contributesToCycle = false;       
     fulcrumGear = addGear(6,"FulcrumOrbit");
   
     orbit.isMoving = true;
@@ -430,6 +430,12 @@ void draw()
       lastPX = px;
       lastPY = py;
       penRaised = false;
+      if (myLastFrame != -1 && myFrameCount >= myLastFrame) {
+        myLastFrame = -1;
+        passesPerFrame = 1;
+        isMoving = false;
+        break;
+      }
     }
   }
 
@@ -477,6 +483,7 @@ void keyPressed() {
   switch (key) {
    case ' ':
       isMoving = !isMoving;
+      myLastFrame = -1;
       break;
    case '?':
      toggleHelp();
@@ -484,6 +491,7 @@ void keyPressed() {
    case '0':
      isMoving = false;
      passesPerFrame = 0;
+     myLastFrame = -1;
      break;
    case '1':
      passesPerFrame = 1;
@@ -497,7 +505,7 @@ void keyPressed() {
    case '7':
    case '8':
    case '9':
-      passesPerFrame = ((key-'0')-1)*20;
+      passesPerFrame = int(map((key-'0'),2,9,10,360));
       isMoving = true;
       break;
    case 'a':
@@ -519,6 +527,10 @@ void keyPressed() {
     break;
   case 's':
     saveSnapshot();
+    break;
+  case '~':
+  case '`':
+    completeDrawing();
     break;
   case '+':
   case '-':

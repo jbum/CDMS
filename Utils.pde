@@ -41,3 +41,38 @@ int findNextTeeth(int teeth, int direction) {
       return gTeeth[gTeeth.length-1];
   }
 }
+
+int GCD(int a, int b) {
+   if (b==0) return a;
+   return GCD(b,a%b);
+}
+
+// Currently correct for 120->50,120  (5)   but not for 120->(94,50) - which should be 235
+int computeCyclicRotations() {
+  // Compute total turntable rotations for current drawing - needs work!
+  int a = 1; // running minimum
+  for (Gear g : activeGears) {
+    if (g.contributesToCycle && g != turnTable) {
+      int b = g.teeth / GCD(g.teeth, turnTable.teeth);
+      println("  b = " + b);
+      a = max(a,max(a,b)*min(a,b)/ GCD(a, b));
+    }
+  }
+  return a;
+}
+
+void completeDrawing()
+{
+    // paper.beginDraw();
+    // paper.clear();
+    // paper.endDraw();
+    myFrameCount = 0;
+    penRaised = true;
+    // isStarted = false;
+    int totalRotations = computeCyclicRotations();
+    println("Cyclic Rotations = " + totalRotations);
+    int framesPerRotation = int(TWO_PI / crankSpeed);
+    myLastFrame = framesPerRotation * totalRotations + 1;
+    passesPerFrame = 360;
+    isMoving = true;
+}

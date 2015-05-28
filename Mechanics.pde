@@ -391,6 +391,7 @@ class Gear implements Channel { // !! implement channel
   boolean isMoving = false; // gear's position is moving
   boolean isFixed = false; // gear does not rotate or move
   boolean selected = false;
+  boolean contributesToCycle = true;
   ArrayList<Gear> meshGears;
   ArrayList<Gear> stackGears;
   Channel itsChannel;
