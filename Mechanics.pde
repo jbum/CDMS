@@ -117,7 +117,7 @@ class ConnectingRod implements Channel {
   }  
 
   void snugTo(Gear moveable, Gear fixed) {
-    // !! find position on arc which causes moveable to be snug to fixed
+    // not relevant for connecting rods
   }
   
   void draw() {
@@ -365,7 +365,7 @@ class ArcRail implements Channel {
   }  
 
   void snugTo(Gear moveable, Gear fixed) {
-    // !! find position on arc which causes moveable to be snug to fixed
+    // !! unimplemented for arc rails
   }
 
   void draw() {
@@ -378,7 +378,7 @@ class ArcRail implements Channel {
 
 
 
-class Gear implements Channel { // !! implement channel
+class Gear implements Channel {
   int teeth;
   int setupIdx;
   float radius;
@@ -429,15 +429,8 @@ class Gear implements Channel { // !! implement channel
 
   void meshTo(Gear parent) {
     parent.meshGears.add(this);
-    // !!! Determine position on channel (r) 
-        // Note, if rail is a ray pointing away from center of parent, then it's an easy calcuation...
-            // e.g. if starting and ending points are very close to the same angle...
-            // then we find position at that angle which is correct radius away, and then figure out where that point falls on the line...
-        // otherwise, we need to intersect line (or arc) with mounting circle...
-    
-    
-    // this.mount(ch, r);
-    // !! work out phase
+
+    // work out phase for gear meshing so teeth render interlaced
     float meshAngle = atan2(y-parent.y, x-parent.x); // angle where gears are going to touch (on parent gear)
     if (meshAngle < 0)
       meshAngle += TWO_PI;
@@ -452,7 +445,6 @@ class Gear implements Channel { // !! implement channel
     parentMeshTooth -= floor(parentMeshTooth);
     
     phase = (meshAngle+PI)+(parentMeshTooth+.5)*TWO_PI/teeth;
-   
   }
   
   // Find position in our current channel which is snug to the fixed gear
