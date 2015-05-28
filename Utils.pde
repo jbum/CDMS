@@ -47,7 +47,9 @@ int GCD(int a, int b) {
    return GCD(b,a%b);
 }
 
-// Currently correct for 120->50,120  (5)   but not for 120->(94,50) - which should be 235
+// Currently seems correct for all but stacked gear layouts
+// Correct answer for layout 'C' is 20
+
 int computeCyclicRotations() {
   // Compute total turntable rotations for current drawing - needs work!
   int a = 1; // running minimum

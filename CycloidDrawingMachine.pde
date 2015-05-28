@@ -484,6 +484,8 @@ void keyPressed() {
    case ' ':
       isMoving = !isMoving;
       myLastFrame = -1;
+      println("Current cycle length: " + myFrameCount / (TWO_PI/crankSpeed));
+
       break;
    case '?':
      toggleHelp();
@@ -492,6 +494,7 @@ void keyPressed() {
      isMoving = false;
      passesPerFrame = 0;
      myLastFrame = -1;
+     println("Current cycle length: " + myFrameCount / (TWO_PI/crankSpeed));
      break;
    case '1':
      passesPerFrame = 1;
