@@ -15,10 +15,6 @@ float meshGap = 1.5/25.4*inchesToPoints; // 1 mm gap needed for meshing gears
 PFont  gFont, hFont, nFont;
 PImage titlePic;
 
-int[] gTeeth = { // currently unused
-  30, 32, 34, 36, 40, 48, 50, 58, 60, 66, 72, 74, 80, 90, 94, 98, 100, 120, 144, 150, 151
- };
-
 int setupMode = 0; // 0 = simple, 1 = moving pivot, 2 = orbiting gear, 3 = orbit gear + moving pivot
 boolean invertPen = false;
 boolean penRaised = true;
@@ -469,6 +465,14 @@ void draw()
   popMatrix();
 }
 
+boolean isShifting = false;
+
+void keyReleased() {
+  if (key == CODED && keyCode == SHIFT) {
+    isShifting = false;
+  }
+}
+
 void keyPressed() {
   switch (key) {
    case ' ':
@@ -531,6 +535,12 @@ void keyPressed() {
       direction = (keyCode == RIGHT || keyCode == DOWN? 1 : -1);
       nudge(direction);
       break;
+    case SHIFT:
+      isShifting = true;
+      break;
+    default:
+     println("KeyCode pressed: " + (0 + keyCode));
+     break;
     }
     break;
    default:
@@ -546,7 +556,18 @@ void nudge(int direction)
   }
   else if (selectGear != null) {
     int gearIdx = selectGear.setupIdx;
-    setupTeeth[setupMode][gearIdx] += direction;
+    int teeth;
+    if (isShifting) {
+      teeth = setupTeeth[setupMode][gearIdx] + direction;
+    } else {
+      teeth = findNextTeeth(setupTeeth[setupMode][gearIdx], direction);
+    }
+    if (teeth < 24) {
+      teeth = 151;
+    } else if (teeth > 151) {
+      teeth = 30;
+    }
+    setupTeeth[setupMode][gearIdx] = teeth;
     drawingSetup(setupMode, false);
     selectGear = activeGears.get(gearIdx);
     selectGear.selected = true;
