@@ -36,7 +36,8 @@ PenRig penRig;
 
 boolean animateMode = false;
 PGraphics paper;
-float paperWidth = 9*inchesToPoints;
+float paperScale = 2;
+float paperWidth = 9*inchesToPoints*paperScale;
 float crankSpeed = 0.01;  // rotation per frame  - 0.2 is nice.
 int passesPerFrame = 1;
 
@@ -412,8 +413,8 @@ void draw()
       float dy = nib.y - pCenterY*inchesToPoints;
       float a = atan2(dy, dx);
       float l = sqrt(dx*dx + dy*dy);
-      float px = paperWidth/2 + cos(a-turnTable.rotation)*l;
-      float py = paperWidth/2 + sin(a-turnTable.rotation)*l;
+      float px = paperWidth/2 + cos(a-turnTable.rotation)*l*paperScale;
+      float py = paperWidth/2 + sin(a-turnTable.rotation)*l*paperScale;
     
       paper.beginDraw();
       if (!isStarted) {
@@ -423,7 +424,7 @@ void draw()
         paper.stroke(0);
         paper.strokeJoin(ROUND);
         paper.strokeCap(ROUND);
-        paper.strokeWeight(0.5);
+        paper.strokeWeight(1);
         // paper.rect(10, 10, paperWidth-20, paperWidth-20);
         isStarted = true;
       } else if (!penRaised) {
@@ -460,7 +461,7 @@ void draw()
     pushMatrix();
       translate(pCenterX*inchesToPoints, pCenterY*inchesToPoints);
       rotate(turnTable.rotation);
-      image(paper, -paperWidth/2, -paperWidth/2);
+      image(paper, -paperWidth/(2*paperScale), -paperWidth/(2*paperScale), paperWidth/paperScale, paperWidth/paperScale);
     popMatrix();
 
     helpDraw(); // draw help if needed
@@ -492,7 +493,7 @@ void keyPressed() {
    case '7':
    case '8':
    case '9':
-      passesPerFrame = ((key-'0')-1)*10;
+      passesPerFrame = ((key-'0')-1)*20;
       isMoving = true;
       break;
    case 'a':
