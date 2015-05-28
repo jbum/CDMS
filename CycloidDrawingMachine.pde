@@ -97,7 +97,7 @@ int[][] setupTeeth = {
     {150,50,100,36,40},
     {150, 98, 100},
     {150, 98, 100},
-    {150, 98, 100},
+    {120, 100, 51},
     {150,50,100,36,40,50,75},
   };
 
@@ -406,7 +406,7 @@ void draw()
       paper.beginDraw();
       if (!isStarted) {
         paper.clear();
-        paper.smooth(4);
+        paper.smooth(8);
         paper.noFill();
         paper.stroke(0);
         paper.strokeJoin(ROUND);
