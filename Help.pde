@@ -3,7 +3,7 @@ boolean drawHelp = false;
 long    helpStartMS = millis();
 String[] helpLines = {
     "0-9 to set speed",
-    "a-d to change setups",
+    "a-g to change setups",
     "s to save the image",
     "x to erase the paper",
     "+- to change gear teeth",

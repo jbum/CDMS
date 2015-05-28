@@ -95,7 +95,11 @@ int[][] setupTeeth = {
     {120,98},
     {120,100,98,48},
     {150,50,100,36,40},
-    {150,50,100,36,40,50,75}};
+    {150, 98, 100},
+    {150, 98, 100},
+    {150, 98, 100},
+    {150,50,100,36,40,50,75},
+  };
 
 Gear addGear(int setupIdx)
 {
@@ -213,8 +217,109 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     penRig = new PenRig(4.0, (-PI/2) * (invertPen? -1 : 1), cRod, 8.4);
     break;
 
+  case 3:// 2 pen rails, variation A
+    pivotRail = rails.get(1);
+    Channel aRail = rails.get(10);
+    Channel bRail = rails.get(7);
+    turnTable = addGear(0);
+    Gear aGear = addGear(1);
+    Gear bGear = addGear(2);
 
-  case 3: // orbiting gear with rotating fulcrum (#1 and #2 combined)
+    turnTable.mount(discPoint, 0);
+    aGear.mount(aRail, 0.5);
+    aGear.snugTo(turnTable);
+    aGear.meshTo(turnTable);
+
+    bGear.mount(bRail, 0.5);
+    bGear.snugTo(turnTable);
+    bGear.meshTo(turnTable);
+
+    slidePoint = new MountPoint("SP", aGear, 0.7);
+    anchorPoint = new MountPoint("AP", bGear, 0.3);
+    cRod = new ConnectingRod(slidePoint, anchorPoint);
+
+    MountPoint slidePoint2 = new MountPoint("SP2", pivotRail, 0.8);
+    MountPoint anchorPoint2 = new MountPoint("AP2", cRod, 2.5*inchesToPoints);
+    ConnectingRod cRod2;
+    if (invertPen) 
+      cRod2 = new ConnectingRod(anchorPoint2, slidePoint2);
+    else
+     cRod2 = new ConnectingRod(slidePoint2, anchorPoint2);
+
+    penRig = new PenRig(4.0, (-PI/2) * (invertPen? -1 : 1), cRod2, 7.4);
+
+    break;
+
+  case 4: // 2 pen rails, variation B
+    pivotRail = rails.get(1);
+    aRail = rails.get(10);
+    bRail = rails.get(7);
+    turnTable = addGear(0);
+    aGear = addGear(1);
+    bGear = addGear(2);
+
+    turnTable.mount(discPoint, 0);
+    aGear.mount(aRail, 0.5);
+    aGear.snugTo(turnTable);
+    aGear.meshTo(turnTable);
+
+    bGear.mount(bRail, 0.5);
+    bGear.snugTo(turnTable);
+    bGear.meshTo(turnTable);
+
+    slidePoint = new MountPoint("SP", pivotRail, 0.7);
+    anchorPoint = new MountPoint("AP", bGear, 0.3);
+    cRod = new ConnectingRod(slidePoint, anchorPoint);
+
+    slidePoint2 = new MountPoint("SP2", aGear, 0.8);
+    anchorPoint2 = new MountPoint("AP2", cRod, 4.5*inchesToPoints);
+    if (invertPen) 
+     cRod2 = new ConnectingRod(slidePoint2, anchorPoint2);
+    else
+      cRod2 = new ConnectingRod(anchorPoint2, slidePoint2);
+
+    penRig = new PenRig(3.0, (-PI/2) * (invertPen? -1 : 1), cRod2, 6.4);
+
+    break;
+
+  case 5: // 3 pen rails
+    pivotRail = rails.get(1);
+    aRail = rails.get(10);
+    bRail = rails.get(7);
+    turnTable = addGear(0);
+    aGear = addGear(1);
+    bGear = addGear(2);
+
+    turnTable.mount(discPoint, 0);
+    aGear.mount(aRail, 0.5);
+    aGear.snugTo(turnTable);
+    aGear.meshTo(turnTable);
+
+    bGear.mount(bRail, 0.5);
+    bGear.snugTo(turnTable);
+    bGear.meshTo(turnTable);
+
+    slidePoint = new MountPoint("SP", pivotRail, 0.9);
+    anchorPoint = new MountPoint("AP", bGear, 0.4);
+    cRod = new ConnectingRod(slidePoint, anchorPoint);
+
+    slidePoint2 = new MountPoint("SP2", aGear, 0.9);
+    anchorPoint2 = new MountPoint("AP2", pivotRail, 0.1);
+    cRod2 = new ConnectingRod(slidePoint2, anchorPoint2);
+
+    MountPoint slidePoint3 = new MountPoint("SP3", cRod2, 9.0*inchesToPoints);
+    MountPoint anchorPoint3 = new MountPoint("SA3", cRod, 3.0*inchesToPoints);
+    ConnectingRod cRod3;
+    
+    if (invertPen) 
+     cRod3 = new ConnectingRod(slidePoint3, anchorPoint3);
+    else
+     cRod3 = new ConnectingRod(anchorPoint3, slidePoint3);
+
+    penRig = new PenRig(2.0, (-PI/2) * (invertPen? -1 : 1), cRod3, 2.2);
+
+    break;    
+  case 6: // orbiting gear with rotating fulcrum (#1 and #2 combined)
     crankRail = rails.get(9);
     anchorRail = rails.get(4);
     // pivotRail = rails.get(1);
@@ -382,6 +487,9 @@ void keyPressed() {
    case 'b':
    case 'c':
    case 'd':
+   case 'e':
+   case 'f':
+   case 'g':
      drawingSetup(key - 'a', false);
      break;
    case 'x':

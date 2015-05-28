@@ -28,6 +28,9 @@ class MountPoint implements Channel {
     this.x = pt.x;
     this.y = pt.y;
     println(this.typeStr + " is at " + this.x/inchesToPoints + "," + this.y/inchesToPoints);
+    if (ch instanceof Gear) {
+      println("  " + this.typeStr + " is mounted on a gear");
+    }
   }
 
   PVector getPosition() {
@@ -47,6 +50,9 @@ class MountPoint implements Channel {
   
   void draw() {
     PVector p = getPosition();
+    if (itsChannel instanceof ConnectingRod) {
+      itsChannel.draw();
+    } 
     noFill();
     stroke(180);
     strokeWeight(1);
