@@ -12,7 +12,7 @@ float pCenterX = 8.87;
 float pCenterY = 6.61;
 float toothRadius = 0.0956414*inchesToPoints;
 float meshGap = 1.5/25.4*inchesToPoints; // 1 mm gap needed for meshing gears
-PFont  gFont, hFont;
+PFont  gFont, hFont, nFont;
 PImage titlePic;
 
 int[] gTeeth = { // currently unused
@@ -51,6 +51,7 @@ void setup() {
   ellipseMode(RADIUS);
   gFont = createFont("EurostileBold", 32);
   hFont = createFont("EurostileBold", 18);
+  nFont = loadFont("Notch-Font.vlw");
   titlePic = loadImage("title.png");
   
   activeGears = new ArrayList<Gear>();

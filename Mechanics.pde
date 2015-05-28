@@ -105,6 +105,25 @@ class ConnectingRod implements Channel {
     // println("Drawing arm " + ap.x/inchesToPoints +" " + ap.y/inchesToPoints + " --> " + sp.x/inchesToPoints + " " + sp.y/inchesToPoints);
     float L = 18 * inchesToPoints;
     line(ap.x,ap.y, ap.x+cos(armAngle)*L, ap.y+sin(armAngle)*L);
+    
+    stroke(100,100,200,128);
+    fill(100,100,200);
+    strokeWeight(0.5);
+    float notchOffset = 0.73*inchesToPoints;
+    float notchIncr = 0.25 * inchesToPoints;
+    textFont(nFont);
+    textAlign(CENTER);
+    pushMatrix();
+      translate(ap.x,ap.y);
+      rotate(atan2(sp.y-ap.y,sp.x-ap.x));
+      for (int i = 0; i < 29*2; ++i) {
+        float x = notchOffset + notchIncr*i;
+        line(x, 6, x, -(6+(i % 2 == 1? 2 : 0)));
+        if (i % 2 == 1) {
+          text(""+(1+i/2),x,8);
+        }
+      }
+    popMatrix();
   }
 }
 
