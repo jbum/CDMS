@@ -288,7 +288,7 @@ class Gear implements Channel { // !! implement channel
   }
 
   PVector getPosition(float r) {
-    return new PVector(x+cos(this.rotation)*radius*r, y+sin(this.rotation)*radius*r);
+    return new PVector(x+cos(this.rotation+this.phase)*radius*r, y+sin(this.rotation+this.phase)*radius*r);
   }  
 
   void meshTo(Gear parent) {
@@ -431,8 +431,17 @@ class Gear implements Channel { // !! implement channel
         noFill();
       popMatrix();
 
-      if (showMount)
+      if (showMount) {
+        noStroke();
+        fill(192,128);
         ellipse(0, 0, 12, 12);
+
+        fill(128,128);
+        float inr = max(radius*.1,16);
+        float outr = radius-max(radius*.2,8);
+        rect(inr, -10, outr-inr, 20,12);
+      }
+        
 
     popMatrix();
   }
