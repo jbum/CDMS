@@ -6,5 +6,5 @@ Processing simulation by [Jim Bumgardner](http://krazydad.com/about.php)
 
 ![Cycloid Drawing Machine](http://i.imgur.com/q4CFLI6.png "Cycloid Drawing Machine")
 
-![Cycloid Drawing Machine](http://i.imgur.com/VXcrre2.png "Cycloid Drawing Machine")
+![Cycloid Drawing Machine](http://i.imgur.com/Dqmsxtk.png "Cycloid Drawing Machine")
 
