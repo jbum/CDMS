@@ -532,6 +532,9 @@ void mousePressed()
 
   for (Gear g : activeGears) {
       if (dist(mouseX, mouseY, g.x, g.y) <= g.radius) {
+        if (selectGear != null) {
+          selectGear.selected = false;
+        }
         g.selected = true;
         selectGear = g;
       }
