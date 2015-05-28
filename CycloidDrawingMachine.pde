@@ -5,19 +5,18 @@
 //
 
 float inchesToPoints = 72;
+float mmToInches = 1/25.4;
 
 float bWidth = 18.14;
 float bHeight = 11.51;
 float pCenterX = 8.87;
 float pCenterY = 6.61;
 float toothRadius = 0.0956414*inchesToPoints;
-float meshGap = 1.5/25.4*inchesToPoints; // 1 mm gap needed for meshing gears
+float meshGap = 1.5*mmToInches*inchesToPoints; // 1.5 mm gap needed for meshing gears
 PFont  gFont, hFont, nFont;
 PImage titlePic;
 
 int setupMode = 0; // 0 = simple, 1 = moving pivot, 2 = orbiting gear, 3 = orbit gear + moving pivot
-boolean invertPen = false;
-boolean penRaised = true;
 
 ArrayList<Gear> activeGears;
 ArrayList<MountPoint> activeMountPoints;
@@ -30,15 +29,17 @@ Channel crankRail, anchorRail, pivotRail;
 ConnectingRod cRod;
 PenRig penRig, selectPenRig = null;
 
-boolean animateMode = false;
 PGraphics paper;
 float paperScale = 2;
 float paperWidth = 9*inchesToPoints*paperScale;
 float crankSpeed = TWO_PI/720;  // rotation per frame  - 0.2 is nice.
 int passesPerFrame = 1;
 
+boolean animateMode = false;
 boolean isStarted = false;
 boolean isMoving = false;
+boolean invertPen = false;
+boolean penRaised = true;
 
 float lastPX = -1, lastPY = -1;
 int myFrameCount = 0;
