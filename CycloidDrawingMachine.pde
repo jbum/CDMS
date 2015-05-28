@@ -127,7 +127,8 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     crank.mount(crankRail,0);
     turnTable.mount(discPoint, 0);
     crank.snugTo(turnTable);
-    turnTable.meshTo(crank); 
+    crank.meshTo(turnTable);
+
     slidePoint = new MountPoint("SP", pivotRail, 0.1);
     anchorPoint = new MountPoint("AP", crank, 0.47);
     if (invertPen)
@@ -151,11 +152,11 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     fulcrumGear.mount(pivotRail, 0.29-.1);
     turnTable.mount(discPoint, 0);
 
-    anchor.snugTo(turnTable);
     crank.snugTo(turnTable);
+    anchor.snugTo(turnTable);
     fulcrumGear.snugTo(crank);    
 
-    turnTable.meshTo(crank);
+    crank.meshTo(turnTable);
     anchor.meshTo(turnTable);
     fulcrumGear.meshTo(crank);   
 
@@ -189,10 +190,8 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     crank.mount(crankRail, 0);
     turnTable.mount(discPoint, 0);
     crank.snugTo(turnTable);
-    turnTable.meshTo(crank);
+    crank.meshTo(turnTable);
   
-    // crank.meshTo(turnTable, crankRail, .52); // crank
-    // turnTable.meshTo(crank, discPoint);
     anchorTable.mount(anchorRail, .315);
     anchorTable.snugTo(crank);
     anchorTable.meshTo(crank);
@@ -240,10 +239,8 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     crank.mount(crankRail, 0);
     turnTable.mount(discPoint, 0);
     crank.snugTo(turnTable);
-    turnTable.meshTo(crank);
+    crank.meshTo(turnTable);
   
-    // crank.meshTo(turnTable, crankRail, .52); // crank
-    // turnTable.meshTo(crank, discPoint);
     anchorTable.mount(anchorRail, .315);
     anchorTable.snugTo(crank);
     anchorTable.meshTo(crank);
@@ -290,7 +287,7 @@ void draw()
   for (int p = 0; p < passesPerFrame; ++p) {
     if (isMoving) {
       myFrameCount += 1;
-      crank.crank(myFrameCount*crankSpeed); // this recursive gear moves all the gears based on their relationships.
+      turnTable.crank(myFrameCount*crankSpeed); // The turntable is always the root of the propulsion chain, since it is the only required gear.
 
       // work out coords on unrotated paper
       PVector nib = penRig.getPosition();
