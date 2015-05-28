@@ -28,7 +28,7 @@ MountPoint slidePoint, anchorPoint, discPoint, selectMountPoint = null;
 Channel crankRail, anchorRail, pivotRail;
 
 ConnectingRod cRod;
-PenRig penRig;
+PenRig penRig, selectPenRig = null;
 
 boolean animateMode = false;
 PGraphics paper;
@@ -524,7 +524,7 @@ void keyPressed() {
   case '-':
   case '=':
     int direction = (key == '+' || key == '='? 1 : -1);
-    nudge(direction);
+    nudge(direction, keyCode);
     break;
   case CODED:
     switch (keyCode) {
@@ -532,8 +532,8 @@ void keyPressed() {
     case DOWN:
     case LEFT:
     case RIGHT:
-      direction = (keyCode == RIGHT || keyCode == DOWN? 1 : -1);
-      nudge(direction);
+      direction = (keyCode == RIGHT || keyCode == UP? 1 : -1);
+      nudge(direction, keyCode);
       break;
     case SHIFT:
       isShifting = true;
@@ -549,10 +549,13 @@ void keyPressed() {
   }
 }
 
-void nudge(int direction)
+void nudge(int direction, int kc)
 {
   if (selectMountPoint != null) {
     selectMountPoint.nudge(direction);
+  }
+  else if (selectPenRig != null) {
+    selectPenRig.nudge(direction, kc);
   }
   else if (selectGear != null) {
     int gearIdx = selectGear.setupIdx;
@@ -585,23 +588,29 @@ void mousePressed()
     selectMountPoint.selected = false;
     selectMountPoint = null;
   }
-
-  // !!! Check for selected pen mounts, rods, extensions...
+  if (selectPenRig != null) {
+    selectPenRig.selected = false;
+    selectPenRig = null;
+  }
+  // Check for selected pen mounts, rods, extensions...
 
   // Nothing selected? Check gears
   for (MountPoint mp : activeMountPoints) {
-    PVector p = mp.getPosition();
-    if (dist(mouseX, mouseY, p.x, p.y) <= mp.radius) {
+    if (mp.isClicked(mouseX, mouseY)) {
       mp.doSelect();
+      return;
     }
   }
-  if (selectMountPoint != null)
+  
+  if (penRig.isClicked(mouseX, mouseY)) {
+    penRig.doSelect();
     return;
+  }
 
   for (Gear g : activeGears) {
-      if (dist(mouseX, mouseY, g.x, g.y) <= g.radius) {
+    if (g.isClicked(mouseX, mouseY))
         g.doSelect();
-      }
+        // don't return - we want to reselect stacked gears
   }
 }
 

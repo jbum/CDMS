@@ -59,6 +59,11 @@ class MountPoint implements Channel {
     selectMountPoint = this;
   }
 
+  boolean isClicked(int mx, int my) {
+    PVector p = this.getPosition();
+    return dist(mx, my, p.x, p.y) <= this.radius;
+  }
+
   PVector getPosition() {
     return getPosition(0.0);
   }
@@ -163,9 +168,9 @@ class ConnectingRod implements Channel {
 }
 
 class PenRig {
-  float itsMountLength;
   float len;
   float angle;
+  boolean selected = false;
   ConnectingRod itsRod;
   MountPoint itsMP;
   
@@ -173,9 +178,9 @@ class PenRig {
     this.len = len * inchesToPoints;
     this.angle = angle;
     this.itsRod = itsRod;
-    this.itsMountLength = ml * inchesToPoints;
+    float mlp = ml * inchesToPoints;
 
-    itsMP = addMP("EX", itsRod, this.itsMountLength);
+    itsMP = addMP("EX", itsRod, mlp);
 
     PVector ap = itsMP.getPosition();
     PVector ep = this.getPosition();
@@ -185,6 +190,29 @@ class PenRig {
   PVector getPosition() {
     PVector ap = itsMP.getPosition();
     return new PVector(ap.x + cos(itsRod.armAngle + this.angle)*this.len, ap.y + sin(itsRod.armAngle + this.angle)*this.len);
+  }
+  
+  boolean isClicked(int mx, int my) 
+  {
+    PVector ap = itsMP.getPosition();
+    PVector ep = this.getPosition();
+
+    return (mx > min(ap.x,ep.x) && mx < max(ap.x,ep.x) &&
+            my > min(ap.y,ep.y) && mx < max(ap.y,ep.y) &&
+           abs(atan2(my-ep.y,mx-ep.x) - atan2(ap.y-ep.y,ap.x-ep.x)) < radians(5)); 
+  }
+  
+  void doSelect() {
+    selected = true;
+    selectPenRig = this;
+  }
+  
+  void nudge(int direction, int kc) {
+    if (kc == RIGHT || kc == LEFT) {
+      this.angle += radians(5)*direction;
+    } else {
+      this.len += 0.125 * inchesToPoints * direction;
+    }
   }
   
   void draw() {
@@ -198,7 +226,10 @@ class PenRig {
     ap.y = ep.y + sin(a)*d;
 
     noFill();
-    stroke(200,150,150,128);
+    if (selected)
+      stroke(255,100,100,192);
+    else
+      stroke(200,150,150,128);
     strokeWeight(.33*inchesToPoints);
     line(ap.x, ap.y, ep.x, ep.y);
   
@@ -376,6 +407,11 @@ class Gear implements Channel { // !! implement channel
     meshGears = new ArrayList<Gear>();
     stackGears = new ArrayList<Gear>();
   }
+
+  boolean isClicked(int mx, int my) {
+    return dist(mx, my, this.x, this.y) <= this.radius;
+  }
+
 
   void doSelect() {
     if (selectGear != null) {
