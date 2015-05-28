@@ -517,7 +517,8 @@ void keyPressed() {
     break;
   case '+':
   case '-':
-    int direction = (key == '+'? 1 : -1);
+  case '=':
+    int direction = (key == '+' || key == '='? 1 : -1);
     nudge(direction);
     break;
   case CODED:
