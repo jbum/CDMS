@@ -72,6 +72,7 @@ class ConnectingRod implements Channel {
     
     return new PVector(ap.x + cos(armAngle)*r, ap.y + sin(armAngle)*r);
   }  
+
   void snugTo(Gear moveable, Gear fixed) {
     // !! find position on arc which causes moveable to be snug to fixed
   }
@@ -123,8 +124,6 @@ class PenRig {
     line(ap.x, ap.y, ep.x, ep.y);
   }
 }
-
-
 
 class LineRail implements Channel {
   float x1,y1, x2,y2;

@@ -57,7 +57,7 @@ void setup() {
   rails = new ArrayList<Channel>();
 
   // Board Setup
-
+  
   paper = createGraphics(int(paperWidth), int(paperWidth));
   paper.beginDraw();
   paper.clear();
@@ -394,13 +394,14 @@ void keyPressed() {
     break;
   case 's':
     PGraphics tmp = createGraphics(paper.width, paper.height);
+    String sf = saveFilename();
     tmp.beginDraw();
     tmp.smooth();
     tmp.background(255);
     tmp.image(paper, 0, 0);
     tmp.endDraw();
-    tmp.save("untitled.png");
-    println("Frame saved as untitled.png");
+    tmp.save(sf);
+    println("Frame saved as " + sf);
     break;
   case '+':
   case '-':
