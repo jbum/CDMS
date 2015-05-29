@@ -25,18 +25,30 @@ int GCD(int a, int b) {
    return GCD(b,a%b);
 }
 
-// Currently seems correct for all but stacked gear layouts
-// Correct answer for layout 'C' is 20
 
+// Compute total turntable rotations for current drawing - needs work!
 int computeCyclicRotations() {
-  // Compute total turntable rotations for current drawing - needs work!
   int a = 1; // running minimum
+  int idx = 0;
   for (Gear g : activeGears) {
     if (g.contributesToCycle && g != turnTable) {
-      int b = g.teeth / GCD(g.teeth, turnTable.teeth);
-      println(g.teeth  + "  b = " + b);
+      int ratioNom = turnTable.teeth;
+      int ratioDenom = g.teeth;
+      if (g.isMoving) { // cheesy hack for our orbit configuration, assumes anchorTable,anchorHub,orbit configuration
+        ratioNom = turnTable.teeth * (activeGears.get(idx-1).teeth + g.teeth);
+        ratioDenom = activeGears.get(idx-2).teeth * g.teeth;
+        int gcd = GCD(ratioNom, ratioDenom);
+        ratioNom /= gcd;
+        ratioDenom /= gcd;
+      }
+      int gcd = GCD(ratioNom, ratioDenom);
+      int ratioNomR = ratioNom / gcd;
+      int ratioDenomR = ratioDenom / gcd;
+      int b = min(ratioNomR,ratioDenomR) / GCD(ratioNomR, ratioDenomR);
+      println(g.teeth  + " " + ratioNom + "/" + ratioDenom + "  b = " + b);
       a = max(a,max(a,b)*min(a,b)/ GCD(a, b));
     }
+    idx += 1;
   }
   return a;
 }

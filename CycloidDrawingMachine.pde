@@ -196,7 +196,7 @@ void drawingSetup(int setupIdx, boolean resetPaper)
   
     // These are optional
     Gear  anchorTable = addGear(2,"AnchorTable");
-    Gear  anchorHub = addGear(3,"AnchorHub");
+    Gear  anchorHub = addGear(3,"AnchorHub"); anchorHub.contributesToCycle = false;
     Gear  orbit = addGear(4,"Orbit");
   
     orbit.isMoving = true;
@@ -343,7 +343,7 @@ void drawingSetup(int setupIdx, boolean resetPaper)
   
     // These are optional
     anchorTable = addGear(2,"AnchorTable");
-    anchorHub = addGear(3,"AnchorHub");
+    anchorHub = addGear(3,"AnchorHub");                    anchorHub.contributesToCycle = false;
     orbit = addGear(4,"Orbit");
   
     Gear  fulcrumCrank = addGear(5,"FulcrumCrank");        fulcrumCrank.contributesToCycle = false;       
