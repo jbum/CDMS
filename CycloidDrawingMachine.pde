@@ -22,8 +22,9 @@ ArrayList<Gear> activeGears;
 ArrayList<MountPoint> activeMountPoints;
 ArrayList<Channel> rails;
 
-Gear crank, turnTable, selectGear = null;
-MountPoint slidePoint, anchorPoint, discPoint, selectMountPoint = null;
+Selectable selectedObject = null;
+Gear crank, turnTable;
+MountPoint slidePoint, anchorPoint, discPoint;
 Channel crankRail, anchorRail, pivotRail;
 
 ConnectingRod cRod;
@@ -570,66 +571,42 @@ void keyPressed() {
 
 void nudge(int direction, int kc)
 {
-  if (selectMountPoint != null) {
-    selectMountPoint.nudge(direction);
+  if (selectedObject != null) {
+    selectedObject.nudge(direction, kc);
   }
-  else if (selectPenRig != null) {
-    selectPenRig.nudge(direction, kc);
-  }
-  else if (selectGear != null) {
-    int gearIdx = selectGear.setupIdx;
-    int teeth;
-    if (isShifting) {
-      teeth = setupTeeth[setupMode][gearIdx] + direction;
-    } else {
-      teeth = findNextTeeth(setupTeeth[setupMode][gearIdx], direction);
-    }
-    if (teeth < 24) {
-      teeth = 151;
-    } else if (teeth > 151) {
-      teeth = 30;
-    }
-    setupTeeth[setupMode][gearIdx] = teeth;
-    drawingSetup(setupMode, false);
-    selectGear = activeGears.get(gearIdx);
-    selectGear.selected = true;
+}
+
+void deselect() {
+  if (selectedObject != null) {
+    selectedObject.unselect();
+    selectedObject = null;
   }
 }
 
 void mousePressed() 
 {
-  // Unselect stuff
-  if (selectGear != null) {
-    selectGear.selected = false;
-    selectGear = null;
-  }
-  if (selectMountPoint != null) {
-    selectMountPoint.selected = false;
-    selectMountPoint = null;
-  }
-  if (selectPenRig != null) {
-    selectPenRig.selected = false;
-    selectPenRig = null;
-  }
-  // Check for selected pen mounts, rods, extensions...
+  deselect();
 
-  // Nothing selected? Check gears
   for (MountPoint mp : activeMountPoints) {
     if (mp.isClicked(mouseX, mouseY)) {
-      mp.doSelect();
+      mp.select();
+      selectedObject= mp;
       return;
     }
   }
   
   if (penRig.isClicked(mouseX, mouseY)) {
-    penRig.doSelect();
+    penRig.select();
+    selectedObject= penRig;
     return;
   }
 
   for (Gear g : activeGears) {
-    if (g.isClicked(mouseX, mouseY))
-        g.doSelect();
-        // don't return - we want to reselect stacked gears
+    if (g.isClicked(mouseX, mouseY)) {
+        deselect();
+        g.select();
+        selectedObject = g;
+    }
   }
 }
 

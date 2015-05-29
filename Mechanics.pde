@@ -5,7 +5,13 @@ interface Channel {
   void snugTo(Gear moveable, Gear fixed); // position moveable gear on this channel so it is snug to fixed gear, not needed for all channels
 }
 
-class MountPoint implements Channel {
+interface Selectable {
+  void select();
+  void unselect();
+  void nudge(int direction, int keycode);
+}
+
+class MountPoint implements Channel, Selectable {
   Channel itsChannel = null;
   float itsMountRatio;
   float x, y, radius;
@@ -38,7 +44,7 @@ class MountPoint implements Channel {
     }
   }
   
-  void nudge(int direction) {
+  void nudge(int direction, int keycode) {
     float amt, mn=0, mx=1;
     if (itsChannel instanceof ConnectingRod) {
       amt = 0.125 * inchesToPoints;
@@ -51,12 +57,12 @@ class MountPoint implements Channel {
     itsMountRatio = constrain(itsMountRatio, mn, mx);
   }
   
-  void doSelect() {
-    if (selectMountPoint != null) {
-      selectMountPoint.selected = false;
-    }
+  void unselect() {
+    selected = false;
+  }
+  
+  void select() {
     selected = true;
-    selectMountPoint = this;
   }
 
   boolean isClicked(int mx, int my) {
@@ -167,7 +173,7 @@ class ConnectingRod implements Channel {
   }
 }
 
-class PenRig {
+class PenRig implements Selectable {
   float len;
   float angle;
   boolean selected = false;
@@ -203,11 +209,14 @@ class PenRig {
            abs(atan2(my-ep.y,mx-ep.x) - atan2(ap.y-ep.y,ap.x-ep.x)) < radians(10)); 
   }
   
-  void doSelect() {
-    selected = true;
-    selectPenRig = this;
+  void unselect() {
+    selected = false;
   }
   
+  void select() {
+    selected = true;
+  }
+
   void nudge(int direction, int kc) {
     if (kc == RIGHT || kc == LEFT) {
       this.angle += radians(5)*direction;
@@ -379,7 +388,7 @@ class ArcRail implements Channel {
 
 
 
-class Gear implements Channel {
+class Gear implements Channel, Selectable {
   int teeth;
   int setupIdx;
   float radius;
@@ -414,15 +423,32 @@ class Gear implements Channel {
     return dist(mx, my, this.x, this.y) <= this.radius;
   }
 
-
-  void doSelect() {
-    if (selectGear != null) {
-      selectGear.selected = false;
-    }
-    selected = true;
-    selectGear = this;
+  void unselect() {
+    selected = false;
   }
-
+  
+  void select() {
+    selected = true;
+  }
+  
+  void nudge(int direction, int keycode) {
+    int gearIdx = this.setupIdx;
+    int teeth;
+    if (isShifting) {
+      teeth = setupTeeth[setupMode][gearIdx] + direction;
+    } else {
+      teeth = findNextTeeth(setupTeeth[setupMode][gearIdx], direction);
+    }
+    if (teeth < 24) {
+      teeth = 151;
+    } else if (teeth > 151) {
+      teeth = 30;
+    }
+    setupTeeth[setupMode][gearIdx] = teeth;
+    drawingSetup(setupMode, false);
+    selectedObject = activeGears.get(gearIdx);
+    selectedObject.select();
+  }
 
   PVector getPosition(float r) {
     return new PVector(x+cos(this.rotation+this.phase)*radius*r, y+sin(this.rotation+this.phase)*radius*r);
