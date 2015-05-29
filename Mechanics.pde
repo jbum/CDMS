@@ -247,6 +247,12 @@ class PenRig implements Selectable {
   {
     PVector ap = itsMP.getPosition();
     PVector ep = this.getPosition();
+
+    float a = atan2(ap.y-ep.y,ap.x-ep.x);
+    float d = 6*inchesToPoints;
+    ap.x = ep.x + cos(a)*d;
+    ap.y = ep.y + sin(a)*d;
+
     println("mx,my, ap, ep" + mx + " " + my + " " +ap.x + " " +ap.y + "   " +ep.x + " " +ep.y);
     // mx,my, ap, ep522 293 546.1399 168.98767   492.651 451.97696
     int gr = 5;

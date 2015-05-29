@@ -40,7 +40,6 @@ int passesPerFrame = 1;
 boolean animateMode = false;
 boolean isStarted = false;
 boolean isMoving = false;
-boolean invertPen = false;
 boolean penRaised = true;
 
 float lastPX = -1, lastPY = -1;
@@ -165,12 +164,9 @@ void drawingSetup(int setupIdx, boolean resetPaper)
 
     slidePoint = addMP("SP", pivotRail, 0.1);
     anchorPoint = addMP("AP", crank, 0.47);
-    if (invertPen)
-      cRod = addCR(anchorPoint, slidePoint);
-    else
-      cRod = addCR(slidePoint, anchorPoint);
+    cRod = addCR(slidePoint, anchorPoint);
     
-    penRig = new PenRig(2.0, PI/2 * (invertPen? -1 : 1), cRod, 7.4);
+    penRig = new PenRig(2.0, PI/2, cRod, 7.4);
     break;
 
   case 1: // moving fulcrum & separate crank
@@ -196,11 +192,8 @@ void drawingSetup(int setupIdx, boolean resetPaper)
 
     slidePoint = addMP("SP", fulcrumGear, 0.5);
     anchorPoint = addMP("AP", anchor, 0.47);
-    if (invertPen)
-      cRod = addCR(anchorPoint, slidePoint);
-    else
-      cRod = addCR(slidePoint, anchorPoint);
-    penRig = new PenRig(3.0, PI/2 * (invertPen? -1 : 1), cRod, 7.4);
+    cRod = addCR(slidePoint, anchorPoint);
+    penRig = new PenRig(3.0, PI/2, cRod, 7.4);
 
     break;
     
@@ -240,11 +233,8 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     // Setup Pen
     slidePoint = addMP("SP", pivotRail, 1-0.1027);
     anchorPoint = addMP("AP", orbit, 0.47);
-    if (invertPen)
-      cRod = addCR(anchorPoint, slidePoint);
-    else
-      cRod = addCR(slidePoint, anchorPoint);
-    penRig = new PenRig(4.0, (-PI/2) * (invertPen? -1 : 1), cRod, 8.4);
+    cRod = addCR(slidePoint, anchorPoint);
+    penRig = new PenRig(4.0, (-PI/2), cRod, 8.4);
     break;
 
   case 3:// 2 pen rails, variation A
@@ -270,13 +260,9 @@ void drawingSetup(int setupIdx, boolean resetPaper)
 
     MountPoint slidePoint2 = addMP("SP2", pivotRail, 0.8);
     MountPoint anchorPoint2 = addMP("AP2", cRod, 2.5*inchesToPoints);
-    ConnectingRod cRod2;
-    if (invertPen) 
-      cRod2 = addCR(anchorPoint2, slidePoint2);
-    else
-     cRod2 = addCR(slidePoint2, anchorPoint2);
+    ConnectingRod cRod2 = addCR(slidePoint2, anchorPoint2);
 
-    penRig = new PenRig(4.0, (-PI/2) * (invertPen? -1 : 1), cRod2, 7.4);
+    penRig = new PenRig(4.0, (-PI/2), cRod2, 7.4);
 
     break;
 
@@ -303,12 +289,9 @@ void drawingSetup(int setupIdx, boolean resetPaper)
 
     slidePoint2 = addMP("SP2", aGear, 0.8);
     anchorPoint2 = addMP("AP2", cRod, 4.5*inchesToPoints);
-    if (invertPen) 
-     cRod2 = addCR(slidePoint2, anchorPoint2);
-    else
-      cRod2 = addCR(anchorPoint2, slidePoint2);
+    cRod2 = addCR(anchorPoint2, slidePoint2);
 
-    penRig = new PenRig(3.0, (-PI/2) * (invertPen? -1 : 1), cRod2, 6.4);
+    penRig = new PenRig(3.0, (-PI/2), cRod2, 6.4);
 
     break;
 
@@ -339,14 +322,9 @@ void drawingSetup(int setupIdx, boolean resetPaper)
 
     MountPoint slidePoint3 = addMP("SP3", cRod2, 9.0*inchesToPoints);
     MountPoint anchorPoint3 = addMP("SA3", cRod, 3.0*inchesToPoints);
-    ConnectingRod cRod3;
-    
-    if (invertPen) 
-     cRod3 = addCR(slidePoint3, anchorPoint3);
-    else
-     cRod3 = addCR(anchorPoint3, slidePoint3);
+    ConnectingRod cRod3 = addCR(anchorPoint3, slidePoint3);
 
-    penRig = new PenRig(2.0, (-PI/2) * (invertPen? -1 : 1), cRod3, 2.2);
+    penRig = new PenRig(2.0, (-PI/2), cRod3, 2.2);
 
     break;    
   case 6: // orbiting gear with rotating fulcrum (#1 and #2 combined)
@@ -399,11 +377,8 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     // Setup Pen
     slidePoint = addMP("SP", fulcrumGear, 0.5);
     anchorPoint = addMP("AP", orbit, 0.47);
-    if (invertPen)
-      cRod = addCR(anchorPoint, slidePoint);
-    else
-      cRod = addCR(slidePoint, anchorPoint);
-    penRig = new PenRig(4.0, (-PI/2) * (invertPen? -1 : 1), cRod, 8.4);
+    cRod = addCR(slidePoint, anchorPoint);
+    penRig = new PenRig(4.0, (-PI/2), cRod, 8.4);
     break;
 
   }
