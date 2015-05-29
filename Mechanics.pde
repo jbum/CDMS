@@ -17,6 +17,7 @@ static final int kMPSlideRadius = 20;
 class MountPoint implements Channel, Selectable {
   Channel itsChannel = null;
   float itsMountRatio;
+  int    setupIdx;
   float x, y, radius=kMPDefaultRadius;
   String typeStr = "MP";
   boolean isFixed = false;
@@ -27,15 +28,17 @@ class MountPoint implements Channel, Selectable {
     this.itsChannel = null;
     this.itsMountRatio = 0;
     this.isFixed = true;
+    this.setupIdx = -1; // fixed
     this.x = x*inchesToPoints;
     this.y = y*inchesToPoints;
     println(this.typeStr + " is at " + this.x/inchesToPoints + "," + this.y/inchesToPoints);
   }
 
-  MountPoint(String typeStr, Channel ch, float mr) {
+  MountPoint(String typeStr, Channel ch, float mr, int setupIdx) {
     this.typeStr = typeStr;
     this.itsChannel = ch;
     this.itsMountRatio = mr;
+    this.setupIdx = setupIdx;
     PVector pt = ch.getPosition(mr);
     this.x = pt.x;
     this.y = pt.y;
@@ -56,6 +59,15 @@ class MountPoint implements Channel, Selectable {
     amt *= direction;
     itsMountRatio += amt;
     itsMountRatio = constrain(itsMountRatio, mn, mx);
+    if (setupIdx >= 0) {
+      setupMounts[setupMode][setupIdx] = itsMountRatio;
+    }
+  }
+  
+  float getDistance(float v1, float v2) {
+    PVector src = itsChannel.getPosition(v1);
+    PVector dst = itsChannel.getPosition(v2);
+    return dist(src.x, src.y, dst.x, dst.y);
   }
   
   void unselect() {
@@ -225,13 +237,11 @@ class PenRig implements Selectable {
   ConnectingRod itsRod;
   MountPoint itsMP;
   
-  PenRig(float len, float angle, ConnectingRod itsRod, float ml) {
+  PenRig(float len, float angle, MountPoint itsMP) {
     this.len = len * inchesToPoints;
     this.angle = angle;
-    this.itsRod = itsRod;
-    float mlp = ml * inchesToPoints;
-
-    itsMP = addMP("EX", itsRod, mlp);
+    this.itsRod = (ConnectingRod) itsMP.itsChannel;
+    this.itsMP = itsMP;
 
     PVector ap = itsMP.getPosition();
     PVector ep = this.getPosition();

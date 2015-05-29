@@ -25,7 +25,7 @@ ArrayList<ConnectingRod> activeConnectingRods;
 
 Selectable selectedObject = null;
 Gear crank, turnTable;
-MountPoint slidePoint, anchorPoint, discPoint;
+MountPoint slidePoint, anchorPoint, discPoint, penMount;
 Channel crankRail, anchorRail, pivotRail;
 
 ConnectingRod cRod;
@@ -71,9 +71,7 @@ void setup() {
   // Board Setup
   
   paper = createGraphics(int(paperWidth), int(paperWidth));
-  paper.beginDraw();
-  paper.clear();
-  paper.endDraw();
+  clearPaper();
 
   discPoint = new MountPoint("DP", pCenterX, pCenterY);
   
@@ -114,6 +112,17 @@ int[][] setupTeeth = {
     {150,50,100,36,40,50,75},
   };
 
+float[][] setupMounts = { // mount point measurements
+  {0.1, 0.47, 7.4*inchesToPoints},
+  {0.5, 0.47, 7.4*inchesToPoints},
+  {1-0.1027, 0.47, 8.4*inchesToPoints},
+  {0.7, 0.3, 0.8, 2.5*inchesToPoints, 7.4*inchesToPoints},
+  {0.7, 0.3, 0.8, 4.5*inchesToPoints, 6.4*inchesToPoints},
+  {0.9, 0.4, 0.9, 0.1, 9.0*inchesToPoints, 3.0*inchesToPoints, 2.2*inchesToPoints},
+  {0.5, 0.47, 8.4*inchesToPoints},
+};
+
+
 Gear addGear(int setupIdx, String nom)
 {
   Gear g = new Gear(setupTeeth[setupMode][setupIdx], setupIdx, nom);
@@ -121,9 +130,9 @@ Gear addGear(int setupIdx, String nom)
   return g;
 }
 
-MountPoint addMP(String nom, Channel chan, float attach)
+MountPoint addMP(int setupIdx, String nom, Channel chan)
 {
-  MountPoint mp = new MountPoint(nom, chan, attach);
+  MountPoint mp = new MountPoint(nom, chan, setupMounts[setupMode][setupIdx], setupIdx);
   activeMountPoints.add(mp);
   return mp;
 }
@@ -162,11 +171,12 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     crank.snugTo(turnTable);
     crank.meshTo(turnTable);
 
-    slidePoint = addMP("SP", pivotRail, 0.1);
-    anchorPoint = addMP("AP", crank, 0.47);
+    slidePoint = addMP(0, "SP", pivotRail);
+    anchorPoint = addMP(1, "AP", crank);
     cRod = addCR(slidePoint, anchorPoint);
-    
-    penRig = new PenRig(2.0, PI/2, cRod, 7.4);
+
+    penMount = addMP(2, "EX", cRod);
+    penRig = new PenRig(2.0, PI/2, penMount);
     break;
 
   case 1: // moving fulcrum & separate crank
@@ -190,10 +200,11 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     anchor.meshTo(turnTable);
     fulcrumGear.meshTo(crank);   
 
-    slidePoint = addMP("SP", fulcrumGear, 0.5);
-    anchorPoint = addMP("AP", anchor, 0.47);
+    slidePoint = addMP(0, "SP", fulcrumGear);
+    anchorPoint = addMP(1, "AP", anchor);
     cRod = addCR(slidePoint, anchorPoint);
-    penRig = new PenRig(3.0, PI/2, cRod, 7.4);
+    penMount = addMP(2, "EX", cRod);
+    penRig = new PenRig(3.0, PI/2, penMount);
 
     break;
     
@@ -231,10 +242,11 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     orbit.meshTo(anchorHub);
   
     // Setup Pen
-    slidePoint = addMP("SP", pivotRail, 1-0.1027);
-    anchorPoint = addMP("AP", orbit, 0.47);
+    slidePoint = addMP(0, "SP", pivotRail);
+    anchorPoint = addMP(1, "AP", orbit);
     cRod = addCR(slidePoint, anchorPoint);
-    penRig = new PenRig(4.0, (-PI/2), cRod, 8.4);
+    penMount = addMP(2, "EX", cRod);
+    penRig = new PenRig(4.0, (-PI/2), penMount);
     break;
 
   case 3:// 2 pen rails, variation A
@@ -254,15 +266,15 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     bGear.snugTo(turnTable);
     bGear.meshTo(turnTable);
 
-    slidePoint = addMP("SP", aGear, 0.7);
-    anchorPoint = addMP("AP", bGear, 0.3);
+    slidePoint = addMP(0, "SP", aGear);
+    anchorPoint = addMP(1, "AP", bGear);
     cRod = addCR(slidePoint, anchorPoint);
 
-    MountPoint slidePoint2 = addMP("SP2", pivotRail, 0.8);
-    MountPoint anchorPoint2 = addMP("AP2", cRod, 2.5*inchesToPoints);
+    MountPoint slidePoint2 = addMP(2, "SP2", pivotRail);
+    MountPoint anchorPoint2 = addMP(3, "AP2", cRod);
     ConnectingRod cRod2 = addCR(slidePoint2, anchorPoint2);
-
-    penRig = new PenRig(4.0, (-PI/2), cRod2, 7.4);
+    penMount = addMP(4,"EX",cRod2);
+    penRig = new PenRig(4.0, (-PI/2), penMount);
 
     break;
 
@@ -283,15 +295,17 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     bGear.snugTo(turnTable);
     bGear.meshTo(turnTable);
 
-    slidePoint = addMP("SP", pivotRail, 0.7);
-    anchorPoint = addMP("AP", bGear, 0.3);
+    slidePoint = addMP(0, "SP", pivotRail);
+    anchorPoint = addMP(1, "AP", bGear);
     cRod = addCR(slidePoint, anchorPoint);
 
-    slidePoint2 = addMP("SP2", aGear, 0.8);
-    anchorPoint2 = addMP("AP2", cRod, 4.5*inchesToPoints);
+    slidePoint2 = addMP(2, "SP2", aGear);
+    anchorPoint2 = addMP(3, "AP2", cRod);
     cRod2 = addCR(anchorPoint2, slidePoint2);
 
-    penRig = new PenRig(3.0, (-PI/2), cRod2, 6.4);
+    penMount = addMP(4, "EX", cRod2);
+
+    penRig = new PenRig(3.0, (-PI/2), penMount);
 
     break;
 
@@ -312,19 +326,20 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     bGear.snugTo(turnTable);
     bGear.meshTo(turnTable);
 
-    slidePoint = addMP("SP", pivotRail, 0.9);
-    anchorPoint = addMP("AP", bGear, 0.4);
+    slidePoint = addMP(0, "SP", pivotRail);
+    anchorPoint = addMP(1, "AP", bGear);
     cRod = addCR(slidePoint, anchorPoint);
 
-    slidePoint2 = addMP("SP2", aGear, 0.9);
-    anchorPoint2 = addMP("AP2", pivotRail, 0.1);
+    slidePoint2 = addMP(2, "SP2", aGear);
+    anchorPoint2 = addMP(3, "AP2", pivotRail);
     cRod2 = addCR(slidePoint2, anchorPoint2);
 
-    MountPoint slidePoint3 = addMP("SP3", cRod2, 9.0*inchesToPoints);
-    MountPoint anchorPoint3 = addMP("SA3", cRod, 3.0*inchesToPoints);
+    MountPoint slidePoint3 = addMP(4, "SP3", cRod2);
+    MountPoint anchorPoint3 = addMP(5, "SA3", cRod);
     ConnectingRod cRod3 = addCR(anchorPoint3, slidePoint3);
-
-    penRig = new PenRig(2.0, (-PI/2), cRod3, 2.2);
+    penMount = addMP(6, "EX", cRod3);
+    
+    penRig = new PenRig(2.0, (-PI/2), penMount);
 
     break;    
   case 6: // orbiting gear with rotating fulcrum (#1 and #2 combined)
@@ -375,10 +390,12 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     fulcrumGear.meshTo(fulcrumCrank);   
 
     // Setup Pen
-    slidePoint = addMP("SP", fulcrumGear, 0.5);
-    anchorPoint = addMP("AP", orbit, 0.47);
+    slidePoint = addMP(0, "SP", fulcrumGear);
+    anchorPoint = addMP(1, "AP", orbit);
     cRod = addCR(slidePoint, anchorPoint);
-    penRig = new PenRig(4.0, (-PI/2), cRod, 8.4);
+    penMount = addMP(2, "EX", cRod);
+    penRig = new PenRig(4.0, (-PI/2), penMount);
+
     break;
 
   }
@@ -430,6 +447,7 @@ void draw()
         myLastFrame = -1;
         passesPerFrame = 1;
         isMoving = false;
+        nextTween();
         break;
       }
     }
@@ -518,9 +536,7 @@ void keyPressed() {
      drawingSetup(key - 'a', false);
      break;
    case 'x':
-     paper.beginDraw();
-     paper.clear();
-     paper.endDraw();
+     clearPaper();
      break;
   case 'p':
     // Swap pen mounts - need visual feedback
@@ -534,6 +550,12 @@ void keyPressed() {
     break;
   case 'M':
     measureGears();
+    break;
+  case 'T':
+    saveTweenSnapshot();
+    break;
+  case 'S':
+    beginTweening();
     break;
   case '[':
     advancePenColor(-1);

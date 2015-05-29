@@ -6,19 +6,26 @@ String saveFilename()
 
 void saveSnapshot()
 {
-    PGraphics tmp = createGraphics(paper.width, paper.height);
     String sf = saveFilename();
+    saveSnapshotAs(sf);
+    println("Frame saved as " + sf);
+    // Feedback
+    for (Gear g : activeGears) {
+      println("Gear " + g.nom + " has " + g.teeth + " teeth");
+    }
+}
+
+void saveSnapshotAs(String sf)
+{
+    PGraphics tmp = createGraphics(paper.width, paper.height);
     tmp.beginDraw();
     tmp.smooth();
     tmp.background(255);
     tmp.image(paper, 0, 0);
     tmp.endDraw();
     tmp.save(sf);
-    println("Frame saved as " + sf);
-    for (Gear g : activeGears) {
-      println("Gear " + g.nom + " has " + g.teeth + " teeth");
-    }
 }
+
 
 int GCD(int a, int b) {
    if (b==0) return a;
@@ -42,7 +49,7 @@ int computeCyclicRotations() {
         ratioDenom /= gcd;
       }
       int b = min(ratioNom,ratioDenom) / GCD(ratioNom, ratioDenom);
-      println(g.teeth  + " " + ratioNom + "/" + ratioDenom + "  b = " + b);
+      // println(g.teeth  + " " + ratioNom + "/" + ratioDenom + "  b = " + b);
       a = max(a,max(a,b)*min(a,b)/ GCD(a, b));
     }
     idx += 1;
@@ -60,6 +67,13 @@ void completeDrawing()
     myLastFrame = framesPerRotation * totalRotations + 1;
     passesPerFrame = 360*2;
     isMoving = true;
+}
+
+void clearPaper() 
+{
+     paper.beginDraw();
+     paper.clear();
+     paper.endDraw();
 }
 
 void measureGears() {
