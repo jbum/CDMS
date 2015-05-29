@@ -13,6 +13,7 @@ String[] helpLines = {
     "~       draw entire cycle",
     "T       save tween endpoint",
     "S       animate to endpoint (slow!)",
+    "H       toggle Hi-res",
 };
 
 void helpDraw() 

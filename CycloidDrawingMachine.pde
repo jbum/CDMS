@@ -32,10 +32,11 @@ ConnectingRod cRod;
 PenRig penRig, selectPenRig = null;
 
 PGraphics paper;
-float paperScale = 2;
+float paperScale = 1;
 float paperWidth = 9*inchesToPoints*paperScale;
 float crankSpeed = TWO_PI/720;  // rotation per frame  - 0.2 is nice.
 int passesPerFrame = 1;
+boolean hiresMode = false;
 
 boolean animateMode = false;
 boolean isStarted = false;
@@ -535,6 +536,7 @@ void keyPressed() {
      deselect();
      drawingSetup(key - 'a', false);
      break;
+   case 'X':
    case 'x':
      clearPaper();
      break;
@@ -556,6 +558,9 @@ void keyPressed() {
     break;
   case 'S':
     beginTweening();
+    break;
+  case 'H':
+    toggleHiresmode();
     break;
   case '[':
     advancePenColor(-1);

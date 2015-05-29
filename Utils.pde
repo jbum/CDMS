@@ -138,3 +138,25 @@ void advancePenWidth(int direction) {
   println("Pen width set to " + penWidth);
 }
 
+
+void toggleHiresmode()
+{
+  hiresMode = !hiresMode;
+  PGraphics oldPaper = paper; 
+  if (hiresMode) {
+    paperScale = 2;
+    println("Hires ON - saved frames are twice the size, drawings are 4 times as slow");
+  }
+  else {
+    paperScale = 1;
+    println("Hires OFF");
+  }
+  paperWidth = 9*inchesToPoints*paperScale;
+  paper = createGraphics(int(paperWidth), int(paperWidth));
+  clearPaper();
+  paper.beginDraw();
+  paper.image(oldPaper,0,0,paper.width,paper.height);
+  paper.endDraw();
+  penRaised = true;
+}
+
