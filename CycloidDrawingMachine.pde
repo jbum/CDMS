@@ -96,7 +96,7 @@ void setup() {
 int[][] setupTeeth = {
     {120,98},
     {120,100,98,48},
-    {150,50,100,36,40},
+    {150,51,100,36,40},
     {150, 98, 100},
     {150, 98, 100},
     {120, 100, 51},
@@ -535,6 +535,9 @@ void keyPressed() {
   case '~':
   case '`':
     completeDrawing();
+    break;
+  case 'M':
+    measureGears();
     break;
   case '+':
   case '-':

@@ -196,10 +196,11 @@ class PenRig {
   {
     PVector ap = itsMP.getPosition();
     PVector ep = this.getPosition();
-
+    println("mx,my, ap, ep" + mx + " " + my + " " +ap.x + " " +ap.y + "   " +ep.x + " " +ep.y);
+    // mx,my, ap, ep522 293 546.1399 168.98767   492.651 451.97696
     return (mx > min(ap.x,ep.x) && mx < max(ap.x,ep.x) &&
-            my > min(ap.y,ep.y) && mx < max(ap.y,ep.y) &&
-           abs(atan2(my-ep.y,mx-ep.x) - atan2(ap.y-ep.y,ap.x-ep.x)) < radians(5)); 
+            my > min(ap.y,ep.y) && my < max(ap.y,ep.y) &&
+           abs(atan2(my-ep.y,mx-ep.x) - atan2(ap.y-ep.y,ap.x-ep.x)) < radians(10)); 
   }
   
   void doSelect() {
