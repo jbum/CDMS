@@ -13,7 +13,7 @@ float tweenSteps;
 float tweenIdx;
 boolean isTweening = false;
 int lastTweenSnapshot = -1;
-int tweenFrameCtr = 0;
+int tweenFrameCtr = 0; // this does not reset, so you can save multiple sequences from one session
 DecimalFormat df = new DecimalFormat("#0000");
 
 void saveTweenSnapshot()

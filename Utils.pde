@@ -57,6 +57,17 @@ int computeCyclicRotations() {
   return a;
 }
 
+void invertConnectingRod()
+{
+  if (selectedObject instanceof ConnectingRod) {
+    ((ConnectingRod) selectedObject).nudge(1, UP);
+  } else if (activeConnectingRods.size() == 1) {
+    activeConnectingRods.get(0).nudge(1, UP);
+  } else {
+    println("Please select a connecting rod to invert");
+  }
+}
+
 void completeDrawing()
 {
     myFrameCount = 0;

@@ -4,11 +4,15 @@ long    helpStartMS = millis();
 String[] helpLines = {
     "0-9     set drawing speed",
     "a-g     change setups",
-    "s       save the image",
+    "arrows  change gears and mount points",
     "x       erase the paper",
     "[ ]     change pen color",
     "< >     change pen width",
-    "arrows  change gears and mount points",
+    "/       invert connecting rod",
+    "s       save the image",
+    "~       draw entire cycle",
+    "T       save tween endpoint",
+    "S       animate to endpoint (slow!)",
 };
 
 void helpDraw() 

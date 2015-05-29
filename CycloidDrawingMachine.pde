@@ -569,6 +569,9 @@ void keyPressed() {
   case '>':
     advancePenWidth(1);
     break;
+  case '/':
+    invertConnectingRod();
+    break;
   case '+':
   case '-':
   case '=':
