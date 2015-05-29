@@ -80,3 +80,36 @@ void measureGears() {
   }
 
 }
+
+void nudge(int direction, int kc)
+{
+  if (selectedObject != null) {
+    selectedObject.nudge(direction, kc);
+  }
+}
+
+void deselect() {
+  if (selectedObject != null) {
+    selectedObject.unselect();
+    selectedObject = null;
+  }
+}
+
+void advancePenColor(int direction) {
+  penColorIdx = (penColorIdx + penColors.length + direction) % penColors.length;
+  penColor = penColors[penColorIdx]; 
+  paper.beginDraw();
+  paper.stroke(penColor);
+  paper.endDraw();
+  println("Pen color changed");
+}
+
+void advancePenWidth(int direction) {
+  penWidthIdx = (penWidthIdx + penWidths.length + direction) % penWidths.length;
+  penWidth = penWidths[penWidthIdx]; 
+  paper.beginDraw();
+  paper.strokeWeight(penWidth);
+  paper.endDraw();
+  println("Pen width set to " + penWidth);
+}
+

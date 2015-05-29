@@ -50,11 +50,15 @@ color[] penColors = {color(0,0,0), color(128,0,0), color(0,128,0), color(0,0,128
 color penColor = color(0,0,0);
 int penColorIdx = 0;
 
+float[] penWidths = {0.5, 1, 2, 3, 5, 7};
+float penWidth = 1;
+int penWidthIdx = 1;
+
 void setup() {
   size(int(bWidth*inchesToPoints)+100, int(bHeight*inchesToPoints));
   ellipseMode(RADIUS);
   gFont = createFont("EurostileBold", 32);
-  hFont = createFont("EurostileBold", 18);
+  hFont = createFont("Courier", 18);
   nFont = loadFont("Notch-Font.vlw");
   titlePic = loadImage("title.png");
   
@@ -426,7 +430,7 @@ void draw()
         paper.stroke(penColor);
         paper.strokeJoin(ROUND);
         paper.strokeCap(ROUND);
-        paper.strokeWeight(1);
+        paper.strokeWeight(penWidth);
         // paper.rect(10, 10, paperWidth-20, paperWidth-20);
         isStarted = true;
       } else if (!penRaised) {
@@ -550,6 +554,12 @@ void keyPressed() {
   case ']':
     advancePenColor(1);
     break;
+  case '<':
+    advancePenWidth(-1);
+    break;
+  case '>':
+    advancePenWidth(1);
+    break;
   case '+':
   case '-':
   case '=':
@@ -576,20 +586,6 @@ void keyPressed() {
    default:
      println("Key pressed: " + (0 + key));
      break;
-  }
-}
-
-void nudge(int direction, int kc)
-{
-  if (selectedObject != null) {
-    selectedObject.nudge(direction, kc);
-  }
-}
-
-void deselect() {
-  if (selectedObject != null) {
-    selectedObject.unselect();
-    selectedObject = null;
   }
 }
 
@@ -620,11 +616,4 @@ void mousePressed()
   }
 }
 
-void advancePenColor(int direction) {
-  penColorIdx = (penColorIdx + penColors.length + direction) % penColors.length;
-  penColor = penColors[penColorIdx]; 
-  paper.beginDraw();
-  paper.stroke(penColor);
-  paper.endDraw();
-}
 

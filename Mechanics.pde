@@ -262,6 +262,10 @@ class PenRig implements Selectable {
         line(-nibRad,0,nibRad,0);
         line(0,nibRad,0,-nibRad);
         
+        fill(penColor);
+        noStroke();
+        ellipse(0,0,penWidth/2, penWidth/2);
+        
         stroke(255);
         fill(255);
         for (int i = 0; i < 15; ++i) {

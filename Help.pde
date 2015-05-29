@@ -2,12 +2,13 @@ boolean startupAlert = true;
 boolean drawHelp = false;
 long    helpStartMS = millis();
 String[] helpLines = {
-    "0-9 to set speed",
-    "a-g to change setups",
-    "s to save the image",
-    "x to erase the paper",
-    "[ ] to change pen color",
-    "Arrow keys to change gear teeth or nudge mount points",
+    "0-9     set drawing speed",
+    "a-g     change setups",
+    "s       save the image",
+    "x       erase the paper",
+    "[ ]     change pen color",
+    "< >     change pen width",
+    "arrows  change gears and mount points",
 };
 
 void helpDraw() 
@@ -20,11 +21,11 @@ void helpDraw()
     }
     noStroke();
 
-    float hx = width-250;
-    float hy = height-22*helpLines.length;
+    float hx = width-450;
+    float hy = 30;
     
     fill(255,alpha*alpha*192);
-    rect(hx-1, hy-18, width-hx, height-(hy-18));
+    rect(hx-1, 0, width-hx, hy + 22*helpLines.length);
 
     fill(100, alpha*alpha*255);
 
@@ -43,7 +44,7 @@ void helpDraw()
     textFont(hFont);
     textAlign(LEFT);
     fill(200, alpha*alpha*255);
-    text("Press ? for Help", width-150, height-25);
+    text("Press ? for Help", width-200, 30);
   }
 }
 
