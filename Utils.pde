@@ -26,7 +26,7 @@ int GCD(int a, int b) {
 }
 
 
-// Compute total turntable rotations for current drawing - needs work!
+// Compute total turntable rotations for current drawing
 int computeCyclicRotations() {
   int a = 1; // running minimum
   int idx = 0;
@@ -34,17 +34,14 @@ int computeCyclicRotations() {
     if (g.contributesToCycle && g != turnTable) {
       int ratioNom = turnTable.teeth;
       int ratioDenom = g.teeth;
-      if (g.isMoving) { // cheesy hack for our orbit configuration, assumes anchorTable,anchorHub,orbit configuration
+      if (g.isMoving) { // ! cheesy hack for our orbit configuration, assumes anchorTable,anchorHub,orbit configuration
         ratioNom = turnTable.teeth * (activeGears.get(idx-1).teeth + g.teeth);
         ratioDenom = activeGears.get(idx-2).teeth * g.teeth;
         int gcd = GCD(ratioNom, ratioDenom);
         ratioNom /= gcd;
         ratioDenom /= gcd;
       }
-      int gcd = GCD(ratioNom, ratioDenom);
-      int ratioNomR = ratioNom / gcd;
-      int ratioDenomR = ratioDenom / gcd;
-      int b = min(ratioNomR,ratioDenomR) / GCD(ratioNomR, ratioDenomR);
+      int b = min(ratioNom,ratioDenom) / GCD(ratioNom, ratioDenom);
       println(g.teeth  + " " + ratioNom + "/" + ratioDenom + "  b = " + b);
       a = max(a,max(a,b)*min(a,b)/ GCD(a, b));
     }
@@ -55,14 +52,10 @@ int computeCyclicRotations() {
 
 void completeDrawing()
 {
-    // paper.beginDraw();
-    // paper.clear();
-    // paper.endDraw();
     myFrameCount = 0;
     penRaised = true;
-    // isStarted = false;
     int totalRotations = computeCyclicRotations();
-    println("Cyclic Rotations = " + totalRotations);
+    println("Total turntable cycles needed = " + totalRotations);
     int framesPerRotation = int(TWO_PI / crankSpeed);
     myLastFrame = framesPerRotation * totalRotations + 1;
     passesPerFrame = 360*2;
