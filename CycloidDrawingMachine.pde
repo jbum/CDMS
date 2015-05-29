@@ -46,7 +46,7 @@ float lastPX = -1, lastPY = -1;
 int myFrameCount = 0;
 int myLastFrame = -1;
 
-color[] penColors = {color(0,0,0), color(128,0,0), color(0,128,0), color(0,0,128), color(128,0,128), color(128,128,0), color(0,128,128)};
+color[] penColors = {color(0,0,0), color(192,0,0), color(0,128,0), color(0,0,128), color(192,0,192)};
 color penColor = color(0,0,0);
 int penColorIdx = 0;
 

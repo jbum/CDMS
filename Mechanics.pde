@@ -297,26 +297,26 @@ class PenRig implements Selectable {
   
     float nibRad = 8;
   
-    if (passesPerFrame < 50) {
-      float notchOffset = (605/300.0)*inchesToPoints;
-      float notchIncr = 0.25 * inchesToPoints;
-      stroke(255);
-      strokeWeight(0.5);
-      textFont(nFont);
-      textAlign(CENTER);
-      pushMatrix();
-        translate(ep.x,ep.y);
-        rotate(atan2(ap.y-ep.y,ap.x-ep.x));
-        fill(255);
-        ellipse(0,0,nibRad,nibRad);
-        noFill();
-        stroke(192);
-        line(-nibRad,0,nibRad,0);
-        line(0,nibRad,0,-nibRad);
-        
+    strokeWeight(0.5);
+    pushMatrix();
+      translate(ep.x,ep.y);
+      rotate(atan2(ap.y-ep.y,ap.x-ep.x));
+      fill(255);
+      ellipse(0,0,nibRad,nibRad);
+      noFill();
+      stroke(192);
+      line(-nibRad,0,nibRad,0);
+      line(0,nibRad,0,-nibRad);
+      
+      if (passesPerFrame < 50) {
+        textFont(nFont);
+        textAlign(CENTER);
         fill(penColor);
         noStroke();
         ellipse(0,0,penWidth/2, penWidth/2);
+
+        float notchOffset = (605/300.0)*inchesToPoints;
+        float notchIncr = 0.25 * inchesToPoints;
         
         stroke(255);
         fill(255);
@@ -327,8 +327,8 @@ class PenRig implements Selectable {
             text(""+(8-i/2),x,8);
           }
         }
+      }
       popMatrix();
-    }
 
 
   }
