@@ -387,6 +387,12 @@ class ArcRail implements Channel {
 }
 
 
+int[] rgTeeth = { // regular gears
+  30, 32, 34, 36, 40, 48, 50, 58, 60, 66, 72, 74, 80, 90, 94, 98, 100, 108, 
+ };
+int [] ttTeeth = { // turntable gears
+   120, 144, 150, 151
+};
 
 class Gear implements Channel, Selectable {
   int teeth;
@@ -449,6 +455,28 @@ class Gear implements Channel, Selectable {
     selectedObject = activeGears.get(gearIdx);
     selectedObject.select();
   }
+
+  
+  int findNextTeeth(int teeth, int direction) {
+    println("Finding next tooth: " + teeth + " dir " + direction);
+    int[] gTeeth = (this == turnTable? ttTeeth : rgTeeth);
+
+    if (direction == 1) {
+        for (int i = 0; i < gTeeth.length; ++i) {
+          if (gTeeth[i] > teeth)
+            return gTeeth[i];
+        }
+        return gTeeth[0];
+    } else {
+        for (int i = gTeeth.length-1; i >= 0; --i) {
+          if (gTeeth[i] < teeth)
+            return gTeeth[i];
+        }
+        return gTeeth[gTeeth.length-1];
+    }
+  }
+  
+
 
   PVector getPosition(float r) {
     return new PVector(x+cos(this.rotation+this.phase)*radius*r, y+sin(this.rotation+this.phase)*radius*r);
