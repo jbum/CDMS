@@ -11,10 +11,13 @@ interface Selectable {
   void nudge(int direction, int keycode);
 }
 
+static final int kMPDefaultRadius = 12;
+static final int kMPSlideRadius = 20;
+
 class MountPoint implements Channel, Selectable {
   Channel itsChannel = null;
   float itsMountRatio;
-  float x, y, radius;
+  float x, y, radius=kMPDefaultRadius;
   String typeStr = "MP";
   boolean isFixed = false;
   boolean selected = false;
@@ -24,7 +27,6 @@ class MountPoint implements Channel, Selectable {
     this.itsChannel = null;
     this.itsMountRatio = 0;
     this.isFixed = true;
-    this.radius = 12;
     this.x = x*inchesToPoints;
     this.y = y*inchesToPoints;
     println(this.typeStr + " is at " + this.x/inchesToPoints + "," + this.y/inchesToPoints);
@@ -37,7 +39,6 @@ class MountPoint implements Channel, Selectable {
     PVector pt = ch.getPosition(mr);
     this.x = pt.x;
     this.y = pt.y;
-    this.radius = 12;
     println(this.typeStr + " is at " + this.x/inchesToPoints + "," + this.y/inchesToPoints);
     if (ch instanceof Gear) {
       println("  " + this.typeStr + " is mounted on a gear");
@@ -102,15 +103,16 @@ class MountPoint implements Channel, Selectable {
   }
 }
 
-class ConnectingRod implements Channel {
+class ConnectingRod implements Channel, Selectable {
   MountPoint itsSlide = null;
   MountPoint itsAnchor = null;
   float armAngle = 0;
+  boolean selected=false;
 
   ConnectingRod(MountPoint itsSlide, MountPoint itsAnchor)
   {
     this.itsSlide = itsSlide;
-    itsSlide.radius = 20;
+    itsSlide.radius = kMPSlideRadius;
     this.itsAnchor = itsAnchor;
   }
   
@@ -125,10 +127,51 @@ class ConnectingRod implements Channel {
   void snugTo(Gear moveable, Gear fixed) {
     // not relevant for connecting rods
   }
+
+  void unselect() {
+    selected = false;
+  }
+  
+  void select() {
+    selected = true;
+  }
+  
+  void nudge(int direction, int kc) {
+    if (kc == UP || kc == DOWN) {
+      MountPoint tmp = itsAnchor;
+      itsAnchor = itsSlide;
+      itsSlide = tmp;
+      itsAnchor.radius = kMPDefaultRadius;
+      itsSlide.radius = kMPSlideRadius;
+      if (penRig.itsRod == this) {
+        penRig.angle += PI;
+        if (penRig.angle > TWO_PI)
+          penRig.angle -= TWO_PI;
+      }
+    }
+    else {
+      if (penRig.itsRod == this) {
+        penRig.itsMP.nudge(direction, kc);
+      }
+    }
+  }
+
+  boolean isClicked(int mx, int my) 
+  {
+    PVector ap = itsAnchor.getPosition();
+    PVector sp = itsSlide.getPosition();
+
+    // mx,my, ap, ep522 293 546.1399 168.98767   492.651 451.97696
+    int gr = 5;
+    return (mx > min(ap.x-gr,sp.x-gr) && mx < max(ap.x+gr,sp.x+gr) &&
+            my > min(ap.y-gr,sp.y-gr) && my < max(ap.y+gr,sp.y+gr) &&
+           abs(atan2(my-sp.y,mx-sp.x) - atan2(ap.y-sp.y,ap.x-sp.x)) < radians(10)); 
+  }
   
   void draw() {
     PVector ap = itsAnchor.getPosition();
     PVector sp = itsSlide.getPosition();
+
 
     itsSlide.draw();
     itsAnchor.draw();
@@ -143,7 +186,9 @@ class ConnectingRod implements Channel {
 //    popMatrix();
     
     noFill();
-    stroke(200,200,200,128);
+    int shade = selected? 100 : 200;
+    int alfa = selected? 192 : 128;
+    stroke(shade, alfa);
     strokeWeight(.33*inchesToPoints);
     armAngle = atan2(sp.y - ap.y, sp.x - ap.x);
     // println("Drawing arm " + ap.x/inchesToPoints +" " + ap.y/inchesToPoints + " --> " + sp.x/inchesToPoints + " " + sp.y/inchesToPoints);
@@ -204,8 +249,9 @@ class PenRig implements Selectable {
     PVector ep = this.getPosition();
     println("mx,my, ap, ep" + mx + " " + my + " " +ap.x + " " +ap.y + "   " +ep.x + " " +ep.y);
     // mx,my, ap, ep522 293 546.1399 168.98767   492.651 451.97696
-    return (mx > min(ap.x,ep.x) && mx < max(ap.x,ep.x) &&
-            my > min(ap.y,ep.y) && my < max(ap.y,ep.y) &&
+    int gr = 5;
+    return (mx > min(ap.x-gr,ep.x-gr) && mx < max(ap.x+gr,ep.x+gr) &&
+            my > min(ap.y-gr,ep.y-gr) && my < max(ap.y+gr,ep.y+gr) &&
            abs(atan2(my-ep.y,mx-ep.x) - atan2(ap.y-ep.y,ap.x-ep.x)) < radians(10)); 
   }
   
