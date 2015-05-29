@@ -37,7 +37,7 @@ void beginTweening()
     }
   }
   println("Max travel length: " + maxTravelLength/inchesToPoints);
-  tweenSteps = int(maxTravelLength)*100/72;
+  tweenSteps = int(maxTravelLength); // One frame for each point of travel.
   println("Movie will be " + tweenSteps + " frames and will take " + tweenSteps/30.0 + " at 30 fps");
   tweenIdx = 0;
   isTweening = true;
