@@ -6,6 +6,7 @@ String[] helpLines = {
     "a-g to change setups",
     "s to save the image",
     "x to erase the paper",
+    "[ ] to change pen color",
     "Arrow keys to change gear teeth or nudge mount points",
 };
 

@@ -46,6 +46,10 @@ float lastPX = -1, lastPY = -1;
 int myFrameCount = 0;
 int myLastFrame = -1;
 
+color[] penColors = {color(0,0,0), color(128,0,0), color(0,128,0), color(0,0,128), color(128,0,128), color(128,128,0), color(0,128,128)};
+color penColor = color(0,0,0);
+int penColorIdx = 0;
+
 void setup() {
   size(int(bWidth*inchesToPoints)+100, int(bHeight*inchesToPoints));
   ellipseMode(RADIUS);
@@ -419,7 +423,7 @@ void draw()
         paper.clear();
         paper.smooth(8);
         paper.noFill();
-        paper.stroke(0);
+        paper.stroke(penColor);
         paper.strokeJoin(ROUND);
         paper.strokeCap(ROUND);
         paper.strokeWeight(1);
@@ -540,6 +544,12 @@ void keyPressed() {
   case 'M':
     measureGears();
     break;
+  case '[':
+    advancePenColor(-1);
+    break;
+  case ']':
+    advancePenColor(1);
+    break;
   case '+':
   case '-':
   case '=':
@@ -608,5 +618,13 @@ void mousePressed()
         selectedObject = g;
     }
   }
+}
+
+void advancePenColor(int direction) {
+  penColorIdx = (penColorIdx + penColors.length + direction) % penColors.length;
+  penColor = penColors[penColorIdx]; 
+  paper.beginDraw();
+  paper.stroke(penColor);
+  paper.endDraw();
 }
 

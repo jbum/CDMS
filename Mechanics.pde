@@ -143,7 +143,7 @@ class ConnectingRod implements Channel {
 //    popMatrix();
     
     noFill();
-    stroke(100,200,100,128);
+    stroke(200,200,200,128);
     strokeWeight(.33*inchesToPoints);
     armAngle = atan2(sp.y - ap.y, sp.x - ap.x);
     // println("Drawing arm " + ap.x/inchesToPoints +" " + ap.y/inchesToPoints + " --> " + sp.x/inchesToPoints + " " + sp.y/inchesToPoints);
@@ -151,8 +151,8 @@ class ConnectingRod implements Channel {
     line(ap.x,ap.y, ap.x+cos(armAngle)*L, ap.y+sin(armAngle)*L);
     
     if (passesPerFrame < 50) {
-      stroke(100,100,200,128);
-      fill(100,100,200);
+      stroke(100,100,100,128);
+      fill(100,100,100);
       strokeWeight(0.5);
       float notchOffset = 0.73*inchesToPoints;
       float notchIncr = 0.25 * inchesToPoints;
@@ -237,28 +237,33 @@ class PenRig implements Selectable {
 
     noFill();
     if (selected)
-      stroke(255,100,100,192);
+      stroke(penColor,128);
     else
-      stroke(200,150,150,128);
+      stroke(penColor,64);
     strokeWeight(.33*inchesToPoints);
     line(ap.x, ap.y, ep.x, ep.y);
+  
+    float nibRad = 8;
   
     if (passesPerFrame < 50) {
       float notchOffset = (605/300.0)*inchesToPoints;
       float notchIncr = 0.25 * inchesToPoints;
-      stroke(100,100,200,128);
+      stroke(255);
       strokeWeight(0.5);
       textFont(nFont);
       textAlign(CENTER);
       pushMatrix();
         translate(ep.x,ep.y);
         rotate(atan2(ap.y-ep.y,ap.x-ep.x));
+        fill(255);
+        ellipse(0,0,nibRad,nibRad);
         noFill();
-        ellipse(0,0,4,4);
-        line(-4,0,4,0);
-        line(0,4,0,-4);
+        stroke(192);
+        line(-nibRad,0,nibRad,0);
+        line(0,nibRad,0,-nibRad);
         
-        fill(100,100,200);
+        stroke(255);
+        fill(255);
         for (int i = 0; i < 15; ++i) {
           float x = notchOffset + notchIncr*i;
           line(x, 6, x, -(6+(i % 2 == 0? 2 : 0)));
