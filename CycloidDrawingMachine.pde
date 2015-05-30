@@ -574,6 +574,7 @@ void keyPressed() {
     beginTweening();
     break;
   case 'R':
+  case 'r':
     isRecording = !isRecording;
     println("Recording is " + (isRecording? "ON" : "OFF"));
     break;

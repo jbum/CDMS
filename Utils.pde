@@ -40,6 +40,7 @@ String getSetupString()
     ss += setupMounts[setupMode][i];
   }
   ss += "\n";
+  ss += "Pen ext: " + penRig.len/inchesToPoints + "\nPen ang: " + penRig.angle + "\n";
   return ss;
 }
 
