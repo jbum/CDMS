@@ -20,6 +20,7 @@ void saveTweenSnapshot()
 {
   System.arraycopy( setupMounts[setupMode], 0, tweenDest, 0, setupMounts[setupMode].length );
   lastTweenSnapshot = setupMode;
+  println("\n" + getSetupString());
   println("Snapshot saved, now position pen/arms to the starting point and hit S");
 }
 

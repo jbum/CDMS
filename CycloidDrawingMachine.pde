@@ -572,7 +572,7 @@ void keyPressed() {
     break;
   case 'R':
     recordMode = !recordMode;
-    println(("Recording is " + (recordMode? "ON" : "OFF"));
+    println("Recording is " + (recordMode? "ON" : "OFF"));
     break;
   case 'H':
     toggleHiresmode();

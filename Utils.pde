@@ -26,6 +26,23 @@ void saveSnapshotAs(String sf)
     tmp.save(sf);
 }
 
+String getSetupString()
+{
+  String ss = "Setup " + ((char) (65+ setupMode)) + "\n";
+  ss += "Gear Teeth: ";
+  for (int i = 0; i < setupTeeth[setupMode].length; ++i) {
+    if (i > 0)  ss += ", ";
+    ss += setupTeeth[setupMode][i];
+  }
+  ss += "\nMount Points: ";
+  for (int i = 0; i < setupMounts[setupMode].length; ++i) {
+    if (i > 0)  ss += ", ";
+    ss += setupMounts[setupMode][i];
+  }
+  ss += "\n";
+  return ss;
+}
+
 int GCD(int a, int b) {
    if (b==0) return a;
    return GCD(b,a%b);
