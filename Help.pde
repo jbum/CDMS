@@ -49,7 +49,7 @@ void helpDraw()
     textFont(hFont);
     textAlign(LEFT);
     fill(200, alpha*alpha*255);
-    text("Press ? for Help", width-200*seventyTwoScale, 30*seventyTwoScale);
+    text("Press SPACE to draw, ? for Help", width-400*seventyTwoScale, 30*seventyTwoScale);
   }
 }
 
