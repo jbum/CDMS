@@ -4,8 +4,8 @@
 // Processing simulation by Jim Bumgardner    krazydad.com
 //
 
-float inchesToPoints = 72;
-float mmToInches = 1/25.4;
+static final float inchesToPoints = 72; // controls display scaling
+static final float mmToInches = 1/25.4;
 
 float bWidth = 18.14;
 float bHeight = 11.51;

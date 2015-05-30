@@ -11,9 +11,12 @@ interface Selectable {
   void nudge(int direction, int keycode);
 }
 
-static final int kMPDefaultRadius = 12;
-static final int kMPSlideRadius = 20;
-
+static final float kMPDefaultRadius = inchesToPoints * 12/72.0;
+static final float kMPSlideRadius = inchesToPoints * 20/72.0;
+static final float kGearMountRadius = inchesToPoints * 12/72.0;
+static final float kGearNotchCorner = inchesToPoints * 12/72.0;
+static final float kGearNotchWidth = inchesToPoints * 16.5/72.0;
+ 
 class MountPoint implements Channel, Selectable {
   Channel itsChannel = null;
   float itsMountRatio;
@@ -305,7 +308,7 @@ class PenRig implements Selectable {
     strokeWeight(.33*inchesToPoints);
     line(ap.x, ap.y, ep.x, ep.y);
   
-    float nibRad = 8;
+    float nibRad = inchesToPoints * 0.111;
   
     strokeWeight(0.5);
     pushMatrix();
@@ -688,12 +691,12 @@ class Gear implements Channel, Selectable {
       if (showMount) {
         noStroke();
         fill(192,128);
-        ellipse(0, 0, 12, 12);
+        ellipse(0, 0, kGearMountRadius, kGearMountRadius);
 
         fill(192,128);
         float inr = max(radius*.1,16);
         float outr = radius-max(radius*.1,8);
-        rect(inr, -8.25, outr-inr, 16.5,12);
+        rect(inr, -kGearNotchWidth/2, outr-inr, kGearNotchWidth,kGearNotchCorner);    
       }
         
 
