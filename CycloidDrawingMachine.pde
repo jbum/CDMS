@@ -68,6 +68,7 @@ void setup() {
   nFont = createFont("Helvetica-Narrow", int(9*seventyTwoScale)); // loadFont("Notch-Font.vlw");
   titlePic = loadImage(darkTheme? "title_dark.png" : "title.png");
   
+  gearInit();
   activeGears = new ArrayList<Gear>();
   activeMountPoints = new ArrayList<MountPoint>();
   activeConnectingRods = new ArrayList<ConnectingRod>();
@@ -111,23 +112,22 @@ void setup() {
 int[][] setupTeeth = {
     {120,98},
     {120,100,98,48},
-    {150,51,100,36,40},
+    {150,50,100,36,40},
     {150, 98, 100},
     {150, 98, 100},
-    {120, 100, 51},
-    {150,50,100,36,40,50,75},
+    {120, 100, 50},
+    {150,50,100,36,40,50,60},
   };
 
 float[][] setupMounts = { // mount point measurements
-  {0.1, 0.47, 7.4*inchesToPoints},
-  {0.5, 0.47, 7.4*inchesToPoints},
-  {1-0.1027, 0.47, 8.4*inchesToPoints},
-  {0.7, 0.3, 0.8, 2.5*inchesToPoints, 7.4*inchesToPoints},
-  {0.7, 0.3, 0.8, 4.5*inchesToPoints, 6.4*inchesToPoints},
-  {0.9, 0.4, 0.9, 0.1, 9.0*inchesToPoints, 3.0*inchesToPoints, 2.2*inchesToPoints},
-  {0.5, 0.47, 8.4*inchesToPoints},
+  {0.1, 3, 7.4*inchesToPoints},
+  {1.5, 3, 7.4*inchesToPoints},
+  {1-0.1027, 1.5, 8.4*inchesToPoints},
+  {2, 4, 0.8, 2.5*inchesToPoints, 7.4*inchesToPoints},
+  {0.7, 2, 4, 4.5*inchesToPoints, 6.4*inchesToPoints},
+  {0.9, 1.5, 4, 0.1, 9.0*inchesToPoints, 3.0*inchesToPoints, 2.2*inchesToPoints},
+  {2.5, 1, 8.4*inchesToPoints},
 };
-
 
 Gear addGear(int setupIdx, String nom)
 {
@@ -477,8 +477,6 @@ void draw()
   
     // discPoint.draw();
   
-    textFont(gFont);
-    textAlign(CENTER);
     for (Gear g : activeGears) {
       g.draw();
     }

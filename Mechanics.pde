@@ -14,9 +14,13 @@ interface Selectable {
 static final float kMPDefaultRadius = inchesToPoints * 12/72.0;
 static final float kMPSlideRadius = inchesToPoints * 20/72.0;
 static final float kGearMountRadius = inchesToPoints * 12/72.0;
-static final float kGearNotchCorner = inchesToPoints * 12/72.0;
-static final float kGearNotchWidth = inchesToPoints * 16.5/72.0;
- 
+// static final float kGearNotchWidth = inchesToPoints * 16.5/72.0;
+static final float kGearNotchWidth = 5 * mmToInches * inchesToPoints;
+static final float kGearNotchHeightMaj = 5 * mmToInches * inchesToPoints;
+static final float kGearNotchHeightMin = 3.5 * mmToInches * inchesToPoints;
+static final float kGearLabelStart = 0.5*inchesToPoints;
+static final float kGearLabelIncr = 0.5*inchesToPoints;
+
 class MountPoint implements Channel, Selectable {
   Channel itsChannel = null;
   float itsMountRatio;
@@ -56,6 +60,10 @@ class MountPoint implements Channel, Selectable {
     if (itsChannel instanceof ConnectingRod) {
       amt = 0.125 * inchesToPoints;
       mx = 15 * inchesToPoints;
+    } else if (itsChannel instanceof Gear) {
+      amt = 0.125;
+      mn = 0.75;
+      mx = ((Gear) itsChannel).radius/(kGearLabelIncr) - 1;
     } else {
       amt = 0.01;
     }
@@ -460,6 +468,45 @@ int [] ttTeeth = { // turntable gears
    120, 144, 150, 151
 };
 
+class GearSetup {
+  float notchStart;
+  float notchEnd;
+  int nbrLabels;
+  int teeth;
+  GearSetup(int teeth, float notchStart, float notchEnd, int nbrLabels)
+  {
+    this.teeth = teeth;
+    this.notchStart = notchStart * inchesToPoints;
+    this.notchEnd = notchEnd * inchesToPoints;
+    this.nbrLabels = nbrLabels;
+  } 
+}
+
+HashMap<Integer, GearSetup> gearSetups;
+
+void gearInit()
+{
+  gearSetups = new HashMap<Integer, GearSetup>();
+  gearSetups.put(108, new GearSetup(108, 0.4375,  3.0,     6));
+  gearSetups.put(100, new GearSetup(100, 0.40625, 2.8125,  5));
+  gearSetups.put( 98, new GearSetup( 98, 0.4375,  2.8125,  5));
+  gearSetups.put( 94, new GearSetup( 94, 0.375,   2.625,   5));
+  gearSetups.put( 90, new GearSetup( 90, 0.40625, 2.5,     5));
+  gearSetups.put( 80, new GearSetup( 80, 0.40625, 2.25,    4));
+  gearSetups.put( 74, new GearSetup( 74, 0.40625, 2.031,   4));
+  gearSetups.put( 72, new GearSetup( 72, 0.375,   2.0,     4));
+  gearSetups.put( 66, new GearSetup( 66, 0.375,   1.6875,  3));
+  gearSetups.put( 60, new GearSetup( 60, 0.3125,  1.625,   3));
+  gearSetups.put( 58, new GearSetup( 58, 0.3125,  1.5625,  3));
+  gearSetups.put( 50, new GearSetup( 50, 0.25,    1.3125,  2));      // notch joins axel
+  gearSetups.put( 48, new GearSetup( 48, 0.375,   1.25,    2));
+  gearSetups.put( 40, new GearSetup( 40, 0.25,    1.0,     2));      // notch joins axel
+  gearSetups.put( 36, new GearSetup( 36, 0.3125,  0.968,   1));
+  gearSetups.put( 34, new GearSetup( 34, 0.3125,  0.84375, 1));
+  gearSetups.put( 32, new GearSetup( 32, 0.3125,  0.8125,  1));
+  gearSetups.put( 30, new GearSetup( 30, 0.3125,  0.75,    1));
+}
+
 class Gear implements Channel, Selectable {
   int teeth;
   int setupIdx;
@@ -478,8 +525,10 @@ class Gear implements Channel, Selectable {
   ArrayList<Gear> stackGears;
   Channel itsChannel;
   String nom;
+  GearSetup itsSetup;
   
   Gear(int teeth, int setupIdx, String nom) {
+    this.itsSetup = gearSetups.get(teeth);
     this.teeth = teeth;
     this.nom = nom;
     this.setupIdx = setupIdx;
@@ -545,7 +594,8 @@ class Gear implements Channel, Selectable {
 
 
   PVector getPosition(float r) {
-    return new PVector(x+cos(this.rotation+this.phase)*radius*r, y+sin(this.rotation+this.phase)*radius*r);
+    float d = notchToDist(r); // kGearLabelStart+(r-1)*kGearLabelIncr;
+    return new PVector(x+cos(this.rotation+this.phase)*d, y+sin(this.rotation+this.phase)*d);
   }  
 
   void meshTo(Gear parent) {
@@ -572,13 +622,25 @@ class Gear implements Channel, Selectable {
   void snugTo(Gear anchor) {
     itsChannel.snugTo(this, anchor);
   }
+  
+  float notchToDist(float n) {
+    return kGearLabelStart+(n-1)*kGearLabelIncr;
+  }
+
+  float distToNotch(float d) {
+    return 1 + (d - kGearLabelStart)/kGearLabelIncr;
+  }
 
   // Using this gear as the channel, find position for moveable gear which is snug to the fixed gear (assuming fixed gear is centered)
   void snugTo(Gear moveable, Gear fixed) {
     float d1 = 0;
     float d2 = radius;
     float d = moveable.radius+fixed.radius+meshGap;
-    moveable.mount(this, d/d2);
+
+    float mountRadDist = this.radius*d/d2;
+    float mountNotch = distToNotch(mountRadDist);
+
+    moveable.mount(this, mountNotch);
       // find position on line (if any) which corresponds to two radii
   }
 
@@ -671,24 +733,54 @@ class Gear implements Channel, Selectable {
       endShape();
       strokeWeight(1);
 
-      pushMatrix();
-        fill(127);
-        translate(0, radius-20);
-        text(""+teeth, 0, 0);
-        noFill();
-        stroke(64);
-        noFill();
-      popMatrix();
+      if (passesPerFrame < 50) {
+        pushMatrix();
+          translate(0, radius-20);
+          fill(127);
+          textFont(gFont);
+          textAlign(CENTER);
+          text(""+teeth, 0, 0);
+          noFill();
+        popMatrix();
+      }
 
       if (showMount) {
         noStroke();
         fill(192,128);
         ellipse(0, 0, kGearMountRadius, kGearMountRadius);
 
-        fill(192,128);
-        float inr = max(radius*.1,16);
-        float outr = radius-max(radius*.1,8);
-        rect(inr, -kGearNotchWidth/2, outr-inr, kGearNotchWidth,kGearNotchCorner);    
+        pushMatrix();
+          float notchStart, notchEnd;
+          int   nbrLabels;
+          if (itsSetup != null) {
+            notchStart = itsSetup.notchStart;
+            notchEnd = itsSetup.notchEnd;
+            nbrLabels = itsSetup.nbrLabels;
+          } else {
+            // Make a guesstimate
+            notchStart = max(radius*.1,16*seventyTwoScale);
+            notchEnd = radius-max(radius*.1,8*seventyTwoScale);
+            nbrLabels = 1 + int((notchEnd-notchStart-0.2*inchesToPoints)/(0.5*inchesToPoints));
+          }
+          if (passesPerFrame < 50) {
+            textFont(nFont);
+            textAlign(CENTER);
+
+            stroke(128);
+            fill(128);
+            int nbrNotches = (nbrLabels)*2-1;
+            for (int i = 0; i < nbrNotches; ++i) {
+              float x = kGearLabelStart + i * 0.25 * inchesToPoints;
+              line(x,-(i % 2 == 0? kGearNotchHeightMaj : kGearNotchHeightMin), x, (i % 2 == 0? kGearNotchHeightMaj : kGearNotchHeightMin));
+              if (i % 2 == 0) {
+                text((i/2)+1,x,kGearNotchHeightMaj+0.2*inchesToPoints);
+              }
+            }
+          }
+          fill(192);
+          noStroke();
+          rect(notchStart, -kGearNotchWidth/2, notchEnd-notchStart, kGearNotchWidth);
+        popMatrix();
       }
         
 
