@@ -27,10 +27,10 @@ void helpDraw()
     noStroke();
 
     float hx = width-450*seventyTwoScale;
-    float hy = 30*seventyTwoScale;
+    float hy = 30*seventyTwoScale-100*constrain(map(elapsed,0,300,1,0),0,1);
     
     fill(255,alpha*alpha*192);
-    rect(hx-1, 0, width-hx, hy + 22*helpLines.length);
+    rect(hx-8, 0, width-(hx-8), hy + 22*helpLines.length);
 
     fill(100, alpha*alpha*255);
 

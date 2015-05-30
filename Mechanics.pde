@@ -191,18 +191,9 @@ class ConnectingRod implements Channel, Selectable {
     itsSlide.draw();
     itsAnchor.draw();
 
-//    pushMatrix();
-//      translate(sp.x, sp.y);
-//      noFill();
-//      stroke(100);
-//      fill(254,214,179,192);
-//      strokeWeight(itsSlide.selected? 5 : 2);
-//      ellipse(0,0,20,20);
-//    popMatrix();
-    
     noFill();
     int shade = selected? 100 : 200;
-    int alfa = selected? 192 : 128;
+    int alfa = selected? 192 : 192;
     stroke(shade, alfa);
     strokeWeight(.33*inchesToPoints);
     armAngle = atan2(sp.y - ap.y, sp.x - ap.x);
@@ -362,7 +353,7 @@ class LineRail implements Channel {
 
   void draw() {
     noFill();
-    stroke(200);
+    stroke(darkTheme? 110 : 235);
     strokeWeight(.23*inchesToPoints);
 
     line(x1,y1, x2,y2);
@@ -455,7 +446,7 @@ class ArcRail implements Channel {
 
   void draw() {
     noFill();
-    stroke(200);
+    stroke(darkTheme? 110 : 235);
     strokeWeight(.23*inchesToPoints);
     arc(cx, cy, rad, rad, begAngle, endAngle);
   }
@@ -655,7 +646,7 @@ class Gear implements Channel, Selectable {
       float tipAngle = tAngle*.1;
 
       if (doFill) {
-        fill(240,240,240,192);
+        fill(240,240,240,darkTheme? 255 : 192);
       } else {
        noFill();
       }
@@ -663,8 +654,8 @@ class Gear implements Channel, Selectable {
         strokeWeight(4);
         stroke(64);
       } else {
-        strokeWeight(1);
-        stroke(0);
+        strokeWeight(0.5);
+        stroke(128);
       }
       beginShape();
       for (int i = 0; i < teeth; ++i) {
