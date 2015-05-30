@@ -1,12 +1,12 @@
-String saveFilename()
+String saveFilename(String prefix)
 {
-  String sf = "cdm_" + year() + "-" + month() + "-" + day() + "_" + hour() + "." + minute() + "." + second() + ".png";
+  String sf = prefix + year() + "-" + month() + "-" + day() + "_" + hour() + "." + minute() + "." + second() + ".png";
   return sf;
 }
 
-void saveSnapshot()
+void saveSnapshot(String prefix)
 {
-    String sf = saveFilename();
+    String sf = saveFilename(prefix);
     saveSnapshotAs(sf);
     println("Frame saved as " + sf);
     // Feedback
@@ -92,7 +92,7 @@ void completeDrawing()
     println("Total turntable cycles needed = " + totalRotations);
     int framesPerRotation = int(TWO_PI / crankSpeed);
     myLastFrame = framesPerRotation * totalRotations + 1;
-    passesPerFrame = 360*2;
+    passesPerFrame = isRecording? 10 : 360*2;
     isMoving = true;
 }
 

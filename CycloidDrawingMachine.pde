@@ -41,7 +41,7 @@ int passesPerFrame = 1;
 boolean hiresMode = false;
 
 boolean animateMode = false; // for tweening finished drawings
-boolean recordMode = false;  // for recording entire window
+boolean isRecording = false;  // for recording entire window
 boolean isStarted = false;
 boolean isMoving = false;
 boolean penRaised = true;
@@ -50,6 +50,7 @@ boolean darkTheme = true;
 float lastPX = -1, lastPY = -1;
 int myFrameCount = 0;
 int myLastFrame = -1;
+int recordCtr = 0;
 
 color[] penColors = {color(0,0,0), color(192,0,0), color(0,128,0), color(0,0,128), color(192,0,192)};
 color penColor = color(0,0,0);
@@ -452,6 +453,7 @@ void draw()
         myLastFrame = -1;
         passesPerFrame = 1;
         isMoving = false;
+        isRecording = false;
         nextTween();
         break;
       }
@@ -492,8 +494,9 @@ void draw()
     helpDraw(); // draw help if needed
 
   popMatrix();
-  if (isMoving && recordMode) {
-    saveFrame("record_#####.png");
+  if (isMoving && isRecording) {
+    recordCtr++;
+    saveSnapshotAs("record_" + df.format(recordCtr) + ".png");
   }
 }
 
@@ -555,7 +558,7 @@ void keyPressed() {
     // Swap pen mounts - need visual feedback
     break;
   case 's':
-    saveSnapshot();
+    saveSnapshot("snapshot_");
     break;
   case '~':
   case '`':
@@ -571,8 +574,8 @@ void keyPressed() {
     beginTweening();
     break;
   case 'R':
-    recordMode = !recordMode;
-    println("Recording is " + (recordMode? "ON" : "OFF"));
+    isRecording = !isRecording;
+    println("Recording is " + (isRecording? "ON" : "OFF"));
     break;
   case 'H':
     toggleHiresmode();
