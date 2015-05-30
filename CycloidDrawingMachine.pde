@@ -7,6 +7,8 @@
 static final float inchesToPoints = 72; // controls display scaling
 static final float mmToInches = 1/25.4;
 
+float seventyTwoScale = inchesToPoints / 72.0; // Don't change this
+
 float bWidth = 18.14;
 float bHeight = 11.51;
 float pCenterX = 8.87;
@@ -58,9 +60,9 @@ int penWidthIdx = 1;
 void setup() {
   size(int(bWidth*inchesToPoints)+100, int(bHeight*inchesToPoints));
   ellipseMode(RADIUS);
-  gFont = createFont("EurostileBold", 32);
-  hFont = createFont("Courier", 18);
-  nFont = loadFont("Notch-Font.vlw");
+  gFont = createFont("EurostileBold", int(32*seventyTwoScale));
+  hFont = createFont("Courier", int(18*seventyTwoScale));
+  nFont = createFont("Helvetica-Narrow", int(9*seventyTwoScale)); // loadFont("Notch-Font.vlw");
   titlePic = loadImage("title.png");
   
   activeGears = new ArrayList<Gear>();
@@ -459,7 +461,8 @@ void draw()
     fill(200);
     noStroke();
 
-    image(titlePic, 0, height-titlePic.height);
+    float logoScale = inchesToPoints/72.0;
+    image(titlePic, 0, height-titlePic.height*logoScale, titlePic.width*logoScale, titlePic.height*logoScale);
   
     for (Channel ch : rails) {
        ch.draw();

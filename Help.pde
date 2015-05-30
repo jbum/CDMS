@@ -26,8 +26,8 @@ void helpDraw()
     }
     noStroke();
 
-    float hx = width-450;
-    float hy = 30;
+    float hx = width-450*seventyTwoScale;
+    float hy = 30*seventyTwoScale;
     
     fill(255,alpha*alpha*192);
     rect(hx-1, 0, width-hx, hy + 22*helpLines.length);
@@ -49,7 +49,7 @@ void helpDraw()
     textFont(hFont);
     textAlign(LEFT);
     fill(200, alpha*alpha*255);
-    text("Press ? for Help", width-200, 30);
+    text("Press ? for Help", width-200*seventyTwoScale, 30*seventyTwoScale);
   }
 }
 

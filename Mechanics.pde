@@ -219,10 +219,11 @@ class ConnectingRod implements Channel, Selectable {
       textFont(nFont);
       textAlign(CENTER);
       pushMatrix();
-        translate(ap.x,ap.y);
-        rotate(atan2(sp.y-ap.y,sp.x-ap.x));
+        translate(sp.x,sp.y);
+        rotate(atan2(ap.y-sp.y,ap.x-sp.x));
+        float ln = dist(ap.x,ap.y,sp.x,sp.y);
         for (int i = 0; i < 29*2; ++i) {
-          float x = notchOffset + notchIncr*i;
+          float x = ln-(notchOffset + notchIncr*i);
           line(x, 6, x, -(6+(i % 2 == 1? 2 : 0)));
           if (i % 2 == 1) {
             text(""+(1+i/2),x,8);
