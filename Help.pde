@@ -2,18 +2,20 @@ boolean startupAlert = true;
 boolean drawHelp = false;
 long    helpStartMS = millis();
 String[] helpLines = {
-    "0-9     set drawing speed",
-    "a-g     change setups",
-    "arrows  change gears and mount points",
-    "x       erase the paper",
-    "[ ]     change pen color",
-    "< >     change pen width",
-    "/       invert connecting rod",
-    "s       save the image",
-    "~       draw entire cycle",
-    "T       save tween endpoint",
-    "S       animate to endpoint (slow!)",
-    "H       toggle Hi-res",
+    "0-9    set drawing speed",
+    "a-g    change setups",
+    "arrows change gears and mount points",
+    "x      erase the paper",
+    "[ ]    change pen color",
+    "< >    change pen width",
+    "/      invert connecting rod",
+    "s      save the image",
+    "~      draw entire cycle",
+    "R      record each frame to a png file",
+    "R~     record entire cycle to pngs",
+    "T      save tween endpoint",
+    "S      animate finished drawings to endpoint",
+    "H      toggle Hi-res",
 };
 
 void helpDraw() 
@@ -26,7 +28,7 @@ void helpDraw()
     }
     noStroke();
 
-    float hx = width-450*seventyTwoScale;
+    float hx = width-500*seventyTwoScale;
     float hy = 30*seventyTwoScale-100*constrain(map(elapsed,0,300,1,0),0,1);
     
     fill(255,alpha*alpha*192);
