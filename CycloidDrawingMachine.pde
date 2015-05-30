@@ -40,7 +40,8 @@ float crankSpeed = TWO_PI/720;  // rotation per frame  - 0.2 is nice.
 int passesPerFrame = 1;
 boolean hiresMode = false;
 
-boolean animateMode = false;
+boolean animateMode = false; // for tweening finished drawings
+boolean recordMode = false;  // for recording entire window
 boolean isStarted = false;
 boolean isMoving = false;
 boolean penRaised = true;
@@ -491,6 +492,9 @@ void draw()
     helpDraw(); // draw help if needed
 
   popMatrix();
+  if (isMoving && recordMode) {
+    saveFrame("record_#####.png");
+  }
 }
 
 boolean isShifting = false;
@@ -565,6 +569,10 @@ void keyPressed() {
     break;
   case 'S':
     beginTweening();
+    break;
+  case 'R':
+    recordMode = !recordMode;
+    println(("Recording is " + (recordMode? "ON" : "OFF"));
     break;
   case 'H':
     toggleHiresmode();
