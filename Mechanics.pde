@@ -24,6 +24,9 @@ static final float kCRLabelIncr = 0.5*inchesToPoints;
 static final float kCRNotchIncr = 0.25*inchesToPoints;
 static final float kCRNotchStart = 0.75*inchesToPoints;
 static final float kCRLabelStart = 1*inchesToPoints;
+static final float kPenLabelStart = 4.75*inchesToPoints;
+static final float kPenLabelIncr = -0.5*inchesToPoints;
+static final float kPenNotchIncr = -0.25*inchesToPoints;
 
 class MountPoint implements Channel, Selectable {
   Channel itsChannel = null;
@@ -255,7 +258,7 @@ class PenRig implements Selectable {
   MountPoint itsMP;
   
   PenRig(float len, float angle, MountPoint itsMP) {
-    this.len = len * inchesToPoints;
+    this.len = len; // in pen notch units
     this.angle = angle;
     this.itsRod = (ConnectingRod) itsMP.itsChannel;
     this.itsMP = itsMP;
@@ -265,9 +268,18 @@ class PenRig implements Selectable {
     println("Pen Extender " + ap.x/inchesToPoints +" " + ap.y/inchesToPoints + " --> " + ep.x/inchesToPoints + " " + ep.y/inchesToPoints);
   }
 
+  float notchToDist(float n) {
+    return kPenLabelStart+(n-1)*kPenLabelIncr;
+  }
+
+  float distToNotch(float d) {
+    return 1 + (d - kPenLabelStart)/kPenLabelIncr;
+  }
+
   PVector getPosition() {
     PVector ap = itsMP.getPosition();
-    return new PVector(ap.x + cos(itsRod.armAngle + this.angle)*this.len, ap.y + sin(itsRod.armAngle + this.angle)*this.len);
+    float d = notchToDist(this.len);
+    return new PVector(ap.x + cos(itsRod.armAngle + this.angle)*d, ap.y + sin(itsRod.armAngle + this.angle)*d);
   }
   
   boolean isClicked(int mx, int my) 
@@ -300,8 +312,9 @@ class PenRig implements Selectable {
     if (kc == RIGHT || kc == LEFT) {
       this.angle += radians(5)*direction;
     } else {
-      this.len += 0.125 * inchesToPoints * direction;
+      this.len += 0.125 * direction;
     }
+    println("Pen: " + this.len + " " + degrees(this.angle) + "°");
   }
   
   void draw() {
@@ -342,16 +355,13 @@ class PenRig implements Selectable {
         noStroke();
         ellipse(0,0,penWidth/2, penWidth/2);
 
-        float notchOffset = (605/300.0)*inchesToPoints;
-        float notchIncr = 0.25 * inchesToPoints;
-        
         stroke(255);
         fill(255);
         for (int i = 0; i < 15; ++i) {
-          float x = notchOffset + notchIncr*i;
+          float x = notchToDist(1+i/2.0);
           line(x, 6, x, -(6+(i % 2 == 0? 2 : 0)));
           if (i % 2 == 0) {
-            text(""+(8-i/2),x,8);
+            text(""+(1+i/2),x,8);
           }
         }
       }
