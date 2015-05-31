@@ -20,10 +20,14 @@ static final float kGearNotchHeightMaj = 5 * mmToInches * inchesToPoints;
 static final float kGearNotchHeightMin = 3.5 * mmToInches * inchesToPoints;
 static final float kGearLabelStart = 0.5*inchesToPoints;
 static final float kGearLabelIncr = 0.5*inchesToPoints;
+static final float kCRLabelIncr = 0.5*inchesToPoints;
+static final float kCRNotchIncr = 0.25*inchesToPoints;
+static final float kCRNotchStart = 0.75*inchesToPoints;
+static final float kCRLabelStart = 1*inchesToPoints;
 
 class MountPoint implements Channel, Selectable {
   Channel itsChannel = null;
-  float itsMountRatio;
+  float itsMountLength;
   int    setupIdx;
   float x, y, radius=kMPDefaultRadius;
   String typeStr = "MP";
@@ -33,7 +37,7 @@ class MountPoint implements Channel, Selectable {
   MountPoint(String typeStr, float x, float y) {
     this.typeStr = typeStr;
     this.itsChannel = null;
-    this.itsMountRatio = 0;
+    this.itsMountLength = 0;
     this.isFixed = true;
     this.setupIdx = -1; // fixed
     this.x = x*inchesToPoints;
@@ -44,7 +48,7 @@ class MountPoint implements Channel, Selectable {
   MountPoint(String typeStr, Channel ch, float mr, int setupIdx) {
     this.typeStr = typeStr;
     this.itsChannel = ch;
-    this.itsMountRatio = mr;
+    this.itsMountLength = mr;
     this.setupIdx = setupIdx;
     PVector pt = ch.getPosition(mr);
     this.x = pt.x;
@@ -58,8 +62,9 @@ class MountPoint implements Channel, Selectable {
   void nudge(int direction, int keycode) {
     float amt, mn=0, mx=1;
     if (itsChannel instanceof ConnectingRod) {
-      amt = 0.125 * inchesToPoints;
-      mx = 15 * inchesToPoints;
+      amt = 0.125;
+      mn = 0.5; 
+      mx = 29;
     } else if (itsChannel instanceof Gear) {
       amt = 0.125;
       mn = 0.75;
@@ -68,10 +73,11 @@ class MountPoint implements Channel, Selectable {
       amt = 0.01;
     }
     amt *= direction;
-    itsMountRatio += amt;
-    itsMountRatio = constrain(itsMountRatio, mn, mx);
+    itsMountLength += amt;
+    itsMountLength = constrain(itsMountLength, mn, mx);
+    println("Mount: " + itsMountLength);
     if (setupIdx >= 0) {
-      setupMounts[setupMode][setupIdx] = itsMountRatio;
+      setupMounts[setupMode][setupIdx] = itsMountLength;
     }
   }
   
@@ -100,7 +106,7 @@ class MountPoint implements Channel, Selectable {
 
   PVector getPosition(float r) {
     if (itsChannel != null) {
-      return itsChannel.getPosition(itsMountRatio);
+      return itsChannel.getPosition(itsMountLength);
     } else {
       return new PVector(x,y);
     }
@@ -143,8 +149,8 @@ class ConnectingRod implements Channel, Selectable {
     PVector ap = itsAnchor.getPosition();
     PVector sp = itsSlide.getPosition();
     armAngle = atan2(sp.y - ap.y, sp.x - ap.x);
-    
-    return new PVector(ap.x + cos(armAngle)*r, ap.y + sin(armAngle)*r);
+    float d = notchToDist(r);
+    return new PVector(ap.x + cos(armAngle)*d, ap.y + sin(armAngle)*d);
   }  
 
   void snugTo(Gear moveable, Gear fixed) {
@@ -190,7 +196,16 @@ class ConnectingRod implements Channel, Selectable {
             my > min(ap.y-gr,sp.y-gr) && my < max(ap.y+gr,sp.y+gr) &&
            abs(atan2(my-sp.y,mx-sp.x) - atan2(ap.y-sp.y,ap.x-sp.x)) < radians(10)); 
   }
-  
+
+  float notchToDist(float n) {
+    return kCRLabelStart+(n-1)*kCRLabelIncr;
+  }
+
+  float distToNotch(float d) {
+    return 1 + (d - kCRLabelStart)/kCRLabelIncr;
+  }
+
+ 
   void draw() {
     PVector ap = itsAnchor.getPosition();
     PVector sp = itsSlide.getPosition();
@@ -213,8 +228,7 @@ class ConnectingRod implements Channel, Selectable {
       stroke(100,100,100,128);
       fill(100,100,100);
       strokeWeight(0.5);
-      float notchOffset = 0.73*inchesToPoints;
-      float notchIncr = 0.25 * inchesToPoints;
+      // float notchOffset = 0.75*inchesToPoints;
       textFont(nFont);
       textAlign(CENTER);
       pushMatrix();
@@ -222,7 +236,7 @@ class ConnectingRod implements Channel, Selectable {
         rotate(atan2(ap.y-sp.y,ap.x-sp.x));
         float ln = dist(ap.x,ap.y,sp.x,sp.y);
         for (int i = 0; i < 29*2; ++i) {
-          float x = ln-(notchOffset + notchIncr*i);
+          float x = ln-(kCRNotchStart + kCRNotchIncr*i);
           line(x, 6, x, -(6+(i % 2 == 1? 2 : 0)));
           if (i % 2 == 1) {
             text(""+(1+i/2),x,8);

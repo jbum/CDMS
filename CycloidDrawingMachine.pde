@@ -120,13 +120,13 @@ int[][] setupTeeth = {
   };
 
 float[][] setupMounts = { // mount point measurements
-  {0.1, 3, 7.4*inchesToPoints},
-  {1.5, 3, 7.4*inchesToPoints},
-  {1-0.1027, 1.5, 8.4*inchesToPoints},
-  {2, 4, 0.8, 2.5*inchesToPoints, 7.4*inchesToPoints},
-  {0.7, 2, 4, 4.5*inchesToPoints, 6.4*inchesToPoints},
-  {0.9, 1.5, 4, 0.1, 9.0*inchesToPoints, 3.0*inchesToPoints, 2.2*inchesToPoints},
-  {2.5, 1, 8.4*inchesToPoints},
+  {0.1, 3, 5},
+  {1.5, 3,  10},
+  {1-0.1027, 1.5, 12},
+  {2, 4, 0.8, 8, 11},
+  {0.7, 2, 4, 8, 9},
+  {0.7, 1.5, 4, 0.1, 9, 8, 2},
+  {2.5, 1.0, 14},
 };
 
 Gear addGear(int setupIdx, String nom)

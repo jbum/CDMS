@@ -68,7 +68,7 @@ void nextTween()
     if (mp.setupIdx != -1) {
       float src = tweenSrce[mp.setupIdx];
       float dst = tweenDest[mp.setupIdx];
-      mp.itsMountRatio = src + (dst-src)*tweenIdx/(float)tweenSteps;
+      mp.itsMountLength = src + (dst-src)*tweenIdx/(float)tweenSteps;
     }
   }
   clearPaper();
