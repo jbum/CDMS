@@ -209,9 +209,9 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     crankRail = rails.get(1);
     anchorRail = rails.get(10);
     pivotRail = rails.get(0);
-    crank.mount(crankRail, 0.735+.1);
+    crank.mount(crankRail, 0.735+.1); // will get fixed by snugto
     anchor.mount(anchorRail,0);
-    fulcrumGear.mount(pivotRail, 0.29-.1);
+    fulcrumGear.mount(pivotRail, 0.29-.1); // will get fixed by snugto
     turnTable.mount(discPoint, 0);
 
     crank.snugTo(turnTable);
@@ -517,8 +517,9 @@ void draw()
 boolean isShifting = false;
 
 void keyReleased() {
-  if (key == CODED && keyCode == SHIFT) {
-    isShifting = false;
+  if (key == CODED) {
+    if (keyCode == SHIFT)
+      isShifting = false;
   }
 }
 
@@ -572,8 +573,14 @@ void keyPressed() {
     // Swap pen mounts - need visual feedback
     break;
   case 's':
-    saveSnapshot("snapshot_");
+      saveSnapshot("snapshot_");
     break;
+  case 19:
+      saveSettings();
+      break;
+  case 15:
+      loadSettings();
+      break;
   case '~':
   case '`':
     completeDrawing();

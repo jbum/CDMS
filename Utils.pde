@@ -28,19 +28,19 @@ void saveSnapshotAs(String sf)
 
 String getSetupString()
 {
-  String ss = "Setup " + ((char) (65+ setupMode)) + "\n";
-  ss += "Gear Teeth: ";
+  String ss = "Setup\t" + ((char) (65+ setupMode)) + "\n";
+  ss += "Gear Teeth\t";
   for (int i = 0; i < setupTeeth[setupMode].length; ++i) {
-    if (i > 0)  ss += ", ";
+    if (i > 0)  ss += "\t";
     ss += setupTeeth[setupMode][i];
   }
-  ss += "\nMount Points: ";
+  ss += "\nMount Points\t";
   for (int i = 0; i < setupMounts[setupMode].length; ++i) {
-    if (i > 0)  ss += ", ";
+    if (i > 0)  ss += "\t";
     ss += setupMounts[setupMode][i];
   }
   ss += "\n";
-  ss += "Pen ext: " + penRig.len + "\nPen ang: " + penRig.angle + "°" + "\n";
+  ss += "Pen\t" + penRig.len + "\t" + penRig.angle + "°" + "\n";
   return ss;
 }
 
@@ -177,3 +177,79 @@ void toggleHiresmode()
   penRaised = true;
 }
 
+
+
+
+void saveSettings() {
+  // default filename "setup_" + (char)('A' + setupMode) + "_override.txt"
+  selectOutput("Select a file to save settings to:", "saveCallback");
+  // println("Oname = " + oName);
+}
+
+void saveCallback(File fileSelection) 
+{
+  if (fileSelection == null) {
+    println("Canceled");
+    return;
+  }
+  println("Selection: " + fileSelection);
+  JSONObject settings = new JSONObject();
+  settings.setInt("layout", setupMode);
+
+  JSONArray gears = new JSONArray();
+  for (int i = 0; i < setupTeeth[setupMode].length; ++i) {
+    gears.setInt(i, setupTeeth[setupMode][i]);
+  }
+  settings.setJSONArray("gears", gears);
+
+  JSONArray mounts = new JSONArray();
+  for (int i = 0; i < setupMounts[setupMode].length; ++i) {
+    mounts.setFloat(i, setupMounts[setupMode][i]);
+  }
+  settings.setJSONArray("mounts", mounts);
+  JSONObject penRigSetup = new JSONObject();
+  penRigSetup.setFloat("length", setupPens[setupMode][0]);
+  penRigSetup.setFloat("angle", setupPens[setupMode][1]);
+  settings.setJSONObject("penrig", penRigSetup);
+
+  saveJSONObject(settings, fileSelection.getAbsolutePath());
+}
+
+void loadSettings() 
+{
+  println("Load Settings");
+  selectInput("Select a file to load settings from:", "loadCallback");
+  
+}
+
+void loadCallback(File fileSelection) 
+{
+  if (fileSelection == null) {
+    println("Canceled");
+    return;
+  }
+  JSONObject settings = loadJSONObject(fileSelection.getAbsolutePath());
+  if (settings == null) {
+    println("Invalid settings file");
+    return;
+  }
+  setupMode = settings.getInt("layout");
+  JSONArray gears = settings.getJSONArray("gears");
+  int ng = min(setupTeeth[setupMode].length, gears.size());
+  for (int i = 0; i < ng; ++i) {
+    setupTeeth[setupMode][i] = gears.getInt(i);
+  }
+
+  JSONArray mounts = settings.getJSONArray("mounts");
+  int nm = min(setupMounts[setupMode].length, mounts.size());
+  for (int i = 0; i < nm; ++i) {
+    setupMounts[setupMode][i] = mounts.getInt(i);
+  }
+
+  JSONObject penRigSetup = settings.getJSONObject("penrig");
+  setupPens[setupMode][0] = penRigSetup.getFloat("length");
+  setupPens[setupMode][1] = penRigSetup.getFloat("angle");
+
+  deselect();
+  drawingSetup(setupMode, false);
+}

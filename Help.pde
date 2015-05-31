@@ -16,6 +16,8 @@ String[] helpLines = {
     "T      save tween endpoint",
     "S      animate finished drawings to endpoint",
     "H      toggle Hi-res",
+    "Ctrl-S save setup",
+    "Ctrl-O load setup",
 };
 
 void helpDraw() 

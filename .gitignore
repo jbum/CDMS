@@ -2,5 +2,8 @@ untitled.png
 cdm*.png
 override_*.tsv
 frame*.png
+snapshot*.png
+web-export/
+code/
 ffmpeg*
 *.mp4
