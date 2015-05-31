@@ -296,6 +296,7 @@ class PenRig implements Selectable {
   MountPoint itsMP;
   int lastDirection = -1; // these are used to avoid rotational wierdness with manipulations
   long lastRotation = -1;
+  int lastKey = -1;
 
 
   PenRig(float len, float angle, MountPoint itsMP) {
@@ -362,7 +363,7 @@ class PenRig implements Selectable {
   int chooseBestDirection(int direction, int keycode, float lenIncr, float angIncr) 
   {
     if (abs(angIncr) > abs(lenIncr) && lastRotation != -1 && (millis()-lastRotation) < 10000) {
-      return lastDirection;
+      return lastDirection * (lastKey == keycode? 1 : -1);
     } 
 
     PVector pNeg = getPosition(len -lenIncr, angle-angIncr);
@@ -395,6 +396,7 @@ class PenRig implements Selectable {
       lastRotation = millis();
     }
     lastDirection = direction;
+    lastKey = kc;
     
     this.angle += angIncr*direction;
     if (this.angle > 180) {

@@ -90,7 +90,8 @@ void completeDrawing()
     myFrameCount = 0;
     penRaised = true;
     int totalRotations = computeCyclicRotations();
-    println("Total turntable cycles needed = " + totalRotations);
+    if (!isTweening)
+      println("Total turntable cycles needed = " + totalRotations);
     int framesPerRotation = int(TWO_PI / crankSpeed);
     myLastFrame = framesPerRotation * totalRotations + 1;
     passesPerFrame = isRecording? 10 : 360*2;
