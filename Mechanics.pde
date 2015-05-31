@@ -176,9 +176,9 @@ class ConnectingRod implements Channel, Selectable {
       itsAnchor.radius = kMPDefaultRadius;
       itsSlide.radius = kMPSlideRadius;
       if (penRig.itsRod == this) {
-        penRig.angle += PI;
-        if (penRig.angle > TWO_PI)
-          penRig.angle -= TWO_PI;
+        penRig.angle += 180;
+        if (penRig.angle > 360)
+          penRig.angle -= 360;
       }
     }
     else {
@@ -252,7 +252,7 @@ class ConnectingRod implements Channel, Selectable {
 
 class PenRig implements Selectable {
   float len;
-  float angle;
+  float angle; // expressed in degrees
   boolean selected = false;
   ConnectingRod itsRod;
   MountPoint itsMP;
@@ -265,7 +265,7 @@ class PenRig implements Selectable {
 
     PVector ap = itsMP.getPosition();
     PVector ep = this.getPosition();
-    println("Pen Extender " + ap.x/inchesToPoints +" " + ap.y/inchesToPoints + " --> " + ep.x/inchesToPoints + " " + ep.y/inchesToPoints);
+    println("Pen Extender " + this.len + " " + this.angle + "°");
   }
 
   float notchToDist(float n) {
@@ -279,7 +279,8 @@ class PenRig implements Selectable {
   PVector getPosition() {
     PVector ap = itsMP.getPosition();
     float d = notchToDist(this.len);
-    return new PVector(ap.x + cos(itsRod.armAngle + this.angle)*d, ap.y + sin(itsRod.armAngle + this.angle)*d);
+    float rangle = radians(this.angle);
+    return new PVector(ap.x + cos(itsRod.armAngle + rangle)*d, ap.y + sin(itsRod.armAngle + rangle)*d);
   }
   
   boolean isClicked(int mx, int my) 
@@ -310,11 +311,19 @@ class PenRig implements Selectable {
 
   void nudge(int direction, int kc) {
     if (kc == RIGHT || kc == LEFT) {
-      this.angle += radians(5)*direction;
+      this.angle += 5*direction;
+      if (this.angle > 180) {
+        this.angle -= 360;
+      } else if (this.angle <= -180) {
+        this.angle += 360;
+      }
+      setupPens[setupMode][1] = this.angle;
     } else {
       this.len += 0.125 * direction;
+      this.len = constrain(this.len, 1, 8);
+      setupPens[setupMode][0] = this.len;
     }
-    println("Pen: " + this.len + " " + degrees(this.angle) + "°");
+    println("Pen: " + this.len + " " + this.angle + "°");
   }
   
   void draw() {

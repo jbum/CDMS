@@ -120,13 +120,23 @@ int[][] setupTeeth = {
   };
 
 float[][] setupMounts = { // mount point measurements
-  {0.1, 3, 5},
+  {0.1, 4, 11},
   {1.5, 3,  10},
   {1-0.1027, 1.5, 12},
   {2, 4, 0.8, 8, 11},
   {0.7, 2, 4, 8, 9},
   {0.7, 1.5, 4, 0.1, 9, 8, 2},
   {2.5, 1.0, 14},
+};
+
+float[][] setupPens = {
+  {6,90},
+  {6,90},
+  {4,-90},
+  {4,-90},
+  {6,-90},
+  {8,-90},
+  {4,-90},
 };
 
 Gear addGear(int setupIdx, String nom)
@@ -148,6 +158,10 @@ ConnectingRod addCR(MountPoint slide, MountPoint anchor)
   ConnectingRod cr = new ConnectingRod(slide, anchor);
   activeConnectingRods.add(cr);
   return cr;
+}
+
+PenRig addPen(MountPoint penMount) {
+  return new PenRig(setupPens[setupMode][0], setupPens[setupMode][1], penMount);
 }
 
 void drawingSetup(int setupIdx, boolean resetPaper)
@@ -182,7 +196,7 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     cRod = addCR(slidePoint, anchorPoint);
 
     penMount = addMP(2, "EX", cRod);
-    penRig = new PenRig(8.0, PI/2, penMount);
+    penRig = addPen(penMount);
     break;
 
   case 1: // moving fulcrum & separate crank
@@ -210,7 +224,7 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     anchorPoint = addMP(1, "AP", anchor);
     cRod = addCR(slidePoint, anchorPoint);
     penMount = addMP(2, "EX", cRod);
-    penRig = new PenRig(6.0, PI/2, penMount);
+    penRig = addPen(penMount);
 
     break;
     
@@ -252,7 +266,7 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     anchorPoint = addMP(1, "AP", orbit);
     cRod = addCR(slidePoint, anchorPoint);
     penMount = addMP(2, "EX", cRod);
-    penRig = new PenRig(4.0, (-PI/2), penMount);
+    penRig = addPen(penMount);
     break;
 
   case 3:// 2 pen rails, variation A
@@ -280,7 +294,7 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     MountPoint anchorPoint2 = addMP(3, "AP2", cRod);
     ConnectingRod cRod2 = addCR(slidePoint2, anchorPoint2);
     penMount = addMP(4,"EX",cRod2);
-    penRig = new PenRig(4.0, (-PI/2), penMount);
+    penRig = addPen(penMount);
 
     break;
 
@@ -311,7 +325,7 @@ void drawingSetup(int setupIdx, boolean resetPaper)
 
     penMount = addMP(4, "EX", cRod2);
 
-    penRig = new PenRig(6.0, (-PI/2), penMount);
+    penRig = addPen(penMount);
 
     break;
 
@@ -345,7 +359,7 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     ConnectingRod cRod3 = addCR(anchorPoint3, slidePoint3);
     penMount = addMP(6, "EX", cRod3);
     
-    penRig = new PenRig(8.0, (-PI/2), penMount);
+    penRig = addPen(penMount);
 
     break;    
   case 6: // orbiting gear with rotating fulcrum (#1 and #2 combined)
@@ -400,7 +414,7 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     anchorPoint = addMP(1, "AP", orbit);
     cRod = addCR(slidePoint, anchorPoint);
     penMount = addMP(2, "EX", cRod);
-    penRig = new PenRig(4.0, (-PI/2), penMount);
+    penRig = addPen(penMount);
 
     break;
 
