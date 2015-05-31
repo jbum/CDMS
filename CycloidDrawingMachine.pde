@@ -1,4 +1,4 @@
-// Simulation of Cycloid Drawing Machine
+// Simulation of Cycloid Drawing Machine  - latest version is on https://github.com/jbum/CycloidDrawingMachine
 //
 // Physical machine designed by Joe Freedman  kickstarter.com/projects/1765367532/cycloid-drawing-machine
 // Processing simulation by Jim Bumgardner    krazydad.com
