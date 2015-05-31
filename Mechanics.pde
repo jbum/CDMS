@@ -294,7 +294,10 @@ class PenRig implements Selectable {
   boolean selected = false;
   ConnectingRod itsRod;
   MountPoint itsMP;
-  
+  int lastDirection = -1; // these are used to avoid rotational wierdness with manipulations
+  long lastRotation = -1;
+
+
   PenRig(float len, float angle, MountPoint itsMP) {
     this.len = len; // in pen notch units
     this.angle = angle;
@@ -355,8 +358,13 @@ class PenRig implements Selectable {
     selected = true;
   }
 
+
   int chooseBestDirection(int direction, int keycode, float lenIncr, float angIncr) 
   {
+    if (abs(angIncr) > abs(lenIncr) && lastRotation != -1 && (millis()-lastRotation) < 10000) {
+      return lastDirection;
+    } 
+
     PVector pNeg = getPosition(len -lenIncr, angle-angIncr);
     PVector pPos = getPosition(len +lenIncr, angle+angIncr);
 
@@ -374,7 +382,6 @@ class PenRig implements Selectable {
     }
   }
 
-
   void nudge(int direction, int kc) {
     float angIncr = 0, lenIncr = 0;
     if (kc == RIGHT || kc == LEFT) {
@@ -383,6 +390,12 @@ class PenRig implements Selectable {
       lenIncr = 0.125;
     }
     direction = chooseBestDirection(direction, kc, lenIncr, angIncr);
+    
+    if (abs(angIncr) > abs(lenIncr)) {
+      lastRotation = millis();
+    }
+    lastDirection = direction;
+    
     this.angle += angIncr*direction;
     if (this.angle > 180) {
       this.angle -= 360;
