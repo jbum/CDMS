@@ -164,6 +164,7 @@ class ConnectingRod implements Channel, Selectable {
 
   ConnectingRod(MountPoint itsSlide, MountPoint itsAnchor, int rodNbr)
   {
+    this.rodNbr = rodNbr;
     this.itsSlide = itsSlide;
     itsSlide.radius = kMPSlideRadius;
     this.itsAnchor = itsAnchor;
@@ -211,6 +212,7 @@ class ConnectingRod implements Channel, Selectable {
         penRig.angle -= 360;
       setupPens[setupMode][1] = penRig.angle;
     }
+    println("Inverted rod " + rodNbr);
   }
   
   void nudge(int direction, int kc) {
