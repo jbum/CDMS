@@ -219,9 +219,9 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     crankRail = rails.get(1);
     anchorRail = rails.get(10);
     pivotRail = rails.get(0);
-    crank.mount(crankRail, 0.735+.1); // will get fixed by snugto
+    crank.mount(crankRail, 0); // will get fixed by snugto
     anchor.mount(anchorRail,0);
-    fulcrumGear.mount(pivotRail, 0.29-.1); // will get fixed by snugto
+    fulcrumGear.mount(pivotRail, 0); // will get fixed by snugto
     turnTable.mount(discPoint, 0);
 
     crank.snugTo(turnTable);
@@ -262,8 +262,10 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     crank.snugTo(turnTable);
     crank.meshTo(turnTable);
   
-    anchorTable.mount(anchorRail, .315);
+    anchorTable.mount(anchorRail, .315); // this is a hack - we need to allow the anchorTable to snug to the crank regardless of it's size...
+    println("snugging anchortable");
     anchorTable.snugTo(crank);
+    println("done snugging anchortable");
     anchorTable.meshTo(crank);
 
     anchorHub.stackTo(anchorTable);

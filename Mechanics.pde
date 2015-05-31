@@ -546,7 +546,7 @@ class LineRail implements Channel {
         println("  swap");
         mx1 = mx2;
         my1 = my2;
-      } 
+      }
       moveable.mount(this, dist(x1,y1,mx1,my1)/dist(x1,y1,x2,y2));
     }
   }
@@ -567,8 +567,80 @@ class ArcRail implements Channel {
     return new PVector(cx+cos(a)*rad, cy+sin(a)*rad);
   }  
 
-  void snugTo(Gear moveable, Gear fixed) {
-    // !! unimplemented for arc rails
+//  fixed = 15.017775 6.61 1.5221801
+//  moveable = 16.518276 2.237212 3.0443602
+//  rail = 8.91 3.9100003 7.79
+//  angles = -24.999998 15.0
+//  desired r = 4.625595
+//  d = 6.6779423
+//  i1 12.791063 2.2343254 ang -23.352594
+//  i2 16.517643 2.2343254 ang -12.421739
+
+
+  void snugTo(Gear moveable, Gear fixed) { // get the movable gear mounted on this rail snug to the fixed gear
+
+    // The fixed gear is surrounded by an imaginary circle which is the correct distance (r) away.
+    // We need to intersect this with our arcRail circle, and find the intersection point which lies on the arcrail.
+    // Mesh point 
+    // https://gsamaras.wordpress.com/code/determine-where-two-circles-intersect-c/
+
+//    println("Snug arcrail");
+//    println("  fixed = " + fixed.x/72 + " " + fixed.y/72 + " " + fixed.radius/72);
+//    println("  moveable = " + moveable.x/72 + " " + moveable.y/72 + " " + moveable.radius/72);
+//    println("  rail = " + cx/72 + " " + cy/72 + " " + rad/72);
+//    println("  angles = " + degrees(begAngle) + " " + degrees(endAngle));
+
+   float x1 = fixed.x;
+   float y1 = fixed.y;
+   float r1 = moveable.radius+fixed.radius+meshGap;
+   float x2 = this.cx;
+   float y2 = this.cy;
+   float r2 = this.rad;
+
+    float d = dist(x1,y1,x2,y2);
+    println("  desired r = " + r1/72);
+    println("  d = " + d/72);
+    
+    if (d > r1+r2) {
+      println("  circles are too far apart");
+      return;
+    } else if (abs(d) < .01 && abs(r1-r2) < .01) {
+      println("  circles coincide");
+      return;
+    } else if (d + min(r1,r2) < max(r1,r2)) {
+      println("  one circle contains the other");
+      return;
+    }
+    float a = (r1*r1 - r2*r2 + d*d) / (2*d);
+    float h = sqrt(r1*r1 - a*a);
+    PVector p2 = new PVector( x1 + (a * (x2 - x1)) / d,
+                              y1 + (a * (y2 - y1)) / d);
+                              
+    // these are our two intersection points (which may or may not fall on the arc)
+    PVector i1 = new PVector( p2.x + (h * (y2 - y1))/ d,
+                              p2.y + (h * (x2 - x1))/ d);
+    PVector i2 = new PVector( p2.x - (h * (y2 - y1))/ d,
+                              p2.y + (h * (x2 - x1))/ d);
+    println("  i1 " + i1.x/72 + " " + i1.y/72 + " ang " + degrees(atan2(i1.y-cy,i1.x-cx)));
+    println("  i2 " + i2.x/72 + " " + i2.y/72 + " ang " + degrees(atan2(i2.y-cy,i2.x-cx)));
+
+    PVector best = i2;
+    float ma = atan2(best.y-cy,best.x-cx);
+    if (ma < begAngle || ma > endAngle) {
+      best = i1;
+      ma = atan2(best.y-cy,best.x-cx);
+      if (ma < begAngle || ma > endAngle) {
+        println("Intersection points don't fall on arc rail");
+        return;
+      }
+    }
+
+    moveable.mount(this, (ma-begAngle)/(endAngle-begAngle));
+
+
+//    moveable.x = x;
+//    moveable.y = y;
+    // It intersects this arc in 0, 1 or 2 points, which is the spot where we want to mesh - pick the highest one.
   }
 
   void draw() {
