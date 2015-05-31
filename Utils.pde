@@ -77,9 +77,9 @@ int computeCyclicRotations() {
 void invertConnectingRod()
 {
   if (selectedObject instanceof ConnectingRod) {
-    ((ConnectingRod) selectedObject).nudge(1, UP);
+    ((ConnectingRod) selectedObject).invert();
   } else if (activeConnectingRods.size() == 1) {
-    activeConnectingRods.get(0).nudge(1, UP);
+    activeConnectingRods.get(0).invert();
   } else {
     println("Please select a connecting rod to invert");
   }
@@ -207,6 +207,13 @@ void saveCallback(File fileSelection)
     mounts.setFloat(i, setupMounts[setupMode][i]);
   }
   settings.setJSONArray("mounts", mounts);
+
+  JSONArray invs = new JSONArray();
+  for (int i = 0; i < setupInversions[setupMode].length; ++i) {
+    invs.setBoolean(i, setupInversions[setupMode][i]);
+  }
+  settings.setJSONArray("inversions", invs);
+
   JSONObject penRigSetup = new JSONObject();
   penRigSetup.setFloat("length", setupPens[setupMode][0]);
   penRigSetup.setFloat("angle", setupPens[setupMode][1]);
@@ -234,21 +241,36 @@ void loadCallback(File fileSelection)
     return;
   }
   setupMode = settings.getInt("layout");
+
   JSONArray gears = settings.getJSONArray("gears");
-  int ng = min(setupTeeth[setupMode].length, gears.size());
-  for (int i = 0; i < ng; ++i) {
-    setupTeeth[setupMode][i] = gears.getInt(i);
+  if (gears != null) {
+    int ng = min(setupTeeth[setupMode].length, gears.size());
+    for (int i = 0; i < ng; ++i) {
+      setupTeeth[setupMode][i] = gears.getInt(i);
+    }
   }
 
   JSONArray mounts = settings.getJSONArray("mounts");
-  int nm = min(setupMounts[setupMode].length, mounts.size());
-  for (int i = 0; i < nm; ++i) {
-    setupMounts[setupMode][i] = mounts.getInt(i);
+  if (mounts != null) {
+    int nm = min(setupMounts[setupMode].length, mounts.size());
+    for (int i = 0; i < nm; ++i) {
+      setupMounts[setupMode][i] = mounts.getFloat(i);
+    }
+  }
+
+  JSONArray invs = settings.getJSONArray("inversions");
+  if (invs != null) {
+    int nm = min(setupInversions[setupMode].length, invs.size());
+    for (int i = 0; i < nm; ++i) {
+      setupInversions[setupMode][i] = invs.getBoolean(i);
+    }
   }
 
   JSONObject penRigSetup = settings.getJSONObject("penrig");
-  setupPens[setupMode][0] = penRigSetup.getFloat("length");
-  setupPens[setupMode][1] = penRigSetup.getFloat("angle");
+  if (penRigSetup != null) {
+    setupPens[setupMode][0] = penRigSetup.getFloat("length");
+    setupPens[setupMode][1] = penRigSetup.getFloat("angle");
+  }
 
   deselect();
   drawingSetup(setupMode, false);

@@ -158,13 +158,22 @@ class ConnectingRod implements Channel, Selectable {
   MountPoint itsSlide = null;
   MountPoint itsAnchor = null;
   float armAngle = 0;
+  int rodNbr = 0;
   boolean selected=false;
+  boolean isInverted = false;
 
-  ConnectingRod(MountPoint itsSlide, MountPoint itsAnchor)
+  ConnectingRod(MountPoint itsSlide, MountPoint itsAnchor, int rodNbr)
   {
     this.itsSlide = itsSlide;
     itsSlide.radius = kMPSlideRadius;
     this.itsAnchor = itsAnchor;
+    
+    println("CR slide len " + itsSlide.itsMountLength);
+    println("CR anchor len " + itsAnchor.itsMountLength);
+    
+    if (setupInversions[setupMode][rodNbr])
+      invert();
+     
   }
   
   PVector getPosition(float r) {
@@ -187,18 +196,26 @@ class ConnectingRod implements Channel, Selectable {
     selected = true;
   }
   
+  void invert() {
+    this.isInverted = !this.isInverted;
+    setupInversions[setupMode][rodNbr] = this.isInverted;
+
+    MountPoint tmp = itsAnchor;
+    itsAnchor = itsSlide;
+    itsSlide = tmp;
+    itsAnchor.radius = kMPDefaultRadius;
+    itsSlide.radius = kMPSlideRadius;
+    if (penRig != null && penRig.itsRod == this) {
+      penRig.angle += 180;
+      if (penRig.angle > 360)
+        penRig.angle -= 360;
+      setupPens[setupMode][1] = penRig.angle;
+    }
+  }
+  
   void nudge(int direction, int kc) {
     if (kc == UP || kc == DOWN) {
-      MountPoint tmp = itsAnchor;
-      itsAnchor = itsSlide;
-      itsSlide = tmp;
-      itsAnchor.radius = kMPDefaultRadius;
-      itsSlide.radius = kMPSlideRadius;
-      if (penRig.itsRod == this) {
-        penRig.angle += 180;
-        if (penRig.angle > 360)
-          penRig.angle -= 360;
-      }
+      this.invert();
     }
     else {
       if (penRig.itsRod == this) {

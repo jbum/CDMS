@@ -39,6 +39,16 @@ float[][] setupPens = {
   {4,-90},
 };
 
+Boolean[][] setupInversions = {
+  {false},
+  {false},
+  {false},
+  {false, false},
+  {false, false},
+  {false, false, false},
+  {false},
+};
+
 float bWidth = 18.14;
 float bHeight = 11.51;
 float pCenterX = 8.87;
@@ -155,9 +165,9 @@ MountPoint addMP(int setupIdx, String nom, Channel chan)
   return mp;
 }
 
-ConnectingRod addCR(MountPoint slide, MountPoint anchor)
+ConnectingRod addCR(int rodNbr, MountPoint slide, MountPoint anchor)
 {
-  ConnectingRod cr = new ConnectingRod(slide, anchor);
+  ConnectingRod cr = new ConnectingRod(slide, anchor, rodNbr);
   activeConnectingRods.add(cr);
   return cr;
 }
@@ -195,7 +205,7 @@ void drawingSetup(int setupIdx, boolean resetPaper)
 
     slidePoint = addMP(0, "SP", pivotRail);
     anchorPoint = addMP(1, "AP", crank);
-    cRod = addCR(slidePoint, anchorPoint);
+    cRod = addCR(0, slidePoint, anchorPoint);
 
     penMount = addMP(2, "EX", cRod);
     penRig = addPen(penMount);
@@ -224,7 +234,7 @@ void drawingSetup(int setupIdx, boolean resetPaper)
 
     slidePoint = addMP(0, "SP", fulcrumGear);
     anchorPoint = addMP(1, "AP", anchor);
-    cRod = addCR(slidePoint, anchorPoint);
+    cRod = addCR(0, slidePoint, anchorPoint);
     penMount = addMP(2, "EX", cRod);
     penRig = addPen(penMount);
 
@@ -266,7 +276,7 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     // Setup Pen
     slidePoint = addMP(0, "SP", pivotRail);
     anchorPoint = addMP(1, "AP", orbit);
-    cRod = addCR(slidePoint, anchorPoint);
+    cRod = addCR(0, slidePoint, anchorPoint);
     penMount = addMP(2, "EX", cRod);
     penRig = addPen(penMount);
     break;
@@ -290,11 +300,11 @@ void drawingSetup(int setupIdx, boolean resetPaper)
 
     slidePoint = addMP(0, "SP", aGear);
     anchorPoint = addMP(1, "AP", bGear);
-    cRod = addCR(slidePoint, anchorPoint);
+    cRod = addCR(0, slidePoint, anchorPoint);
 
     MountPoint slidePoint2 = addMP(2, "SP2", pivotRail);
     MountPoint anchorPoint2 = addMP(3, "AP2", cRod);
-    ConnectingRod cRod2 = addCR(slidePoint2, anchorPoint2);
+    ConnectingRod cRod2 = addCR(1, slidePoint2, anchorPoint2);
     penMount = addMP(4,"EX",cRod2);
     penRig = addPen(penMount);
 
@@ -319,11 +329,11 @@ void drawingSetup(int setupIdx, boolean resetPaper)
 
     slidePoint = addMP(0, "SP", pivotRail);
     anchorPoint = addMP(1, "AP", bGear);
-    cRod = addCR(slidePoint, anchorPoint);
+    cRod = addCR(0, slidePoint, anchorPoint);
 
     slidePoint2 = addMP(2, "SP2", aGear);
     anchorPoint2 = addMP(3, "AP2", cRod);
-    cRod2 = addCR(anchorPoint2, slidePoint2);
+    cRod2 = addCR(1, anchorPoint2, slidePoint2);
 
     penMount = addMP(4, "EX", cRod2);
 
@@ -350,15 +360,15 @@ void drawingSetup(int setupIdx, boolean resetPaper)
 
     slidePoint = addMP(0, "SP", pivotRail);
     anchorPoint = addMP(1, "AP", bGear);
-    cRod = addCR(slidePoint, anchorPoint);
+    cRod = addCR(0, slidePoint, anchorPoint);
 
     slidePoint2 = addMP(2, "SP2", aGear);
     anchorPoint2 = addMP(3, "AP2", pivotRail);
-    cRod2 = addCR(slidePoint2, anchorPoint2);
+    cRod2 = addCR(1, slidePoint2, anchorPoint2);
 
     MountPoint slidePoint3 = addMP(4, "SP3", cRod2);
     MountPoint anchorPoint3 = addMP(5, "SA3", cRod);
-    ConnectingRod cRod3 = addCR(anchorPoint3, slidePoint3);
+    ConnectingRod cRod3 = addCR(2, anchorPoint3, slidePoint3);
     penMount = addMP(6, "EX", cRod3);
     
     penRig = addPen(penMount);
@@ -414,7 +424,7 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     // Setup Pen
     slidePoint = addMP(0, "SP", fulcrumGear);
     anchorPoint = addMP(1, "AP", orbit);
-    cRod = addCR(slidePoint, anchorPoint);
+    cRod = addCR(0, slidePoint, anchorPoint);
     penMount = addMP(2, "EX", cRod);
     penRig = addPen(penMount);
 
