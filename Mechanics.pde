@@ -62,6 +62,24 @@ class MountPoint implements Channel, Selectable {
     }
   }
   
+  int chooseBestDirection(int direction, int keycode, float incr) 
+  {
+    PVector pNeg = itsChannel.getPosition(itsMountLength-incr);
+    PVector pPos = itsChannel.getPosition(itsMountLength+incr);
+    switch (keycode) {
+      case RIGHT:
+        return (pPos.x >= pNeg.x)? 1 : -1; 
+      case LEFT:
+        return (pPos.x <= pNeg.x)? 1 : -1; 
+      case UP:
+        return (pPos.y <= pNeg.y)? 1 : -1; 
+      case DOWN:
+        return (pPos.y >= pNeg.y)? 1 : -1; 
+      default:
+        return direction;      
+    }
+  }
+
   void nudge(int direction, int keycode) {
     float amt, mn=0, mx=1;
     if (itsChannel instanceof ConnectingRod) {
@@ -75,6 +93,7 @@ class MountPoint implements Channel, Selectable {
     } else {
       amt = 0.01;
     }
+    direction = chooseBestDirection(direction, keycode, amt);
     amt *= direction;
     itsMountLength += amt;
     itsMountLength = constrain(itsMountLength, mn, mx);
@@ -282,6 +301,14 @@ class PenRig implements Selectable {
     float rangle = radians(this.angle);
     return new PVector(ap.x + cos(itsRod.armAngle + rangle)*d, ap.y + sin(itsRod.armAngle + rangle)*d);
   }
+
+  PVector getPosition(float len, float angle) {
+    PVector ap = itsMP.getPosition();
+    float d = notchToDist(len);
+    float rangle = radians(angle);
+    return new PVector(ap.x + cos(itsRod.armAngle + rangle)*d, ap.y + sin(itsRod.armAngle + rangle)*d);
+  }
+
   
   boolean isClicked(int mx, int my) 
   {
@@ -309,20 +336,45 @@ class PenRig implements Selectable {
     selected = true;
   }
 
-  void nudge(int direction, int kc) {
-    if (kc == RIGHT || kc == LEFT) {
-      this.angle += 5*direction;
-      if (this.angle > 180) {
-        this.angle -= 360;
-      } else if (this.angle <= -180) {
-        this.angle += 360;
-      }
-      setupPens[setupMode][1] = this.angle;
-    } else {
-      this.len += 0.125 * direction;
-      this.len = constrain(this.len, 1, 8);
-      setupPens[setupMode][0] = this.len;
+  int chooseBestDirection(int direction, int keycode, float lenIncr, float angIncr) 
+  {
+    PVector pNeg = getPosition(len -lenIncr, angle-angIncr);
+    PVector pPos = getPosition(len +lenIncr, angle+angIncr);
+
+    switch (keycode) {
+      case RIGHT:
+        return (pPos.x >= pNeg.x)? 1 : -1; 
+      case LEFT:
+        return (pPos.x <= pNeg.x)? 1 : -1; 
+      case UP:
+        return (pPos.y <= pNeg.y)? 1 : -1; 
+      case DOWN:
+        return (pPos.y >= pNeg.y)? 1 : -1; 
+      default:
+        return direction;      
     }
+  }
+
+
+  void nudge(int direction, int kc) {
+    float angIncr = 0, lenIncr = 0;
+    if (kc == RIGHT || kc == LEFT) {
+      angIncr = 5;
+    } else {
+      lenIncr = 0.125;
+    }
+    direction = chooseBestDirection(direction, kc, lenIncr, angIncr);
+    this.angle += angIncr*direction;
+    if (this.angle > 180) {
+      this.angle -= 360;
+    } else if (this.angle <= -180) {
+      this.angle += 360;
+    }
+    setupPens[setupMode][1] = this.angle;
+    this.len += lenIncr*direction;
+    this.len = constrain(this.len, 1, 8);
+    setupPens[setupMode][0] = this.len;
+
     println("Pen: " + this.len + " " + this.angle + "°");
   }
   
