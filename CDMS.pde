@@ -1,10 +1,11 @@
+/* @pjs globalKeyEvents=true; 
+ */
+
 // Simulation of Cycloid Drawing Machine  - latest version is on https://github.com/jbum/CycloidDrawingMachine
 //
 // Physical machine designed by Joe Freedman  kickstarter.com/projects/1765367532/cycloid-drawing-machine
 // Processing simulation by Jim Bumgardner    krazydad.com
 //
-/* @pjs globalKeyEvents="true"; */  
-
 static final float inchesToPoints = 72; // controls display scaling
 static final float mmToInches = 1/25.4;
 
@@ -102,9 +103,10 @@ int loadError = 0; // 1 = gears can't snug
 void setup() {
   size(1400, 828);
   ellipseMode(RADIUS);
-  gFont = createFont("EurostileBold", int(32*seventyTwoScale));
+  mydebug("test");
+  gFont = createFont("Courier", int(32*seventyTwoScale));
   hFont = createFont("Courier", int(18*seventyTwoScale));
-  nFont = createFont("Helvetica-Narrow", int(9*seventyTwoScale)); // loadFont("Notch-Font.vlw");
+  nFont = createFont("Courier", int(11*seventyTwoScale)); // loadFont("Notch-Font.vlw");
   titlePic = loadImage("title_dark.png");
   
   gearInit();

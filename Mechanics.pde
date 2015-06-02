@@ -434,8 +434,8 @@ class PenRig implements Selectable {
       noStroke();
       ellipse(0,0,penWidth/2, penWidth/2);
 
-      stroke(255);
-      fill(255);
+      stroke(96);
+      fill(64);
       for (int i = 0; i < 15; ++i) {
         float x = notchToDist(1+i/2.0);
         line(x, 6, x, -(6+(i % 2 == 0? 2 : 0)));

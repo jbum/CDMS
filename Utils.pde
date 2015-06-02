@@ -124,7 +124,7 @@ void drawFulcrumLabels() {
       for (int n = 0; n < 39; ++n) {
         line(notchX,0,notchX,n % 2 == 1? notchSize : lilNotch);
         if (n % 2 == 1) {
-          text("" + (n/2+1),notchX,lilNotch); 
+          text("" + int(n/2+1),notchX,lilNotch); 
         }
         notchSize += widIncr;
         notchX -= notchIncr;
