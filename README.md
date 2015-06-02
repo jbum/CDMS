@@ -12,4 +12,4 @@ Try the live demo here:
 
 [krazydad.com/cdm/](http://krazydad.com/CDMS/)
 
-
+CDMS is licensed under the [MIT License](https://github.com/jbum/CDMS/blob/master/LICENSE.txt)
