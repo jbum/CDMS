@@ -3,6 +3,7 @@
 // Physical machine designed by Joe Freedman  kickstarter.com/projects/1765367532/cycloid-drawing-machine
 // Processing simulation by Jim Bumgardner    krazydad.com
 //
+/* @pjs globalKeyEvents="true"; */  
 
 static final float inchesToPoints = 72; // controls display scaling
 static final float mmToInches = 1/25.4;
@@ -10,37 +11,37 @@ static final float mmToInches = 1/25.4;
 float seventyTwoScale = inchesToPoints / 72.0; // Don't change this
 
 int[][] setupTeeth = {
-    {120,98},
-    {120,100,98,48},
-    {150,50,100,36,40},
+    {150,72},
+    {120,94,90,34},
+    {150,50,100,34,40},
+    {144, 100, 72},
     {150, 98, 100},
-    {150, 98, 100},
-    {120, 100, 50},
-    {150,50,100,36,40,50,60},
+    {150, 100, 74},
+    {150,50,100,34,40,50,50},
   };
 
 float[][] setupMounts = { // mount point measurements
-  {0.1, 4, 11},
-  {1.5, 3,  10},
-  {1-0.1027, 1.5, 12},
-  {2, 4, 0.8, 8, 11},
+  {0, 3.3838, 10.625},
+  {1.5, 4.4798,  10},
+  {0.8973, 1.5, 12},
+  {4, 4, 0.8, 2, 8.625},
   {0.7, 2, 4, 8, 9},
-  {0.7, 1.5, 4, 0.1, 9, 8, 2},
-  {2.5, 1.0, 14},
+  {0.7, 3.3838, 4, 0.21, 12.75, 5.5, 5.25},
+  {2.5, 1.0, 14.0},
 };
 
 float[][] setupPens = {
-  {6,90},
+  {7.125,-55},
   {6,90},
   {3,-90},
-  {4,-90},
+  {5.75,-65},
   {6,-90},
-  {8,-90},
+  {7.375,-65},
   {4,-90},
 };
 
 Boolean[][] setupInversions = {
-  {false},
+  {true},
   {false},
   {false},
   {false, false},
@@ -80,12 +81,9 @@ float crankSpeed = TWO_PI/720;  // rotation per frame  - 0.2 is nice.
 int passesPerFrame = 1;
 boolean hiresMode = false;
 
-boolean animateMode = false; // for tweening finished drawings
-boolean isRecording = false;  // for recording entire window
 boolean isStarted = false;
 boolean isMoving = false;
 boolean penRaised = true;
-boolean darkTheme = true;
 
 float lastPX = -1, lastPY = -1;
 int myFrameCount = 0;
@@ -99,14 +97,15 @@ int penColorIdx = 0;
 float[] penWidths = {0.5, 1, 2, 3, 5, 7};
 float penWidth = 1;
 int penWidthIdx = 1;
+int loadError = 0; // 1 = gears can't snug
 
 void setup() {
-  size(int(bWidth*inchesToPoints)+100, int(bHeight*inchesToPoints));
+  size(1400, 828);
   ellipseMode(RADIUS);
   gFont = createFont("EurostileBold", int(32*seventyTwoScale));
   hFont = createFont("Courier", int(18*seventyTwoScale));
   nFont = createFont("Helvetica-Narrow", int(9*seventyTwoScale)); // loadFont("Notch-Font.vlw");
-  titlePic = loadImage(darkTheme? "title_dark.png" : "title.png");
+  titlePic = loadImage("title_dark.png");
   
   gearInit();
   activeGears = new ArrayList<Gear>();
@@ -118,7 +117,6 @@ void setup() {
   // Board Setup
   
   paper = createGraphics(int(paperWidth), int(paperWidth));
-  clearPaper();
 
   discPoint = new MountPoint("DP", pCenterX, pCenterY);
   
@@ -179,8 +177,8 @@ PenRig addPen(MountPoint penMount) {
 void drawingSetup(int setupIdx, boolean resetPaper)
 {
   setupMode = setupIdx;
+  loadError = 0;
 
-  println("Drawing Setup: " + setupIdx);
   if (resetPaper) {
     isStarted = false;
   }
@@ -263,9 +261,7 @@ void drawingSetup(int setupIdx, boolean resetPaper)
     crank.meshTo(turnTable);
   
     anchorTable.mount(anchorRail, .315); // this is a hack - we need to allow the anchorTable to snug to the crank regardless of it's size...
-    println("snugging anchortable");
     anchorTable.snugTo(crank);
-    println("done snugging anchortable");
     anchorTable.meshTo(crank);
 
     anchorHub.stackTo(anchorTable);
@@ -442,7 +438,6 @@ void drawingSetup(int setupIdx, boolean resetPaper)
 void draw() 
 {
 
-    background(darkTheme? 128 : 255);
 
   // Crank the machine a few times, based on current passesPerFrame - this generates new gear positions and drawing output
   for (int p = 0; p < passesPerFrame; ++p) {
@@ -461,7 +456,7 @@ void draw()
     
       paper.beginDraw();
       if (!isStarted) {
-        paper.clear();
+        // paper.clear();
         paper.smooth(8);
         paper.noFill();
         paper.stroke(penColor);
@@ -481,24 +476,23 @@ void draw()
         myLastFrame = -1;
         passesPerFrame = 1;
         isMoving = false;
-        isRecording = false;
-        nextTween();
         break;
       }
     }
   }
 
   // Draw the machine onscreen in it's current state
+  background(128);
   pushMatrix();
+    image(titlePic, 0, height-titlePic.height);
+
+    drawFulcrumLabels();
+
     fill(200);
     noStroke();
 
     float logoScale = inchesToPoints/72.0;
-    if (darkTheme)
-      blendMode(ADD);
-    image(titlePic, 0, height-titlePic.height*logoScale, titlePic.width*logoScale, titlePic.height*logoScale);
-    if (darkTheme)
-      blendMode(BLEND);
+
     for (Channel ch : rails) {
        ch.draw();
     }
@@ -506,9 +500,11 @@ void draw()
     // discPoint.draw();
   
     for (Gear g : activeGears) {
-      g.draw();
+      if (g != turnTable)
+        g.draw();
     }
-  
+    turnTable.draw(); // draw this last
+
     penRig.draw();
   
     pushMatrix();
@@ -517,13 +513,10 @@ void draw()
       image(paper, -paperWidth/(2*paperScale), -paperWidth/(2*paperScale), paperWidth/paperScale, paperWidth/paperScale);
     popMatrix();
 
+
     helpDraw(); // draw help if needed
 
   popMatrix();
-  if (isMoving && isRecording) {
-    recordCtr++;
-    saveSnapshotAs("record_" + df.format(recordCtr) + ".png");
-  }
 }
 
 boolean isShifting = false;
@@ -540,7 +533,7 @@ void keyPressed() {
    case ' ':
       isMoving = !isMoving;
       myLastFrame = -1;
-      println("Current cycle length: " + myFrameCount / (TWO_PI/crankSpeed));
+      // println("Current cycle length: " + myFrameCount / (TWO_PI/crankSpeed));
 
       break;
    case '?':
@@ -550,7 +543,7 @@ void keyPressed() {
      isMoving = false;
      passesPerFrame = 0;
      myLastFrame = -1;
-     println("Current cycle length: " + myFrameCount / (TWO_PI/crankSpeed));
+     // println("Current cycle length: " + myFrameCount / (TWO_PI/crankSpeed));
      break;
    case '1':
      passesPerFrame = 1;
@@ -584,35 +577,9 @@ void keyPressed() {
   case 'p':
     // Swap pen mounts - need visual feedback
     break;
-  case 's':
-      saveSnapshot("snapshot_");
-    break;
-  case 19:
-      saveSettings();
-      break;
-  case 15:
-      loadSettings();
-      break;
   case '~':
   case '`':
     completeDrawing();
-    break;
-  case 'M':
-    measureGears();
-    break;
-  case 'T':
-    saveTweenSnapshot();
-    break;
-  case 'S':
-    beginTweening();
-    break;
-  case 'R':
-  case 'r':
-    isRecording = !isRecording;
-    println("Recording is " + (isRecording? "ON" : "OFF"));
-    break;
-  case 'H':
-    toggleHiresmode();
     break;
   case '[':
     advancePenColor(-1);
@@ -636,6 +603,8 @@ void keyPressed() {
     nudge(direction, keyCode);
     break;
   case CODED:
+  case 65535:
+  default:
     switch (keyCode) {
     case UP:
     case DOWN:
@@ -648,13 +617,9 @@ void keyPressed() {
       isShifting = true;
       break;
     default:
-     println("KeyCode pressed: " + (0 + keyCode));
      break;
     }
     break;
-   default:
-     println("Key pressed: " + (0 + key));
-     break;
   }
 }
 

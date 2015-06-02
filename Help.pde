@@ -9,15 +9,7 @@ String[] helpLines = {
     "[ ]    change pen color",
     "< >    change pen width",
     "/      invert connecting rod",
-    "s      save the image",
     "~      draw entire cycle",
-    "R      record each frame to a png file",
-    "R~     record entire cycle to pngs",
-    "T      save tween endpoint",
-    "S      animate finished drawings to endpoint",
-    "H      toggle Hi-res",
-    "Ctrl-S save setup",
-    "Ctrl-O load setup",
 };
 
 void helpDraw() 
@@ -46,7 +38,7 @@ void helpDraw()
   }
   else if (startupAlert) {
     long elapsed = millis() - helpStartMS;
-    float alpha = constrain(map(elapsed, 5*1000, 8*1000, 1, 0),0,1);
+    float alpha = constrain(map(elapsed, 10*1000, 13*1000, 1, 0),0,1);
     if (alpha <= 0.0001) {
       startupAlert = false;
     }

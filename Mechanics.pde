@@ -27,6 +27,7 @@ static final float kCRLabelStart = 1*inchesToPoints;
 static final float kPenLabelStart = 4.75*inchesToPoints;
 static final float kPenLabelIncr = -0.5*inchesToPoints;
 static final float kPenNotchIncr = -0.25*inchesToPoints;
+static final float kPaperRad = 4.625*inchesToPoints;
 
 class MountPoint implements Channel, Selectable {
   Channel itsChannel = null;
@@ -45,7 +46,6 @@ class MountPoint implements Channel, Selectable {
     this.setupIdx = -1; // fixed
     this.x = x*inchesToPoints;
     this.y = y*inchesToPoints;
-    println(this.typeStr + " is at " + this.x/inchesToPoints + "," + this.y/inchesToPoints);
   }
 
   MountPoint(String typeStr, Channel ch, float mr, int setupIdx) {
@@ -56,10 +56,6 @@ class MountPoint implements Channel, Selectable {
     PVector pt = ch.getPosition(mr);
     this.x = pt.x;
     this.y = pt.y;
-    println(this.typeStr + " is at " + this.x/inchesToPoints + "," + this.y/inchesToPoints);
-    if (ch instanceof Gear) {
-      println("  " + this.typeStr + " is mounted on a gear");
-    }
   }
   
   int chooseBestDirection(int direction, int keycode, float incr) 
@@ -97,7 +93,6 @@ class MountPoint implements Channel, Selectable {
     amt *= direction;
     itsMountLength += amt;
     itsMountLength = constrain(itsMountLength, mn, mx);
-    println("Mount: " + itsMountLength);
     if (setupIdx >= 0) {
       setupMounts[setupMode][setupIdx] = itsMountLength;
     }
@@ -169,9 +164,6 @@ class ConnectingRod implements Channel, Selectable {
     itsSlide.radius = kMPSlideRadius;
     this.itsAnchor = itsAnchor;
     
-    println("CR slide len " + itsSlide.itsMountLength);
-    println("CR anchor len " + itsAnchor.itsMountLength);
-    
     if (setupInversions[setupMode][rodNbr])
       invert();
      
@@ -212,7 +204,6 @@ class ConnectingRod implements Channel, Selectable {
         penRig.angle -= 360;
       setupPens[setupMode][1] = penRig.angle;
     }
-    println("Inverted rod " + rodNbr);
   }
   
   void nudge(int direction, int kc) {
@@ -265,26 +256,24 @@ class ConnectingRod implements Channel, Selectable {
     float L = 18 * inchesToPoints;
     line(ap.x,ap.y, ap.x+cos(armAngle)*L, ap.y+sin(armAngle)*L);
     
-    if (passesPerFrame < 50) {
-      stroke(100,100,100,128);
-      fill(100,100,100);
-      strokeWeight(0.5);
-      // float notchOffset = 0.75*inchesToPoints;
-      textFont(nFont);
-      textAlign(CENTER);
-      pushMatrix();
-        translate(sp.x,sp.y);
-        rotate(atan2(ap.y-sp.y,ap.x-sp.x));
-        float ln = dist(ap.x,ap.y,sp.x,sp.y);
-        for (int i = 0; i < 29*2; ++i) {
-          float x = ln-(kCRNotchStart + kCRNotchIncr*i);
-          line(x, 6, x, -(6+(i % 2 == 1? 2 : 0)));
-          if (i % 2 == 1) {
-            text(""+(1+i/2),x,8);
-          }
+    stroke(100,100,100,128);
+    fill(100,100,100);
+    strokeWeight(0.5);
+    // float notchOffset = 0.75*inchesToPoints;
+    textFont(nFont);
+    textAlign(CENTER);
+    pushMatrix();
+      translate(sp.x,sp.y);
+      rotate(atan2(ap.y-sp.y,ap.x-sp.x));
+      float ln = dist(ap.x,ap.y,sp.x,sp.y);
+      for (int i = 0; i < 29*2; ++i) {
+        float x = ln-(kCRNotchStart + kCRNotchIncr*i);
+        line(x, 6, x, -(6+(i % 2 == 1? 2 : 0)));
+        if (i % 2 == 1) {
+          text(""+int(1+i/2),x,8);
         }
-      popMatrix();
-    }
+      }
+    popMatrix();
   }
 }
 
@@ -307,7 +296,6 @@ class PenRig implements Selectable {
 
     PVector ap = itsMP.getPosition();
     PVector ep = this.getPosition();
-    println("Pen Extender " + this.len + " " + this.angle + "°");
   }
 
   float notchToDist(float n) {
@@ -343,8 +331,6 @@ class PenRig implements Selectable {
     ap.x = ep.x + cos(a)*d;
     ap.y = ep.y + sin(a)*d;
 
-    println("mx,my, ap, ep" + mx + " " + my + " " +ap.x + " " +ap.y + "   " +ep.x + " " +ep.y);
-    // mx,my, ap, ep522 293 546.1399 168.98767   492.651 451.97696
     int gr = 5;
     return (mx > min(ap.x-gr,ep.x-gr) && mx < max(ap.x+gr,ep.x+gr) &&
             my > min(ap.y-gr,ep.y-gr) && my < max(ap.y+gr,ep.y+gr) &&
@@ -409,7 +395,6 @@ class PenRig implements Selectable {
     this.len = constrain(this.len, 1, 8);
     setupPens[setupMode][0] = this.len;
 
-    println("Pen: " + this.len + " " + this.angle + "°");
   }
   
   void draw() {
@@ -443,21 +428,19 @@ class PenRig implements Selectable {
       line(-nibRad,0,nibRad,0);
       line(0,nibRad,0,-nibRad);
       
-      if (passesPerFrame < 50) {
-        textFont(nFont);
-        textAlign(CENTER);
-        fill(penColor);
-        noStroke();
-        ellipse(0,0,penWidth/2, penWidth/2);
+      textFont(nFont);
+      textAlign(CENTER);
+      fill(penColor);
+      noStroke();
+      ellipse(0,0,penWidth/2, penWidth/2);
 
-        stroke(255);
-        fill(255);
-        for (int i = 0; i < 15; ++i) {
-          float x = notchToDist(1+i/2.0);
-          line(x, 6, x, -(6+(i % 2 == 0? 2 : 0)));
-          if (i % 2 == 0) {
-            text(""+(1+i/2),x,8);
-          }
+      stroke(255);
+      fill(255);
+      for (int i = 0; i < 15; ++i) {
+        float x = notchToDist(1+i/2.0);
+        line(x, 6, x, -(6+(i % 2 == 0? 2 : 0)));
+        if (i % 2 == 0) {
+          text(""+int(1+i/2),x,8);
         }
       }
       popMatrix();
@@ -480,7 +463,7 @@ class LineRail implements Channel {
 
   void draw() {
     noFill();
-    stroke(darkTheme? 110 : 235);
+    stroke(110);
     strokeWeight(.23*inchesToPoints);
 
     line(x1,y1, x2,y2);
@@ -497,13 +480,13 @@ class LineRail implements Channel {
     float d2 = dist(x2,y2,fixed.x,fixed.y);
     float adiff = abs(a1-a2);
     float r = moveable.radius+fixed.radius+meshGap;
+    float mountRatio;
     if (adiff > TWO_PI)
       adiff -= TWO_PI;
     if (adiff < .01) {  // if rail is perpendicular to fixed circle
-      moveable.mount(this, (r-d1)/(d2-d1));
+      mountRatio = (r-d1)/(d2-d1);
       // find position on line (if any) which corresponds to two radii
     } else if ( abs(x2-x1) < .01 ) {
-      println("Vertical line");
       float m = 0;
       float c = (-m * y1 + x1);
       float aprim = (1 + m*m);
@@ -514,17 +497,16 @@ class LineRail implements Channel {
       float mx1 = m * my1 + c;
       float my2 = (-bprim - sqrt(delta)) / (2 * aprim); // use this if it's better
       float mx2 = m * my2 + c;
-      println("V x1,y1 " + x1/inchesToPoints + " " + y1/inchesToPoints + " x2,y2 " + x2/inchesToPoints + " " + y2/inchesToPoints + " fixed " + fixed.x/inchesToPoints + " " + fixed.y/inchesToPoints);
-      println(" aprim,bprim,cprim = " + aprim + " " + bprim + " " + cprim);
-      // of the two spots which are best, and pick the one that is A) On the line and B) closest to the moveable gear's current position
-      println("  mx1,mx2 " + mx1/inchesToPoints + " " + my1/inchesToPoints + " mx2,my2 " + mx2/inchesToPoints + " " + my2/inchesToPoints);
       if (my1 < min(y1,y2) || my1 > max(y1,y2) || 
           dist(moveable.x,moveable.y,mx2,my2) < dist(moveable.x,moveable.y,mx1,mx2)) {
-        println("  swap");
         mx1 = mx2;
         my1 = my2;
       } 
-      moveable.mount(this, dist(x1,y1,mx1,my1)/dist(x1,y1,x2,y2));
+      if (delta < 0) {
+        mountRatio = -1;
+      } else {
+        mountRatio = dist(x1,y1,mx1,my1)/dist(x1,y1,x2,y2);
+      }
     } else { // we likely have a gear on one of the lines on the left
       // given the line formed by x1,y1 x2,y2, find the two spots which are desiredRadius from fixed center.
       float m = (y2-y1)/(x2-x1);
@@ -537,18 +519,23 @@ class LineRail implements Channel {
       float my1 = m * mx1 + c;
       float mx2 = (-bprim - sqrt(delta)) / (2 * aprim); // use this if it's better
       float my2 = m * mx2 + c;
-      println("x1,y1 " + x1/inchesToPoints + " " + y1/inchesToPoints + " x2,y2 " + x2/inchesToPoints + " " + y2/inchesToPoints);
-      println(" aprim,bprim,cprim = " + aprim + " " + bprim + " " + cprim);
-      // of the two spots which are best, and pick the one that is A) On the line and B) closest to the moveable gear's current position
-      println("  mx1,mx2 " + mx1/inchesToPoints + " " + my1/inchesToPoints + " mx2,my2 " + mx2/inchesToPoints + " " + my2/inchesToPoints);
       if (mx1 < min(x1,x2) || mx1 > max(x1,x2) || my1 < min(y1,y2) || my1 > max(y1,y2) ||
           dist(moveable.x,moveable.y,mx2,my2) < dist(moveable.x,moveable.y,mx1,mx2)) {
-        println("  swap");
         mx1 = mx2;
         my1 = my2;
       }
-      moveable.mount(this, dist(x1,y1,mx1,my1)/dist(x1,y1,x2,y2));
+      if (delta < 0) {
+        mountRatio = -1;
+      } else {
+        mountRatio = dist(x1,y1,mx1,my1)/dist(x1,y1,x2,y2);
+      }
     }
+    if (mountRatio < 0 || mountRatio > 1 || mountRatio == NaN) {
+      loadError = 1;
+      mountRatio = 0;
+    }
+    mountRatio = constrain(mountRatio,0,1);
+    moveable.mount(this,mountRatio);
   }
 }
 
@@ -598,17 +585,15 @@ class ArcRail implements Channel {
    float r2 = this.rad;
 
     float d = dist(x1,y1,x2,y2);
-    println("  desired r = " + r1/72);
-    println("  d = " + d/72);
     
     if (d > r1+r2) {
-      println("  circles are too far apart");
+      loadError = 1;
       return;
     } else if (abs(d) < .01 && abs(r1-r2) < .01) {
-      println("  circles coincide");
+      loadError = 1;
       return;
     } else if (d + min(r1,r2) < max(r1,r2)) {
-      println("  one circle contains the other");
+      loadError = 1;
       return;
     }
     float a = (r1*r1 - r2*r2 + d*d) / (2*d);
@@ -621,8 +606,6 @@ class ArcRail implements Channel {
                               p2.y + (h * (x2 - x1))/ d);
     PVector i2 = new PVector( p2.x - (h * (y2 - y1))/ d,
                               p2.y + (h * (x2 - x1))/ d);
-    println("  i1 " + i1.x/72 + " " + i1.y/72 + " ang " + degrees(atan2(i1.y-cy,i1.x-cx)));
-    println("  i2 " + i2.x/72 + " " + i2.y/72 + " ang " + degrees(atan2(i2.y-cy,i2.x-cx)));
 
     PVector best = i2;
     float ma = atan2(best.y-cy,best.x-cx);
@@ -630,22 +613,20 @@ class ArcRail implements Channel {
       best = i1;
       ma = atan2(best.y-cy,best.x-cx);
       if (ma < begAngle || ma > endAngle) {
-        println("Intersection points don't fall on arc rail");
+        loadError = 1;
         return;
       }
     }
 
-    moveable.mount(this, (ma-begAngle)/(endAngle-begAngle));
-
-
-//    moveable.x = x;
-//    moveable.y = y;
-    // It intersects this arc in 0, 1 or 2 points, which is the spot where we want to mesh - pick the highest one.
+    float mountRatio = (ma-begAngle)/(endAngle-begAngle);
+    if (mountRatio < 0 || mountRatio > 1)
+      loadError = 1;
+    moveable.mount(this, mountRatio);
   }
 
   void draw() {
     noFill();
-    stroke(darkTheme? 110 : 235);
+    stroke(110);
     strokeWeight(.23*inchesToPoints);
     arc(cx, cy, rad, rad, begAngle, endAngle);
   }
@@ -745,7 +726,8 @@ class Gear implements Channel, Selectable {
   
   void nudge(int direction, int keycode) {
     int gearIdx = this.setupIdx;
-    int teeth;
+    int teeth, oldTeeth;
+    oldTeeth = this.teeth;
     if (isShifting) {
       teeth = setupTeeth[setupMode][gearIdx] + direction;
     } else {
@@ -758,13 +740,17 @@ class Gear implements Channel, Selectable {
     }
     setupTeeth[setupMode][gearIdx] = teeth;
     drawingSetup(setupMode, false);
+    if (loadError != 0) { // disallow invalid meshes
+      // java.awt.Toolkit.getDefaultToolkit().beep();
+      setupTeeth[setupMode][gearIdx] = oldTeeth;
+      drawingSetup(setupMode, false);
+    }
     selectedObject = activeGears.get(gearIdx);
     selectedObject.select();
   }
 
   
   int findNextTeeth(int teeth, int direction) {
-    println("Finding next tooth: " + teeth + " dir " + direction);
     int[] gTeeth = (this == turnTable? ttTeeth : rgTeeth);
 
     if (direction == 1) {
@@ -829,6 +815,8 @@ class Gear implements Channel, Selectable {
     float d = moveable.radius+fixed.radius+meshGap;
 
     float mountRadDist = this.radius*d/d2;
+    if (mountRadDist < 0 || mountRadDist > this.radius)
+      loadError = 1;
     float mountNotch = distToNotch(mountRadDist);
 
     moveable.mount(this, mountNotch);
@@ -858,7 +846,6 @@ class Gear implements Channel, Selectable {
     PVector pt = ch.getPosition(r);
     this.x = pt.x;
     this.y = pt.y;
-    println("Gear " + teeth + " is at " + this.x/inchesToPoints + "," + this.y/inchesToPoints);
   }
 
   void crank(float pos) {
@@ -899,7 +886,7 @@ class Gear implements Channel, Selectable {
       float tipAngle = tAngle*.1;
 
       if (doFill) {
-        fill(240,240,240,darkTheme? 255 : 192);
+        fill(220);
       } else {
        noFill();
       }
@@ -922,18 +909,28 @@ class Gear implements Channel, Selectable {
         vertex(r2*cos(a1+tAngle), r2*sin(a1+tAngle));
       }
       endShape();
+
+      if (this == turnTable) {
+        noStroke();
+        fill(255,192);
+        beginShape();
+        for (int i = 0; i < 8; ++i) {
+          vertex(kPaperRad*cos(i*TWO_PI/8), kPaperRad*sin(i*TWO_PI/8));          
+        }
+        endShape();
+      }
+
+
       strokeWeight(1);
 
-      if (passesPerFrame < 50) {
-        pushMatrix();
-          translate(0, radius-20);
-          fill(127);
-          textFont(gFont);
-          textAlign(CENTER);
-          text(""+teeth, 0, 0);
-          noFill();
-        popMatrix();
-      }
+      pushMatrix();
+        translate(0, radius-20);
+        fill(127);
+        textFont(gFont);
+        textAlign(CENTER);
+        text(""+teeth, 0, 0);
+        noFill();
+      popMatrix();
 
       if (showMount) {
         noStroke();
@@ -953,19 +950,17 @@ class Gear implements Channel, Selectable {
             notchEnd = radius-max(radius*.1,8*seventyTwoScale);
             nbrLabels = 1 + int((notchEnd-notchStart-0.2*inchesToPoints)/(0.5*inchesToPoints));
           }
-          if (passesPerFrame < 50) {
-            textFont(nFont);
-            textAlign(CENTER);
+          textFont(nFont);
+          textAlign(CENTER);
 
-            stroke(128);
-            fill(128);
-            int nbrNotches = (nbrLabels)*2-1;
-            for (int i = 0; i < nbrNotches; ++i) {
-              float x = kGearLabelStart + i * 0.25 * inchesToPoints;
-              line(x,-(i % 2 == 0? kGearNotchHeightMaj : kGearNotchHeightMin), x, (i % 2 == 0? kGearNotchHeightMaj : kGearNotchHeightMin));
-              if (i % 2 == 0) {
-                text((i/2)+1,x,kGearNotchHeightMaj+0.2*inchesToPoints);
-              }
+          stroke(128);
+          fill(128);
+          int nbrNotches = (nbrLabels)*2-1;
+          for (int i = 0; i < nbrNotches; ++i) {
+            float x = kGearLabelStart + i * 0.25 * inchesToPoints;
+            line(x,-(i % 2 == 0? kGearNotchHeightMaj : kGearNotchHeightMin), x, (i % 2 == 0? kGearNotchHeightMaj : kGearNotchHeightMin));
+            if (i % 2 == 0) {
+              text((i/2)+1,x,kGearNotchHeightMaj+0.2*inchesToPoints);
             }
           }
           fill(192);
