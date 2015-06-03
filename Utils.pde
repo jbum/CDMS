@@ -102,7 +102,7 @@ void drag() {
       startDragY = pmouseY;
       isDragging = true;
     }
-    //!!  for ConnectingRod - we probably need more constraints
+    //!!  for ConnectingRod - use a similar system as for penrig to move it's mountpoint - do NOT do swaps (maybe do them by double-clicking on swivel?)
     //
     if (selectedObject instanceof Gear) {
       Gear g = (Gear) selectedObject;
