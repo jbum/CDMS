@@ -11,7 +11,7 @@ function mydebug(msg) {
 function jsLoadSetups(csetup) {
   // Load default setups from cookies
   if ($.cookie('cdms_setups')) {
-    console.log("Got Setup: " + $.cookie('cdms_setups'));
+    mydebug("Got Setup: " + $.cookie('cdms_setups'));
     var cs = $.parseJSON($.cookie('cdms_setups'));
     csetup.setupMode = cs.setupMode;
     csetup.setupTeeth = cs.setupTeeth;
@@ -35,7 +35,7 @@ function jsSaveSetups(csetup) {
          'penWidthIdx':csetup.penWidthIdx,
        };
   var setupJson = JSON.stringify(csl);
-  console.log(setupJson);
+  mydebug(setupJson);
   $.cookie('cdms_setups', setupJson, {expires:7});
 }
 
@@ -77,7 +77,7 @@ function buttonFeedback()
   $('.bcmd').removeClass('active');
   $('#lcmd\\:setup\\:' + setupMode).addClass('active');
   $('#lcmd\\:'+playMode).addClass('active');
-  console.log("feedback " + setupMode + " " + playMode);
+  mydebug("feedback " + setupMode + " " + playMode);
 }
 
 function setupButtons() {
@@ -92,7 +92,6 @@ function setupButtons() {
     buttonFeedback();
   });
   $('.credits-btn').on('click', function(evt) {
-    console.log("Togglging");
     $('#CDMS-credits').toggle();
   });
   buttonFeedback();

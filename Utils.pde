@@ -90,6 +90,48 @@ void nudge(int direction, int kc)
   doSaveSetup();
 }
 
+Boolean isDragging = false;
+float startDragX = 0, startDragY= 0;
+
+void drag() {
+  if (selectedObject != null) {
+    int direction=0, keycode=0;
+    if (selectedObject instanceof Gear) {
+      Gear g = (Gear) selectedObject;
+      if (!isDragging) {
+        startDragX = pmouseX;
+        startDragY = pmouseY;
+        isDragging = true;
+      }
+      float dm = dist(mouseX, mouseY, g.x, g.y);
+      float ds = dist(startDragX, startDragY, g.x, g.y);
+      if (abs(dm-ds) > 10) {
+        direction = (dm > ds)? 1 : -1;
+        keycode = (direction == 1)? UP : DOWN;
+        startDragX = mouseX;
+        startDragY = mouseY;
+      }
+    } else {
+      float a = atan2(mouseY-pmouseY, mouseX-pmouseX);
+      if (a >= -PI/4 && a <= PI/4) {
+        direction = 1;
+        keycode = RIGHT;
+      } else if (a >= 3*PI/4 || a <= -3*PI/4) {
+        direction = -1;
+        keycode = LEFT;
+      } else if (a >= -3*PI/4 && a <= -PI/4) {
+        direction = 1;
+        keycode = UP;
+      } else if (a >= PI/4 && a <= 3*PI/4) {
+        direction = -1;
+        keycode = DOWN;
+      }
+    }
+    if (direction != 0)
+      nudge(direction, keycode);
+  }
+}
+
 void deselect() {
   if (selectedObject != null) {
     selectedObject.unselect();

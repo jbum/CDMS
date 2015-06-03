@@ -75,7 +75,7 @@ class MountPoint implements Channel, Selectable {
         return direction;      
     }
   }
-
+  
   void nudge(int direction, int keycode) {
     float amt, mn=0, mx=1;
     if (itsChannel instanceof ConnectingRod) {
@@ -369,7 +369,7 @@ class PenRig implements Selectable {
         return direction;      
     }
   }
-
+  
   void nudge(int direction, int kc) {
     float angIncr = 0, lenIncr = 0;
     if (kc == RIGHT || kc == LEFT) {
@@ -637,7 +637,7 @@ int[] rgTeeth = { // regular gears
   30, 32, 34, 36, 40, 48, 50, 58, 60, 66, 72, 74, 80, 90, 94, 98, 100, 108, 
  };
 int [] ttTeeth = { // turntable gears
-   120, 144, 150, 151
+   120, 144, 150
 };
 
 class GearSetup {
@@ -734,8 +734,8 @@ class Gear implements Channel, Selectable {
       teeth = findNextTeeth(setupTeeth[setupMode][gearIdx], direction);
     }
     if (teeth < 24) {
-      teeth = 151;
-    } else if (teeth > 151) {
+      teeth = 150;
+    } else if (teeth > 150) {
       teeth = 30;
     }
     setupTeeth[setupMode][gearIdx] = teeth;

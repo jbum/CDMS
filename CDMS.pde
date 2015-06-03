@@ -638,6 +638,11 @@ void keyPressed() {
   }
 }
 
+void mouseDragged()
+{
+  drag();
+}
+
 void mousePressed() 
 {
   deselect();
