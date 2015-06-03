@@ -1,3 +1,10 @@
+String saveFilename(String prefix)
+{
+  String sf = prefix + year() + "-" + month() + "-" + day() + "_" + hour() + "." + minute() + "." + second() + ".png";
+  return sf;
+}
+
+
 String getSetupString()
 {
   String ss = "Setup\t" + ((char) (65+ setupMode)) + "\n";
@@ -270,7 +277,7 @@ void doSnapshot()
   // background(255);
   // image(paper,0,0);
   // save("untitled.png");
-  makeSnapshot(paper, turnTable.rotation);
+  makeSnapshot(paper, turnTable.rotation, saveFilename("cdm_"));
 }
 
 void issueCmd(String cmd, String subcmd) {

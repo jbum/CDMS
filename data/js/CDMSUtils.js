@@ -97,8 +97,8 @@ function setupButtons() {
   buttonFeedback();
 }
 
-function makeSnapshot(pgraphics, rotation) 
+function makeSnapshot(pgraphics, rotation, fileName) 
 {
    var pi = Processing.getInstanceById('Snapper');
-   pi.snapPicture(pgraphics, rotation);
+   pi.snapPicture(pgraphics, rotation, fileName);
 }

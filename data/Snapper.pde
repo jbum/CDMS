@@ -9,7 +9,7 @@ void draw() {
     background(255);
 }
 
-void snapPicture(PGraphics paper, float rotation) {
+void snapPicture(PGraphics paper, float rotation, String filename) {
    background(255);
 
    pushMatrix();
@@ -17,5 +17,5 @@ void snapPicture(PGraphics paper, float rotation) {
       rotate(rotation);
       image(paper, -paper.width/2, -paper.width/2);
    popMatrix();
-   save("untitled.png");
+   save(filename);
 }
