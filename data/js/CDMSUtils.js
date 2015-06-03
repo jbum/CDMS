@@ -97,3 +97,9 @@ function setupButtons() {
   });
   buttonFeedback();
 }
+
+function makeSnapshot(pgraphics, rotation) 
+{
+   var pi = Processing.getInstanceById('Snapper');
+   pi.snapPicture(pgraphics, rotation);
+}

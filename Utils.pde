@@ -189,6 +189,15 @@ void doLoadSetup()
   advancePenWidth(0);
 }
 
+void doSnapshot() 
+{
+  //
+  // background(255);
+  // image(paper,0,0);
+  // save("untitled.png");
+  makeSnapshot(paper, turnTable.rotation);
+}
+
 void issueCmd(String cmd, String subcmd) {
   if (cmd.equals("play")) {
       passesPerFrame = 1;
@@ -222,7 +231,7 @@ void issueCmd(String cmd, String subcmd) {
       drawingSetup(setupMode, false);
       doSaveSetup();
   } else if (cmd.equals("snapshot")) {
-    alert("Coming Soon!");
+    doSnapshot();
   }
 }
 
