@@ -96,13 +96,16 @@ float startDragX = 0, startDragY= 0;
 void drag() {
   if (selectedObject != null) {
     int direction=0, keycode=0;
+
+    if (!isDragging) {
+      startDragX = pmouseX;
+      startDragY = pmouseY;
+      isDragging = true;
+    }
+    //!!  for ConnectingRod - we probably need more constraints
+    //
     if (selectedObject instanceof Gear) {
       Gear g = (Gear) selectedObject;
-      if (!isDragging) {
-        startDragX = pmouseX;
-        startDragY = pmouseY;
-        isDragging = true;
-      }
       float dm = dist(mouseX, mouseY, g.x, g.y);
       float ds = dist(startDragX, startDragY, g.x, g.y);
       if (abs(dm-ds) > 10) {
@@ -111,20 +114,50 @@ void drag() {
         startDragX = mouseX;
         startDragY = mouseY;
       }
+    } else if (selectedObject instanceof PenRig) {
+      // For pen arm, use startX, endX to get closest anchor point on pen arm.  Then reposition/rotate so that anchorP is as close as possible to mouseX/mouseY
+      // using proper penarm quantization.
+      // we solve rotation first (using mouse -> arm pivot, translated for parent), then length is fairly easy.
+      //
+      PenRig pr = (PenRig) selectedObject;
+      float dm = dist(mouseX, mouseY, startDragX, startDragX);
+      if (abs(dm) > 10) {
+        PVector ap = pr.itsMP.getPosition(); // position of mount
+        PVector pp = pr.getPosition(); // position of pen
+        float gPenAngle = atan2(pp.y-ap.y,pp.x-ap.x);
+        float lAngleOffset = radians(pr.angle) - gPenAngle; // adjustment to stored angle, in radians
+        float desiredAngle = atan2(mouseY-ap.y,mouseX-ap.x);
+        pr.angle = degrees(desiredAngle+lAngleOffset);
+        pr.angle = round(pr.angle / 5)*5;
+        float oLen = dist(startDragX,startDragY,ap.x,ap.y);
+        float desLen = dist(mouseX, mouseY, ap.x, ap.y);
+        pr.len -= (desLen-oLen)/(0.5*inchesToPoints);
+        pr.len = round(pr.len / 0.125)*0.125;
+        setupPens[setupMode][1] = pr.angle;
+        setupPens[setupMode][0] = pr.len;
+        doSaveSetup();
+        startDragX = mouseX;
+        startDragY = mouseY;
+      }
     } else {
-      float a = atan2(mouseY-pmouseY, mouseX-pmouseX);
-      if (a >= -PI/4 && a <= PI/4) {
-        direction = 1;
-        keycode = RIGHT;
-      } else if (a >= 3*PI/4 || a <= -3*PI/4) {
-        direction = -1;
-        keycode = LEFT;
-      } else if (a >= -3*PI/4 && a <= -PI/4) {
-        direction = 1;
-        keycode = UP;
-      } else if (a >= PI/4 && a <= 3*PI/4) {
-        direction = -1;
-        keycode = DOWN;
+      float dm = dist(mouseX, mouseY, startDragX, startDragX);
+      if (abs(dm) > 10) {
+        float a = atan2(mouseY-startDragY, mouseX-startDragX);
+        if (a >= -PI/4 && a <= PI/4) {
+          direction = 1;
+          keycode = RIGHT;
+        } else if (a >= 3*PI/4 || a <= -3*PI/4) {
+          direction = -1;
+          keycode = LEFT;
+        } else if (a >= -3*PI/4 && a <= -PI/4) {
+          direction = 1;
+          keycode = UP;
+        } else if (a >= PI/4 && a <= 3*PI/4) {
+          direction = -1;
+          keycode = DOWN;
+        }
+        startDragX = mouseX;
+        startDragY = mouseY;
       }
     }
     if (direction != 0)

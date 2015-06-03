@@ -643,6 +643,10 @@ void mouseDragged()
   drag();
 }
 
+void mouseReleased() {
+  isDragging = false;
+}
+
 void mousePressed() 
 {
   deselect();
