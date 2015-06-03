@@ -50,3 +50,7 @@ a.credits-btn {
 #CDMS-credits {
     display:none;
 }
+
+canvas#Snapper {
+    display:none;
+}
