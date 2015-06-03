@@ -39,6 +39,10 @@ canvas {
     text-decoration: none;
 }
 
+.bcmd.lit, a.scmd.lit:link {
+    color:#000;
+}
+
 a.credits-btn {
     text-decoration: none;
 }

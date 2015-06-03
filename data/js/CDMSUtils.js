@@ -20,6 +20,7 @@ function jsLoadSetups(csetup) {
     csetup.setupInversions = cs.setupInversions;
     csetup.penColorIdx = cs.penColorIdx;
     csetup.penWidthIdx = cs.penWidthIdx;
+
   }
 }
 
@@ -48,6 +49,37 @@ function getButtonID(e) {
   return elem.attr('id');
 }
 
+function buttonFeedback()
+{
+  var processingInstance = Processing.getInstanceById('CDMS');
+
+  var setupMode = processingInstance.getSetupMode();
+  var passesPerFrame = processingInstance.getPassesPerFrame();
+  var drawDirection = processingInstance.getDrawDirection();
+  var isMoving = processingInstance.getIsMoving();
+
+  var playMode = 'pause';
+  if (isMoving && passesPerFrame != 0) {
+    if (drawDirection == -1) {
+      if (passesPerFrame < 10)
+        playMode = 'rr';
+      else
+        playMode = 'rrr';
+    } else {
+      if (passesPerFrame < 10)
+        playMode = 'play';
+      else if (passesPerFrame < 720)
+        playMode = 'ff';
+      else
+        playMode = 'fff';
+    }
+  }
+  $('.bcmd').removeClass('active');
+  $('#lcmd\\:setup\\:' + setupMode).addClass('active');
+  $('#lcmd\\:'+playMode).addClass('active');
+  console.log("feedback " + setupMode + " " + playMode);
+}
+
 function setupButtons() {
   $('.bcmd').on('click', function(evt) {
     var id = getButtonID(evt);
@@ -57,9 +89,11 @@ function setupButtons() {
     var processingInstance = Processing.getInstanceById('CDMS');
 
     processingInstance.issueCmd(cmd, subCmd);
+    buttonFeedback();
   });
   $('.credits-btn').on('click', function(evt) {
     console.log("Togglging");
     $('#CDMS-credits').toggle();
   });
+  buttonFeedback();
 }

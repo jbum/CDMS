@@ -148,9 +148,10 @@ void setup() {
       rails.add(new LineRail(x1, y1, x2, y2));
   }
 
+  setupButtons();
   doLoadSetup();
   drawingSetup(setupMode, true);
-  setupButtons();
+  buttonFeedback();
 }
 
 
@@ -482,6 +483,7 @@ void draw()
         myLastFrame = -1;
         passesPerFrame = 1;
         isMoving = false;
+        buttonFeedback();
         break;
       }
     }
@@ -540,6 +542,7 @@ void keyPressed() {
       isMoving = !isMoving;
       myLastFrame = -1;
       // println("Current cycle length: " + myFrameCount / (TWO_PI/crankSpeed));
+     buttonFeedback();
 
       break;
    case '?':
@@ -549,11 +552,13 @@ void keyPressed() {
      isMoving = false;
      passesPerFrame = 0;
      myLastFrame = -1;
+     buttonFeedback();
      // println("Current cycle length: " + myFrameCount / (TWO_PI/crankSpeed));
      break;
    case '1':
      passesPerFrame = 1;
      isMoving = true;
+     buttonFeedback();
      break;
    case '2':
    case '3':
@@ -565,6 +570,7 @@ void keyPressed() {
    case '9':
       passesPerFrame = int(map((key-'0'),2,9,10,360));
       isMoving = true;
+      buttonFeedback();
       break;
    case 'a':
    case 'b':
@@ -576,6 +582,7 @@ void keyPressed() {
      deselect();
      drawingSetup(key - 'a', false);
      doSaveSetup();
+     buttonFeedback();
      break;
    case 'X':
    case 'x':
@@ -587,6 +594,7 @@ void keyPressed() {
   case '~':
   case '`':
     completeDrawing();
+    buttonFeedback();
     break;
   case '[':
     advancePenColor(-1);

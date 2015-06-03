@@ -28,29 +28,62 @@
 				</noscript>
 	    	</div>
 
-			<div class="btn-group">
-	            <a class="btn btn-default bcmd" id="bcmd:rrr" href="#"><i class="fa fa-fast-backward fa-2x"></i></a>
+			<div class="btn-group" data-toggle="buttons">
+				  <label class="btn btn-default bcmd" id="lcmd:rrr">
+				    <input type="radio" name="options" id="bcmd:rrr" autocomplete="off"><i class="fa fa-fast-backward fa-2x"></i>
+				  </label>
+				  <label class="btn btn-default bcmd" id="lcmd:rr">
+				    <input type="radio" name="options" id="bcmd:rr" autocomplete="off"><i class="fa fa-backward fa-2x"></i>
+				  </label>
+				  <label class="btn btn-default bcmd active" id="lcmd:pause" >
+				    <input type="radio" name="options" id="bcmd:pause" autocomplete="off" checked><i class="fa fa-pause fa-2x"></i>
+				  </label>
+				  <label class="btn btn-default bcmd" id="lcmd:play">
+				    <input type="radio" name="options" id="bcmd:play" autocomplete="off"><i class="fa fa-play fa-2x"></i>
+				  </label>
+				  <label class="btn btn-default bcmd" id="lcmd:ff">
+				    <input type="radio" name="options" id="bcmd:ff" autocomplete="off"><i class="fa fa-forward fa-2x"></i>
+				  </label>
+				  <label class="btn btn-default bcmd" id="lcmd:fff">
+				    <input type="radio" name="options" id="bcmd:fff" autocomplete="off"><i class="fa fa-fast-forward fa-2x"></i>
+				  </label>
+<!--	            <a class="btn btn-default bcmd" id="bcmd:rrr" href="#"><i class="fa fa-fast-backward fa-2x"></i></a>
 	            <a class="btn btn-default bcmd" id="bcmd:rr" href="#"><i class="fa fa-backward fa-2x"></i></a>
 	            <a class="btn btn-default bcmd" id="bcmd:pause" href="#"><i class="fa fa-pause fa-2x"></i></a>
 	            <a class="btn btn-default bcmd" id="bcmd:play" href="#"><i class="fa fa-play fa-2x"></i></a>
 	            <a class="btn btn-default bcmd" id="bcmd:ff" href="#"><i class="fa fa-forward fa-2x"></i></a>
-	            <a class="btn btn-default bcmd" id="bcmd:fff" href="#"><i class="fa fa-fast-forward fa-2x"></i></a>
+	            <a class="btn btn-default bcmd" id="bcmd:fff" href="#"><i class="fa fa-fast-forward fa-2x"></i></a> -->
+			</div>
+			&nbsp;&nbsp;&nbsp;&nbsp;
+			<div class="btn-group" data-toggle="buttons">
+				  <label class="btn btn-default bcmd scmd active" id="lcmd:setup:0">
+				    <input type="radio" name="options" id="bcmd:setup:0" autocomplete="off">A
+				  </label>
+				  <label class="btn btn-default bcmd scmd" id="lcmd:setup:1">
+				    <input type="radio" name="options" id="bcmd:setup:1" autocomplete="off">B
+				  </label>
+				  <label class="btn btn-default bcmd scmd" id="lcmd:setup:2">
+				    <input type="radio" name="options" id="bcmd:setup:2" autocomplete="off">C
+				  </label>
+				  <label class="btn btn-default bcmd scmd" id="lcmd:setup:3">
+				    <input type="radio" name="options" id="bcmd:setup:3" autocomplete="off">D
+				  </label>
+				  <label class="btn btn-default bcmd scmd" id="lcmd:setup:4">
+				    <input type="radio" name="options" id="bcmd:setup:4" autocomplete="off">E
+				  </label>
+				  <label class="btn btn-default bcmd scmd" id="lcmd:setup:5">
+				    <input type="radio" name="options" id="bcmd:setup:5" autocomplete="off">F
+				  </label>
+				  <label class="btn btn-default bcmd scmd" id="lcmd:setup:6">
+				    <input type="radio" name="options" id="bcmd:setup:6" autocomplete="off">G
+				  </label>
 			</div>
 			&nbsp;&nbsp;&nbsp;&nbsp;
 			<div class="btn-group">
-	            <a class="btn btn-default bcmd scmd" id="bcmd:setup:0" href="#">A</a>
-	            <a class="btn btn-default bcmd scmd" id="bcmd:setup:1" href="#">B</a>
-	            <a class="btn btn-default bcmd scmd" id="bcmd:setup:2" href="#">C</a>
-	            <a class="btn btn-default bcmd scmd" id="bcmd:setup:3" href="#">D</a>
-	            <a class="btn btn-default bcmd scmd" id="bcmd:setup:4" href="#">E</a>
-	            <a class="btn btn-default bcmd scmd" id="bcmd:setup:5" href="#">F</a>
-	            <a class="btn btn-default bcmd scmd" id="bcmd:setup:6" href="#">G</a>
+            	<button type=button class="btn btn-default bcmd" id="bcmd:snapshot"><i class="fa fa-camera fa-2x"></i></button>
+            	<button type=button class="btn btn-default bcmd" id="bcmd:erase"><i class="fa fa-eraser fa-2x"></i></button>
 			</div>
-			&nbsp;&nbsp;&nbsp;&nbsp;
-			<div class="btn-group">
-            	<a class="btn btn-default bcmd" id="bcmd:snapshot" href="#"><i class="fa fa-camera fa-2x"></i></a>
-            	<a class="btn btn-default bcmd" id="bcmd:erase" href="#"><i class="fa fa-eraser fa-2x"></i></a>
-			</div>
+
 	        <br />
 	        <a href="#" class="credits-btn">Credits...</a>
 	        <p />

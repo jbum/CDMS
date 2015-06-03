@@ -225,3 +225,23 @@ void issueCmd(String cmd, String subcmd) {
     alert("Coming Soon!");
   }
 }
+
+String getSetupMode()
+{
+  return setupMode;
+}
+
+int getDrawDirection()
+{
+  return drawDirection;
+}
+
+int getPassesPerFrame()
+{
+  return passesPerFrame;
+}
+
+Boolean getIsMoving()
+{
+  return isMoving;
+}
