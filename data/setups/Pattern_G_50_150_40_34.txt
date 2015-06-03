@@ -1,0 +1,22 @@
+{
+  "mounts": [
+    2.5,
+    1,
+    14
+  ],
+  "inversions": [false],
+  "layout": 6,
+  "penrig": {
+    "length": 4,
+    "angle": -90
+  },
+  "gears": [
+    150,
+    50,
+    100,
+    34,
+    40,
+    50,
+    50
+  ]
+}

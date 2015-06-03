@@ -101,9 +101,10 @@ int penWidthIdx = 1;
 int loadError = 0; // 1 = gears can't snug
 
 void setup() {
+  // size(window.innerWidth, window.innerHeight); 
   size(1400, 828);
   ellipseMode(RADIUS);
-  mydebug("test");
+  // mydebug("test");
   gFont = createFont("Courier", int(32*seventyTwoScale));
   hFont = createFont("Courier", int(18*seventyTwoScale));
   nFont = createFont("Courier", int(11*seventyTwoScale)); // loadFont("Notch-Font.vlw");

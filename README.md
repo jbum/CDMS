@@ -10,6 +10,6 @@ Processing simulation by [Jim Bumgardner](http://krazydad.com/about.php)
 
 Try the live demo here: 
 
-[krazydad.com/cdm/](http://krazydad.com/CDMS/)
+[wheelof.com/sketch/](http://wheelof.com/sketch/)
 
 CDMS is licensed under the [MIT License](https://github.com/jbum/CDMS/blob/master/LICENSE.txt)
