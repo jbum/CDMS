@@ -89,6 +89,7 @@ boolean penRaised = true;
 float lastPX = -1, lastPY = -1;
 int myFrameCount = 0;
 int myLastFrame = -1;
+int drawDirection = 1;
 int recordCtr = 0;
 
 color[] penColors = {color(0,0,0), color(192,0,0), color(0,128,0), color(0,0,128), color(192,0,192)};
@@ -109,7 +110,7 @@ void setup() {
   hFont = createFont("Courier", int(18*seventyTwoScale));
   nFont = createFont("Courier", int(11*seventyTwoScale)); // loadFont("Notch-Font.vlw");
   titlePic = loadImage("title_dark.png");
-  
+
   gearInit();
   activeGears = new ArrayList<Gear>();
   activeMountPoints = new ArrayList<MountPoint>();
@@ -147,7 +148,9 @@ void setup() {
       rails.add(new LineRail(x1, y1, x2, y2));
   }
 
+  doLoadSetup();
   drawingSetup(setupMode, true);
+  setupButtons();
 }
 
 
@@ -445,7 +448,7 @@ void draw()
   // Crank the machine a few times, based on current passesPerFrame - this generates new gear positions and drawing output
   for (int p = 0; p < passesPerFrame; ++p) {
     if (isMoving) {
-      myFrameCount += 1;
+      myFrameCount += drawDirection;
       turnTable.crank(myFrameCount*crankSpeed); // The turntable is always the root of the propulsion chain, since it is the only required gear.
 
       // work out coords on unrotated paper
@@ -572,6 +575,7 @@ void keyPressed() {
    case 'g':
      deselect();
      drawingSetup(key - 'a', false);
+     doSaveSetup();
      break;
    case 'X':
    case 'x':

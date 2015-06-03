@@ -72,6 +72,14 @@ void completeDrawing()
 void clearPaper() 
 {
   paper = createGraphics(paperWidth, paperWidth);
+  paper.beginDraw();
+    paper.smooth(8);
+    paper.noFill();
+    paper.stroke(penColor);
+    paper.strokeJoin(ROUND);
+    paper.strokeCap(ROUND);
+    paper.strokeWeight(penWidth);
+  paper.endDraw();
 }
 
 void nudge(int direction, int kc)
@@ -79,6 +87,7 @@ void nudge(int direction, int kc)
   if (selectedObject != null) {
     selectedObject.nudge(direction, kc);
   }
+  doSaveSetup();
 }
 
 void deselect() {
@@ -94,6 +103,9 @@ void advancePenColor(int direction) {
   paper.beginDraw();
   paper.stroke(penColor);
   paper.endDraw();
+  if (direction != 0) {
+    doSaveSetup();
+  }
 }
 
 void advancePenWidth(int direction) {
@@ -102,6 +114,9 @@ void advancePenWidth(int direction) {
   paper.beginDraw();
   paper.strokeWeight(penWidth);
   paper.endDraw();
+  if (direction != 0) {
+    doSaveSetup();
+  }
 }
 
 void drawFulcrumLabels() {
@@ -131,4 +146,82 @@ void drawFulcrumLabels() {
       }
     popMatrix();
 
+}
+
+class CDMSSetup {
+  int[][] setupTeeth;
+  float[][] setupMounts;
+  float[][] setupPens;
+  Boolean[][] setupInversions;
+  int penColorIdx, penWidthIdx;
+
+  CDMSSetup(int setupMode, int penColorIdx, int penWidthIdx, int[][] setupTeeth, float[][] setupMounts, float[][] setupPens, Boolean[][] setupInversions)
+  {
+    this.penColorIdx = penColorIdx;
+    this.penWidthIdx = penWidthIdx;
+    this.setupMode = setupMode;
+    this.setupTeeth = setupTeeth;
+    this.setupMounts = setupMounts;
+    this.setupPens = setupPens;
+    this.setupInversions = setupInversions;
+  }
+};
+
+
+void doSaveSetup()
+{
+  CDMSSetup tsetup = new CDMSSetup(setupMode, penColorIdx, penWidthIdx, setupTeeth, setupMounts, setupPens, setupInversions);
+  jsSaveSetups(tsetup);
+}
+
+void doLoadSetup()
+{
+  CDMSSetup tsetup = new CDMSSetup(setupMode, penColorIdx, penWidthIdx, setupTeeth, setupMounts, setupPens, setupInversions);
+  jsLoadSetups(tsetup);
+  setupTeeth = tsetup.setupTeeth;
+  setupMounts = tsetup.setupMounts;
+  setupPens = tsetup.setupPens;
+  setupInversions = tsetup.setupInversions;
+  setupMode = tsetup.setupMode;
+  penColorIdx = tsetup.penColorIdx;
+  penWidthIdx = tsetup.penWidthIdx;
+  advancePenColor(0);
+  advancePenWidth(0);
+}
+
+void issueCmd(String cmd, String subcmd) {
+  if (cmd.equals("play")) {
+      passesPerFrame = 1;
+      isMoving = true;
+      drawDirection = 1;
+      myLastFrame = -1;
+  } else if (cmd.equals("pause")) {
+      isMoving = false;
+      drawDirection = 1;
+      myLastFrame = -1;
+  } else if (cmd.equals("ff")) {
+      passesPerFrame = 10;
+      drawDirection = 1;
+      isMoving = true;
+  } else if (cmd.equals("fff")) {
+      drawDirection = 1;
+      completeDrawing();
+  } else if (cmd.equals("rr")) {
+      drawDirection = -1;
+      passesPerFrame = 1;
+      isMoving = true;
+  } else if (cmd.equals("rrr")) {
+      drawDirection = -1;
+      passesPerFrame = 10;
+      isMoving = true;
+  } else if (cmd.equals("erase")) {
+      clearPaper();
+  } else if (cmd.equals("setup")) {
+      int setupMode = int(subcmd);
+      deselect();
+      drawingSetup(setupMode, false);
+      doSaveSetup();
+  } else if (cmd.equals("snapshot")) {
+    alert("Coming Soon!");
+  }
 }

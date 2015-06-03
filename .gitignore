@@ -7,3 +7,5 @@ web-export/
 code/
 ffmpeg*
 *.mp4
+.mcp
+*/.mcp

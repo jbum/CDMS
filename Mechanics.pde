@@ -204,6 +204,7 @@ class ConnectingRod implements Channel, Selectable {
         penRig.angle -= 360;
       setupPens[setupMode][1] = penRig.angle;
     }
+    doSaveSetup();
   }
   
   void nudge(int direction, int kc) {
@@ -394,7 +395,6 @@ class PenRig implements Selectable {
     this.len += lenIncr*direction;
     this.len = constrain(this.len, 1, 8);
     setupPens[setupMode][0] = this.len;
-
   }
   
   void draw() {
