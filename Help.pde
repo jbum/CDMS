@@ -1,7 +1,8 @@
-boolean startupAlert = true;
 boolean drawHelp = false;
 long    helpStartMS = millis();
 String[] helpLines = {
+    "Keyboard Shortcuts:",
+    "",
     "0-9    set drawing speed",
     "a-g    change setups",
     "arrows change gears and mount points",
@@ -36,17 +37,6 @@ void helpDraw()
       text(helpLines[i], hx, hy+22*i);
     }
   }
-  else if (startupAlert) {
-    long elapsed = millis() - helpStartMS;
-    float alpha = constrain(map(elapsed, 10*1000, 13*1000, 1, 0),0,1);
-    if (alpha <= 0.0001) {
-      startupAlert = false;
-    }
-    textFont(hFont);
-    textAlign(LEFT);
-    fill(200, alpha*alpha*255);
-    text("Press SPACE to draw, ? for Help", width-400*seventyTwoScale, 30*seventyTwoScale);
-  }
 }
 
 void toggleHelp() 
@@ -55,7 +45,6 @@ void toggleHelp()
     drawHelp = false;
   } else {
     drawHelp = true;
-    startupAlert = false;
     helpStartMS = millis();
   }
 }

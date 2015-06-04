@@ -95,6 +95,9 @@ function setupButtons() {
     $('#CDMS-credits').toggle();
   });
   buttonFeedback();
+  // var canvas = document.getElementById("CDMS");
+  // var ctx = canvas.getContext("2d");
+  // ctx.scale(0.5,0.5);
 }
 
 function makeSnapshot(pgraphics, rotation, fileName) 

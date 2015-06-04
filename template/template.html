@@ -17,6 +17,7 @@
 	</head>
 	<body>
 		<div id="content">
+		  <div id="subcontent">
 			<div>
 				<canvas id="@@id@@" data-processing-sources="@@sketch@@.pde" 
 						width="@@width@@" height="@@height@@">
@@ -47,12 +48,6 @@
 				  <label class="btn btn-default bcmd" id="lcmd:fff">
 				    <input type="radio" name="options" id="bcmd:fff" autocomplete="off"><i class="fa fa-fast-forward fa-2x"></i>
 				  </label>
-<!--	            <a class="btn btn-default bcmd" id="bcmd:rrr" href="#"><i class="fa fa-fast-backward fa-2x"></i></a>
-	            <a class="btn btn-default bcmd" id="bcmd:rr" href="#"><i class="fa fa-backward fa-2x"></i></a>
-	            <a class="btn btn-default bcmd" id="bcmd:pause" href="#"><i class="fa fa-pause fa-2x"></i></a>
-	            <a class="btn btn-default bcmd" id="bcmd:play" href="#"><i class="fa fa-play fa-2x"></i></a>
-	            <a class="btn btn-default bcmd" id="bcmd:ff" href="#"><i class="fa fa-forward fa-2x"></i></a>
-	            <a class="btn btn-default bcmd" id="bcmd:fff" href="#"><i class="fa fa-fast-forward fa-2x"></i></a> -->
 			</div>
 			&nbsp;&nbsp;&nbsp;&nbsp;
 			<div class="btn-group" data-toggle="buttons">
@@ -82,29 +77,26 @@
 			<div class="btn-group">
             	<button type=button class="btn btn-default bcmd" id="bcmd:snapshot"><i class="fa fa-camera fa-2x"></i></button>
             	<button type=button class="btn btn-default bcmd" id="bcmd:erase"><i class="fa fa-eraser fa-2x"></i></button>
+            	<button type=button class="btn btn-default bcmd" id="bcmd:help"><i class="fa fa-question fa-2x"></i></button>
 			</div>
-
-	        <br />
+            <!--
 	        <a href="#" class="credits-btn">Credits...</a>
 	        <p />
 			<div id="CDMS-credits">
     		  <p id="description">A simulation of Joe Freedman's <a href="https://kickstarter.com/projects/1765367532/cycloid-drawing-machine">Kickstarter product</a></p>
 			  <p id="sources">Source code by Jim Bumgardner: <a href="https://github.com/jbum/CDMS">Availble on GitHub</a> </p>
 			  <p>
-			Built with <a href="http://processing.org" title="Processing">Processing</a>
-			and <a href="http://processingjs.org" title="Processing.js">Processing.js</a>
+			  Built with <a href="http://processing.org" title="Processing">Processing</a>
+			  and <a href="http://processingjs.org" title="Processing.js">Processing.js</a>
 			  </p>
    		    </div>
+   		    -->
+   		  </div>
 		</div>
-
-				<canvas id="Snapper" data-processing-sources="Snapper.pde" 
-						width="648" height="648">
-					<p>Your browser does not support the canvas tag.</p>
-				</canvas>
-				<noscript>
-					<p>JavaScript is required to view the contents of this page.</p>
-				</noscript>
-
+		<canvas id="Snapper" data-processing-sources="Snapper.pde" 
+				width="648" height="648">
+			<p>Your browser does not support the canvas tag.</p>
+		</canvas>
 	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	</body>
 </html>
