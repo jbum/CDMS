@@ -60,7 +60,8 @@ void invertConnectingRod()
   } else if (activeConnectingRods.size() == 1) {
     activeConnectingRods.get(0).invert();
   } else {
-    println("Please select a connecting rod to invert");
+    // ignore it
+    // println("Please select a connecting rod to invert");
   }
 }
 
