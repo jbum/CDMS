@@ -24,9 +24,9 @@ static final float kCRLabelIncr = 0.5*inchesToPoints;
 static final float kCRNotchIncr = 0.25*inchesToPoints;
 static final float kCRNotchStart = 0.75*inchesToPoints;
 static final float kCRLabelStart = 1*inchesToPoints;
-static final float kPenLabelStart = 4.75*inchesToPoints;
-static final float kPenLabelIncr = -0.5*inchesToPoints;
-static final float kPenNotchIncr = -0.25*inchesToPoints;
+static final float kPenLabelStart = 0.5*inchesToPoints;  // was 4.75
+static final float kPenLabelIncr =  0.5*inchesToPoints;  // was negative
+static final float kPenNotchIncr =  0.25*inchesToPoints; // was negative
 static final float kPaperRad = 4.625*inchesToPoints;
 
 class MountPoint implements Channel, Selectable {
@@ -436,14 +436,14 @@ class PenRig implements Selectable {
 
       stroke(96);
       fill(64);
-      for (int i = 0; i < 15; ++i) {
-        float x = notchToDist(1+i/2.0);
+      for (int i = 2; i < 18; ++i) {
+        float x = notchToDist(1+i/2.0); // 2, 2.5, 3, 3.5, ....9,5
         line(x, 6, x, -(6+(i % 2 == 0? 2 : 0)));
         if (i % 2 == 0) {
           text(""+int(1+i/2),x,8);
         }
       }
-      popMatrix();
+    popMatrix();
 
 
   }

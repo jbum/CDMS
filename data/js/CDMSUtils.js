@@ -11,8 +11,8 @@ function mydebug(msg) {
 function jsLoadSetups(csetup) {
   // Load default setups from cookies
   if ($.cookie('cdms_setups')) {
-    mydebug("Got Setup: " + $.cookie('cdms_setups'));
-    var cs = $.parseJSON($.cookie('cdms_setups'));
+    mydebug("Got Setup: " + $.cookie('cdms_v2_setups'));
+    var cs = $.parseJSON($.cookie('cdms_v2_setups'));
     csetup.setupMode = cs.setupMode;
     csetup.setupTeeth = cs.setupTeeth;
     csetup.setupMounts = cs.setupMounts;
@@ -36,7 +36,7 @@ function jsSaveSetups(csetup) {
        };
   var setupJson = JSON.stringify(csl);
   mydebug(setupJson);
-  $.cookie('cdms_setups', setupJson, {expires:7});
+  $.cookie('cdms_v2_setups', setupJson, {expires:7});
 }
 
 function getButtonID(e) {

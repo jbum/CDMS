@@ -139,7 +139,7 @@ void drag() {
         pr.angle = round(pr.angle / 5)*5;
         float oLen = dist(startDragX,startDragY,ap.x,ap.y);
         float desLen = dist(mouseX, mouseY, ap.x, ap.y);
-        pr.len -= (desLen-oLen)/(0.5*inchesToPoints);
+        pr.len += (desLen-oLen)/(0.5*inchesToPoints);
         pr.len = round(pr.len / 0.125)*0.125;
         setupPens[setupMode][1] = pr.angle;
         setupPens[setupMode][0] = pr.len;
@@ -315,6 +315,8 @@ void issueCmd(String cmd, String subcmd) {
       doSaveSetup();
   } else if (cmd.equals("snapshot")) {
     doSnapshot();
+  } else if (cmd.equals("help")) {
+    alert("Help is coming soon...");
   }
 }
 
