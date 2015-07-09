@@ -10,7 +10,7 @@ function mydebug(msg) {
 
 function jsLoadSetups(csetup) {
   // Load default setups from cookies
-  if ($.cookie('cdms_setups')) {
+  if ($.cookie('cdms_v2_setups')) {
     mydebug("Got Setup: " + $.cookie('cdms_v2_setups'));
     var cs = $.parseJSON($.cookie('cdms_v2_setups'));
     csetup.setupMode = cs.setupMode;
