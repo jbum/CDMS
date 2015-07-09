@@ -1,6 +1,6 @@
 Simulation of Cycloid Drawing Machine in Processing.JS
 
-Physical machine designed by [Joe Freedman](https://kickstarter.com/projects/1765367532/cycloid-drawing-machine) and available on [Kickstarter](https://kickstarter.com/projects/1765367532/cycloid-drawing-machine).
+Physical machine designed by [Joe Freedman](http://leafpdx.bigcartel.com/product/cycloid-drawing-machine) and available for [purchase at his online store](http://leafpdx.bigcartel.com/product/cycloid-drawing-machine).
 
 Processing simulation by [Jim Bumgardner](http://krazydad.com/about.php)
 
