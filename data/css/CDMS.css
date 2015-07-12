@@ -39,6 +39,13 @@ canvas {
     width: 1400px;
 }
 
+#info-link {
+    float:right;
+}
+#info-link a {
+    color: #777;
+}
+
 .scmd, a.scmd:link {
     font-size: 18px;
     font-weight: bold;
