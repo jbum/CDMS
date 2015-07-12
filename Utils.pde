@@ -132,14 +132,23 @@ void drag() {
       if (abs(dm) > 10) {
         PVector ap = pr.itsMP.getPosition(); // position of mount
         PVector pp = pr.getPosition(); // position of pen
-        float gPenAngle = atan2(pp.y-ap.y,pp.x-ap.x);
+        float startDragLen = dist(startDragX,startDragY,pp.x,pp.y);
+        float gPenAngle, lenScale;
+        if (startDragLen/(0.5*inchesToPoints) > pr.len) {
+          // We are on opposite side of mount point from pen
+          gPenAngle = atan2(ap.y-pp.y,ap.x-pp.x); // this is for moving pen when we're on the opposite side from pen
+          lenScale= -1;
+        } else {
+          gPenAngle = atan2(pp.y-ap.y,pp.x-ap.x); // this causes us to be moving pen arm if we're close to pen...
+          lenScale = 1;
+        }
         float lAngleOffset = radians(pr.angle) - gPenAngle; // adjustment to stored angle, in radians
         float desiredAngle = atan2(mouseY-ap.y,mouseX-ap.x);
         pr.angle = degrees(desiredAngle+lAngleOffset);
         pr.angle = round(pr.angle / 5)*5;
         float oLen = dist(startDragX,startDragY,ap.x,ap.y);
         float desLen = dist(mouseX, mouseY, ap.x, ap.y);
-        pr.len += (desLen-oLen)/(0.5*inchesToPoints);
+        pr.len += lenScale*(desLen-oLen)/(0.5*inchesToPoints);
         pr.len = round(pr.len / 0.125)*0.125;
         setupPens[setupMode][1] = pr.angle;
         setupPens[setupMode][0] = pr.len;
