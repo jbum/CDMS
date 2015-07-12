@@ -316,7 +316,8 @@ void issueCmd(String cmd, String subcmd) {
   } else if (cmd.equals("snapshot")) {
     doSnapshot();
   } else if (cmd.equals("help")) {
-    alert("Help is coming soon...");
+    toggleHelp();
+    // alert("Help is coming soon...");
   }
 }
 
