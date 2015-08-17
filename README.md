@@ -14,6 +14,6 @@ Try the live demo here:
 
 Read about how this was made here:
 
-[krazydad.com/blog](http://krazydad.com/blog/2015/07/13/cycloid-drawin…ine-simulation/)
+[krazydad.com/blog](http://krazydad.com/blog/2015/07/12/cycloid-drawing-machine-simulation/)
 
 CDMS is licensed under the [MIT License](https://github.com/jbum/CDMS/blob/master/LICENSE.txt)
