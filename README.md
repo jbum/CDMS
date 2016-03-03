@@ -6,7 +6,7 @@ Processing simulation by [Jim Bumgardner](http://krazydad.com/about.php)
 
 ![Cycloid Drawing Machine](http://i.imgur.com/q4CFLI6.png "Cycloid Drawing Machine")
 
-![Cycloid Drawing Machine](http://i.imgur.com/YqDiTJU.png "Cycloid Drawing Machine")
+![Cycloid Drawing Machine](https://media.giphy.com/media/xT9DPiyGTZ0LMrnYys/giphy.gif "Cycloid Drawing Machine")
 
 Try the live demo here: 
 
