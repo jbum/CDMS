@@ -6632,8 +6632,15 @@
       else if (normalMode === 1) normalMode = 2
     };
     p.save = function(file, img) {
-      if (img !== undef) return window.open(img.toDataURL(), "_blank");
-      return window.open(p.externals.canvas.toDataURL(), "_blank")
+      var durl = '';
+      if (img !== undef) {
+        durl = img.toDataURL();
+      } else {
+        durl = p.externals.canvas.toDataURL();
+      }
+      // return window.open(durl, "_blank")
+      var win = window.open();
+      win.document.write("<img src='" + durl + "'/>");
     };
     var saveNumber = 0;
     p.saveFrame = function(file) {
